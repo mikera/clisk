@@ -1,6 +1,7 @@
 (ns clisk.demo
   (:use clisk.core)
-  (:use clisk.functions))
+  (:use clisk.functions)
+  (:use clisk.patterns))
 
 (comment
   
