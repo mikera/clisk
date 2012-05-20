@@ -12,8 +12,13 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 public class Util {
+	
+	
 
 	public static BufferedImage newImage(int w, int h) {
 		BufferedImage result=new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
@@ -64,14 +69,22 @@ public class Util {
 	@SuppressWarnings("serial")
 	public static JFrame frame(final Image image) {
 		JFrame f=new JFrame("Clisk Image");
+		
+		JMenuBar menuBar=new JMenuBar();
+		JMenu menu=new JMenu("File");
+		menuBar.add(menu);
+		JMenuItem jmi=new JMenuItem("Save As...");	
+		menu.add(jmi);
+		
 		JComponent c=new JComponent() {
 			public void paint(Graphics g) {
 				g.drawImage(image,0,0,null);
 			}
 		};
 		c.setMinimumSize(new Dimension(image.getWidth(null),image.getHeight(null)));
-		f.setMinimumSize(new Dimension(image.getWidth(null)+50,image.getHeight(null)+50));
+		f.setMinimumSize(new Dimension(image.getWidth(null)+100,image.getHeight(null)+50));
 		f.add(c);
+		f.setJMenuBar(menuBar);
 		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		return f;
 	}	
