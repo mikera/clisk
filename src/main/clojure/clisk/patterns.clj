@@ -36,3 +36,5 @@
 (def vnoise (vector-offsets noise))
 
 (def vsnoise (vector-offsets snoise))
+
+(def vplasma (vector-offsets plasma))

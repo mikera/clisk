@@ -44,15 +44,18 @@
           dy (double dy)
           dw (double w)
           dh (double h)]
-	    (dotimes [iy h] 
-	      (dotimes [ix w]
-	        (let [x (/ (* dx (+ 0.5 ix)) dw)
-                y (/ (* dy (+ 0.5 iy)) dh)
-                r (.calc fr x y 0.0 0.0)
-                g (.calc fg x y 0.0 0.0)
-                b (.calc fb x y 0.0 0.0)
-                argb (Util/toARGB r g b)]
-           (.setRGB image ix iy argb))))
+	    (doall (pmap 
+        #(let [iy (int %)]
+		      (dotimes [ix w]
+		        (let [iy (int iy)
+	                x (/ (* dx (+ 0.5 ix)) dw)
+	                y (/ (* dy (+ 0.5 iy)) dh)
+	                r (.calc fr x y 0.0 0.0)
+	                g (.calc fg x y 0.0 0.0)
+	                b (.calc fb x y 0.0 0.0)
+	                argb (Util/toARGB r g b)]
+	           (.setRGB image ix iy argb))))
+        (range h)))
      image)))
 
 (defn scale-image [img w h]
