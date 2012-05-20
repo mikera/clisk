@@ -16,7 +16,6 @@
     :else
       (vec (repeat 4 x))))
 
-
 (defn check-dims [& vectors]
   (if (every? vector? vectors)
     (let [[v & vs] vectors
@@ -62,6 +61,9 @@
 (def vfloor
   (vectorize-op1 'Math/floor))
 
+(def vfrac
+  (vectorize-op1 'clisk.functions/frac))
+
 (def v+ 
   (vectorize-op2 'clojure.core/+))
 
@@ -74,10 +76,24 @@
 (def vdivide 
   (vectorize-op2 'clojure.core//))
 
+(defn vdot [a b]
+  (let [a (vectorize a)
+        b (vectorize b)
+        adims (check-dims a)
+        bdims (check-dims b)
+        dims (min adims bdims)]
+    (cons 'clojure.core/+
+      (for [i (range dims)]
+        `(clojure.core/* ~(a i) ~(b i))))))
+
+(defn vlength [a]
+  `(Math/sqrt ~(vdot a a)))
 
 (defn vwarp 
   [warp f]
-  (let [wdims (check-dims warp)
+  (let [warp (vectorize warp)
+        f (vectorize f)
+        wdims (check-dims warp)
         fdims (check-dims f)
         vars (take wdims ['x 'y 'z 't])
         temps (take wdims ['x-temp 'y-temp 'z-temp 't-temp])
@@ -90,7 +106,9 @@
         `(let [~@bindings] ~(f i))))))
 
 (defn vscale [factor f] 
-  (vwarp (v* factor identity-vector) f))
+  (let [factor (vectorize factor)
+        f (vectorize f)]
+    (vwarp (v* factor identity-vector) f)))
 
 (defn vdistort 
   [warp f]
@@ -101,3 +119,24 @@
              (vec (take wdims ['x 'y 'z 't]))
              warp)
            f)))
+
+(def vmin
+  (vectorize-op2 min))
+
+(def vmax
+  (vectorize-op2 max))
+
+
+(defn vif [c a b]
+  (let [c (vectorize c)
+        a (vectorize a)
+        b (vectorize b)
+        adims (check-dims a)
+        bdims (check-dims b)
+        cdims (check-dims c)
+        dims (max adims bdims)]
+    (vec (for [i (range dims)]
+           (let [av (if (< i adims) (a i) 0.0)
+                 bv (if (< i bdims) (b i) 0.0)
+                 cv (if (< i cdims) (c i) 0.0)]
+             `(if (> 0.0 ~cv) ~av ~bv))))))
