@@ -161,18 +161,25 @@
       offsets-for-vectors)))
 
 (defn vgradient [f]
+  "Computes the gradient of a scalar function f with respect to [x y z t]"
   (let [epsilon 0.000001]
     (vec 
       (map 
         (fn [sym] 
           `(clojure.core// 
-             (let [~%1 (clojure.core/+ ~epsilon ~%1)])))
+             (clojure.core/-
+               (let [~sym (clojure.core/+ ~epsilon ~sym)]
+                 ~f)
+               ~f)
+             ~epsilon))
         pos))))
 
 (def scalar-hash-function
+  "Hash function producing a scalar value in the range [0..1) for every unique point in space"
   `(phash ~'x ~'y ~'z ~'t))
 
 (def vhash
+  "Hash function producing a vector value in the range [0..1)^4 for every unique point in space"
   (vector-offsets scalar-hash-function))
 
 (def vmin

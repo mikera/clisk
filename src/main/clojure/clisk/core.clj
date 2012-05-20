@@ -13,6 +13,7 @@
 (def ^:dynamic *anti-alias* 2)
  
 (defn ^clisk.Function compile-fn [code]
+  "Compiles clisk function code into an object that extends clisk.Function and clojure.lang.IFn"
   (eval
     `(proxy [clisk.Function] []
        (calc 
@@ -28,6 +29,7 @@
            (.calc ~'this 0.0))))))
 
 (defn img
+  "Creates a BufferedImage from the given vector function."
   ([vector-function]
     (img vector-function DEFAULT-IMAGE-WIDTH DEFAULT-IMAGE-HEIGHT))
   ([vector-function w h]
@@ -62,6 +64,7 @@
   (Util/scaleImage img (int w) (int h)))
 
 (defn show 
+  "Creates an shows an image from the given vector function"
   ([vector-function]
     (show vector-function DEFAULT-IMAGE-WIDTH DEFAULT-IMAGE-HEIGHT))
   ([vector-function w h]
