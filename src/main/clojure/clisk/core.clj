@@ -8,6 +8,7 @@
 
 (def DEFAULT-IMAGE-HEIGHT 256)
 
+(def ^:dynamic *anti-alias* 2)
  
 (defn ^clisk.Function compile-fn [code]
   (eval
@@ -52,8 +53,27 @@
            (.setRGB image ix iy argb))))
      image)))
 
+(defn scale-image [img w h]
+  (Util/scaleImage img (int w) (int h)))
+
 (defn show 
   ([vector-function]
     (show vector-function DEFAULT-IMAGE-WIDTH DEFAULT-IMAGE-HEIGHT))
   ([vector-function w h]
-    (Util/show (img vector-function w h))))
+    (let [scale *anti-alias*
+          fw (* w scale)
+          fh (* h scale)
+          img (img vector-function fw fh)
+          img (loop [scale scale fw fw fh fh img img]
+                (if  (> scale 1)
+                  (let [factor (min 2.0 scale)
+                        nw (/ fw factor)
+                        nh (/ fh factor)]   
+	                  (recur
+	                    (/ scale factor)
+	                    nw
+                      nh
+	                    (scale-image img nw nh)))
+                  img))]
+
+      (Util/show img))))
