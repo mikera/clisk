@@ -1,5 +1,6 @@
 (ns clisk.core
-  (:import clisk.Util))
+  (:import clisk.Util)
+  (:use clisk.functions))
 
 (set! *warn-on-reflection* true)
 
@@ -35,7 +36,8 @@
   ([vector-function w h]
     (img vector-function w h 1.0 (/ (double h) (double w))))
   ([vector-function w h dx dy]
-    (let [image (Util/newImage (int w) (int h))
+    (let [vector-function (vectorize vector-function)
+          image (Util/newImage (int w) (int h))
           fr (compile-fn (vector-function 0))
           fg (compile-fn (vector-function 1))
           fb (compile-fn (vector-function 2))]
