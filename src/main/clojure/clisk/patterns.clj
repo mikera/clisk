@@ -31,18 +31,7 @@
                  (clojure.core/* ~factor ~noise))))
           (range 6))))
 
-(def offsets-for-vectors [[-120.34 +340.21 -13.67 +56.78]
-                          [+12.301 +70.261 -167.678 +34.568]
-                          [+78.676 -178.678 -79.612 -80.111]
-                          [-78.678 7.6789 200.567 124.099]])
-
-(defn vector-offsets [func]
-  (vec 
-    (map
-      (fn [offs]
-        `(let [~@(interleave pos (map #(do `(clojure.core/+ ~%1 ~%2)) offs pos))] 
-           ~func))
-      offsets-for-vectors)))
+(def hash-cubes (vwarp vfloor vhash))
 
 (def vnoise (vector-offsets noise))
 

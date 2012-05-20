@@ -4,6 +4,8 @@
 
 (set! *warn-on-reflection* true)
 
+(set! *unchecked-math* true)
+
 (def DEFAULT-IMAGE-WIDTH 256)
 
 (def DEFAULT-IMAGE-HEIGHT 256)
