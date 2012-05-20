@@ -1,8 +1,8 @@
 (ns clisk.functions
   (:import clisk.Util))
 
-(def identity-vector ['x 'y 'z 't])
-
+;; standard position vector
+(def pos ['x 'y 'z 't])
 
 (defn error [& vals]
   (throw (Error. (str (reduce str vals)))))
@@ -124,7 +124,7 @@
 (defn vscale [factor f] 
   (let [factor (vectorize factor)
         f (vectorize f)]
-    (vwarp (v* factor identity-vector) f)))
+    (vwarp (vdivide pos factor) f)))
 
 (defn vdistort 
   [warp f]
@@ -146,5 +146,3 @@
   (vectorize-op2 max))
 
 
-
-(def pos ['x 'y 'z 't])

@@ -10,7 +10,7 @@
   (show (vscale 10 (vdot (vfrac pos) (vfrac pos))))
   
   ;; Chess board
-  (show (vscale 4 (checker 0 1)))
+  (show (vscale 0.25 (checker 0 1)))
   
   
   )
