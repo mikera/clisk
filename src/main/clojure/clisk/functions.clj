@@ -126,15 +126,12 @@
         f (vectorize f)]
     (vwarp (vdivide pos factor) f)))
 
-(defn vdistort 
+(defn voffset 
   [warp f]
-  (let [warp (vectorize warp)
-        f (vectorize f)
-        wdims (check-dims warp)]
     (vwarp (v+ 
-             (vec (take wdims ['x 'y 'z 't]))
+             pos
              warp)
-           f)))
+           f))
 
 (def vmin
   (vectorize-op2 min))
