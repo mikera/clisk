@@ -3,6 +3,8 @@
 
 Clisk is a toolkit for procedural image generation (Clisk = Clojure Image Synthesis Kit)
 
+![Golden rock](https://raw.github.com/wiki/mikera/clisk/images/GoldRock.png)
+
 For [examples see the Wiki](https://github.com/mikera/clisk/wiki)
 
 Features:
