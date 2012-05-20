@@ -160,6 +160,15 @@
            ~func))
       offsets-for-vectors)))
 
+(defn vgradient [f]
+  (let [epsilon 0.000001]
+    (vec 
+      (map 
+        (fn [sym] 
+          `(clojure.core// 
+             (let [~%1 (clojure.core/+ ~epsilon ~%1)])))
+        pos))))
+
 (def scalar-hash-function
   `(phash ~'x ~'y ~'z ~'t))
 
@@ -174,5 +183,7 @@
 
 (def vmax
   (vectorize-op2 max))
+
+
 
 
