@@ -1,6 +1,8 @@
 (ns clisk.functions
   (:import clisk.Util))
 
+(set! *unchecked-math* true)
+
 ;; standard position vector
 (def pos ['x 'y 'z 't])
 
@@ -13,6 +15,8 @@
       x
     (number? x)
       (vec (repeat 4 (double x)))
+    (fn? x)
+      (x pos)
     :else
       (vec (repeat 4 x))))
 
@@ -64,6 +68,16 @@
 
 (defn ^:static frac ^double [^double x]
   (- x (Math/floor x)))
+
+(defn ^:static phash 
+  (^double [^double x]
+    (Util/dhash x))
+  (^double [^double x ^double y]
+    (Util/dhash x y))
+  (^double [^double x ^double y ^double z]
+    (Util/dhash x y z))
+  (^double [^double x ^double y ^double z ^double t]
+    (Util/dhash x y z t)))
 
 (def vsin
   (vectorize-op1 'Math/sin))
@@ -132,6 +146,25 @@
              pos
              warp)
            f))
+
+(def offsets-for-vectors [[-120.34 +340.21 -13.67 +56.78]
+                          [+12.301 +70.261 -167.678 +34.568]
+                          [+78.676 -178.678 -79.612 -80.111]
+                          [-78.678 7.6789 200.567 124.099]])
+
+(defn vector-offsets [func]
+  (vec 
+    (map
+      (fn [offs]
+        `(let [~@(interleave pos (map #(do `(clojure.core/+ ~%1 ~%2)) offs pos))] 
+           ~func))
+      offsets-for-vectors)))
+
+(def scalar-hash-function
+  `(phash ~'x ~'y ~'z ~'t))
+
+(def vhash
+  (vector-offsets scalar-hash-function))
 
 (def vmin
   (vectorize-op2 min))
