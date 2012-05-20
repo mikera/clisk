@@ -46,6 +46,22 @@
             (>= i dims2) (list f (v1 i) 0.0)
             :else (list f (v1 i) (v2 i))))))))
 
+
+
+(defn vif [c a b]
+  (let [c (vectorize c)
+        a (vectorize a)
+        b (vectorize b)
+        adims (check-dims a)
+        bdims (check-dims b)
+        cdims (check-dims c)
+        dims (max adims bdims)]
+    (vec (for [i (range dims)]
+           (let [av (if (< i adims) (a i) 0.0)
+                 bv (if (< i bdims) (b i) 0.0)
+                 cv (if (< i cdims) (c i) 0.0)]
+             `(if (> 0.0 ~cv) ~av ~bv))))))
+
 (defn ^:static frac ^double [^double x]
   (- x (Math/floor x)))
 
@@ -126,17 +142,15 @@
 (def vmax
   (vectorize-op2 max))
 
+(def vmax
+  (vectorize-op2 max))
 
-(defn vif [c a b]
-  (let [c (vectorize c)
-        a (vectorize a)
-        b (vectorize b)
-        adims (check-dims a)
-        bdims (check-dims b)
-        cdims (check-dims c)
-        dims (max adims bdims)]
-    (vec (for [i (range dims)]
-           (let [av (if (< i adims) (a i) 0.0)
-                 bv (if (< i bdims) (b i) 0.0)
-                 cv (if (< i cdims) (c i) 0.0)]
-             `(if (> 0.0 ~cv) ~av ~bv))))))
+(defn checker 
+  ([a b]
+    (vif '(clojure.core/* 
+            (clojure.core/- (clisk.functions/frac x) 0.5)
+            (clojure.core/- (clisk.functions/frac y) 0.5))
+         a
+         b)))
+
+(def pos ['x 'y 'z 't])

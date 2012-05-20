@@ -8,13 +8,7 @@
 
 (def DEFAULT-IMAGE-HEIGHT 256)
 
-
-
-
-
-
-
-  
+ 
 (defn ^clisk.Function compile-fn [code]
   (eval
     `(proxy [clisk.Function] []
@@ -40,14 +34,20 @@
           image (Util/newImage (int w) (int h))
           fr (compile-fn (vector-function 0))
           fg (compile-fn (vector-function 1))
-          fb (compile-fn (vector-function 2))]
+          fb (compile-fn (vector-function 2))
+          w (int w)
+          h (int h)
+          dx (double dx)
+          dy (double dy)
+          dw (double w)
+          dh (double h)]
 	    (dotimes [iy h] 
 	      (dotimes [ix w]
-	        (let [x (/ (* dx ix) (double w))
-                y (/ (* dy iy) (double h))
-                r (fr x y)
-                g (fg x y)
-                b (fb x y)
+	        (let [x (/ (* dx (+ 0.5 ix)) dw)
+                y (/ (* dy (+ 0.5 iy)) dh)
+                r (.calc fr x y 0.0 0.0)
+                g (.calc fg x y 0.0 0.0)
+                b (.calc fb x y 0.0 0.0)
                 argb (Util/toARGB r g b)]
            (.setRGB image ix iy argb))))
      image)))
