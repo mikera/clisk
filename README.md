@@ -3,6 +3,8 @@
 
 Clisk is a toolkit for procedural image generation (Clisk = Clojure Image Synthesis Kit)
 
+For [examples see the Wiki](https://github.com/mikera/clisk/wiki)
+
 Features:
 
 * A concise DSL for specifying image generators through function composition
@@ -11,3 +13,4 @@ Features:
 * Anti-aliasing (arbitrary precision)
 * A wide variety of patterns and transforms
 * Easily extensible with your own image generation functions
+
