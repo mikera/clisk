@@ -27,4 +27,10 @@
   
   ;; vnoise warped by hash cubes
   (show (vscale 0.2 (voffset (v* 10 (vwarp vfloor vhash)) vnoise)))
+  
+  ;; basic colour map in y-direction
+  (show (colour-map [[0   [1 1 1]] 
+                     [0.5 [1 0.5 0]] 
+                     [1   [0 0 0]]] 
+                    'y))
   )

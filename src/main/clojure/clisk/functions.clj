@@ -3,6 +3,8 @@
 
 (set! *unchecked-math* true)
 
+(def ^:const TAO (* 2.0 Math/PI))
+
 ;; standard position vector
 (def pos ['x 'y 'z 't])
 
@@ -45,39 +47,46 @@
            (list f (v1 i)))))))
 
 (defn vectorize-op2 [f]
-  (fn [v1 v2]
-    (let [v1 (vectorize v1)
-          v2 (vectorize v2)
-          dims1 (check-dims v1)
-          dims2 (check-dims v2)
-          dims (max dims1 dims2)]
-      (vec 
-        (for [i (range dims)]
-          (cond 
-            (>= i dims1) (list f 0.0 (v2 i))
-            (>= i dims2) (list f (v1 i) 0.0)
-            :else (list f (v1 i) (v2 i))))))))
+  (fn vectorize-op
+    ([v1 v2]
+	    (let [v1 (vectorize v1)
+	          v2 (vectorize v2)
+	          dims1 (check-dims v1)
+	          dims2 (check-dims v2)
+	          dims (max dims1 dims2)]
+	      (vec 
+	        (for [i (range dims)]
+	          (cond 
+	            (>= i dims1) (list f 0.0 (v2 i))
+	            (>= i dims2) (list f (v1 i) 0.0)
+	            :else (list f (v1 i) (v2 i)))))))
+    ([v1 v2 & more]
+      (if-let [more-more (next more)]
+        (vectorize-op (vectorize-op v1 v2) (first more) more-more)
+        (vectorize-op (vectorize-op v1 v2) (first more))))))
 
 
 
 (defn vif [c a b]
-  (let [c (vectorize c)
-        a (vectorize a)
+  "Conditional vector function. First scalar argument is used as conditional value, > 0.0  is true."
+  (let [a (vectorize a)
         b (vectorize b)
         adims (check-dims a)
         bdims (check-dims b)
-        cdims (check-dims c)
         dims (max adims bdims)]
     (vec (for [i (range dims)]
-           (let [av (if (< i adims) (a i) 0.0)
-                 bv (if (< i bdims) (b i) 0.0)
-                 cv (if (< i cdims) (c i) 0.0)]
+           (let [av (component i a)
+                 bv (component i b)
+                 cv (component 0 c)]
              `(if (> 0.0 ~cv) ~av ~bv))))))
 
-(defn ^:static frac ^double [^double x]
-  (- x (Math/floor x)))
+(defn ^:static frac
+  "Retuns the fractional part of a number. Equivalent to Math/floor."
+  (^double [^double x]
+    (- x (Math/floor x))))
 
 (defn ^:static phash 
+  "Returns a hashed double value in the range [0..1)"
   (^double [^double x]
     (Util/dhash x))
   (^double [^double x ^double y]
@@ -103,29 +112,35 @@
   (vectorize-op1 'clisk.functions/frac))
 
 (def v+ 
+  "Adds two or more vectors"
   (vectorize-op2 'clojure.core/+))
 
 (def v* 
+  "Multiplies two or more vectors"
   (vectorize-op2 'clojure.core/*))
 
 (def v- 
+  "Subtracts two or more vectors"
   (vectorize-op2 'clojure.core/-))
 
 (def vdivide 
+  "Divides two or more vectors"
   (vectorize-op2 'clojure.core//))
 
-(defn vdot [a b]
-  (let [a (vectorize a)
-        b (vectorize b)
-        adims (check-dims a)
-        bdims (check-dims b)
-        dims (min adims bdims)]
-    (cons 'clojure.core/+
-      (for [i (range dims)]
-        `(clojure.core/* ~(a i) ~(b i))))))
+(defn dot 
+	"Returns the dot product of two vectors"
+  ([a b]
+	  (let [a (vectorize a)
+	        b (vectorize b)
+	        adims (check-dims a)
+	        bdims (check-dims b)
+	        dims (min adims bdims)]
+	    (cons 'clojure.core/+
+	      (for [i (range dims)]
+	        `(clojure.core/* ~(component a i) ~(component b i)))))))
 
 (defn vlength [a]
-  `(Math/sqrt ~(vdot a a)))
+  `(Math/sqrt ~(dot a a)))
 
 (defn vwarp 
   [warp f]
@@ -169,21 +184,25 @@
            ~func))
       offsets-for-vectors)))
 
-(defn vgradient [f]
+(defn vgradient 
   "Computes the gradient of a scalar function f with respect to [x y z t]"
-  (let [epsilon 0.000001]
-    (vec 
-      (map 
-        (fn [sym] 
-          `(clojure.core// 
-             (clojure.core/-
-               (let [~sym (clojure.core/+ ~epsilon ~sym)]
-                 ~f)
-               ~f)
-             ~epsilon))
-        pos))))
+	([f]
+	  (let [epsilon 0.000001
+	        f (component 0 f)]
+	    (vec 
+	      (map 
+	        (fn [sym] 
+	          `(clojure.core// 
+	             (clojure.core/-
+	               (let [~sym (clojure.core/+ ~epsilon ~sym)]
+	                 ~f)
+	               ~f)
+	             ~epsilon))
+	        pos)))))
 
-(defn lerp [v a b]
+(defn lerp 
+  "Performs clamped linear interpolation between two values, according to the proportion given in the 3rd parameter."
+  ([a b v]
   `(let [a# ~a
          b# ~b
          v# ~v]
@@ -191,9 +210,10 @@
        (if (>= v# 1) b#
          (+ 
            (* v# b#)
-           (* (- 1.0 v#) a#))))))
+           (* (- 1.0 v#) a#)))))))
 
 (defn vlerp 
+  "Performs clamped linear interpolation between two vectors, according to the proportion given in the 3rd parameter."
   ([a b]
     (fn [v] (vlerp a b v)))
   ([a b v]
@@ -259,4 +279,17 @@
     (vmax low (vmin high v))))
 
 
+
+(defn vseamless 
+  ([scale v4]
+    (let [v4 (vectorize v4)
+          scale (/ 1.0 (component 0 scale) TAO)
+          dims (check-dims v4)]
+      (if (< dims 4) (error "vseamless requires 4D input texture, found " dims))
+      (vwarp
+        [`(* (Math/cos (* ~'x TAO)) ~scale) 
+         `(* (Math/sin (* ~'x TAO)) ~scale) 
+         `(* (Math/cos (* ~'y TAO)) ~scale)
+         `(* (Math/sin (* ~'y TAO)) ~scale)]
+        v4))))
 
