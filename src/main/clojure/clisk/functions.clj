@@ -10,6 +10,7 @@
   (throw (Error. (str (reduce str vals)))))
 
 (defn vectorize [x]
+  "Converts a value into a vector function form. If x is already a factor, does nothing. If x is a function, apply it to the current position."
   (cond
     (vector? x)
       x
@@ -20,7 +21,14 @@
     :else
       (vec (repeat 4 x))))
 
+(defn component [i a]
+  (let [a (vectorize a)]
+    (if (< i (count a))
+      (a i)
+      0.0)))
+
 (defn check-dims [& vectors]
+  "Ensure that parameters are equal sized vectors. Returns the size of the vector(s) if successful."
   (if (every? vector? vectors)
     (let [[v & vs] vectors
           dims (count v)]
@@ -153,6 +161,7 @@
                           [-78.678 7.6789 200.567 124.099]])
 
 (defn vector-offsets [func]
+  "Creates a vector version of a scalar function, where the components are offset versions of the original scalar function"
   (vec 
     (map
       (fn [offs]
@@ -174,6 +183,61 @@
              ~epsilon))
         pos))))
 
+(defn lerp [v a b]
+  `(let [a# ~a
+         b# ~b
+         v# ~v]
+     (if (<= v# 0) a#
+       (if (>= v# 1) b#
+         (+ 
+           (* v# b#)
+           (* (- 1.0 v#) a#))))))
+
+(defn vlerp 
+  ([a b]
+    (fn [v] (vlerp a b v)))
+  ([a b v]
+	  (let [a (vectorize a)
+	        b (vectorize b)
+	        v (component 0 v)
+	        dims (max (count a) (count b))
+	        vsym (gensym "val")]
+	    (vec (for [i (range dims)]
+			  `(let [~vsym ~v]
+			     (if (<= ~vsym 0) ~(component i a)
+			       (if (>= ~vsym 1) ~(component i b)
+			         (+ (* ~vsym ~(component i b)) (* (- 1.0 ~vsym) ~(component i a)))))))))))
+
+(defn colour-map 
+  ([mapping v]
+    ((colour-map mapping) v))
+  ([mapping]
+	  (fn [x]
+		  (let [vals (vec mapping)
+		        v (component 0 x)
+		        c (count vals)]
+		    (cond 
+		      (<= c 0) (error "No colour map available!")
+		      (== c 1) (vectorize (second (vals 0)))
+		      (== c 2) 
+		        (let [lo (first (vals 0))
+		              hi (first (vals 1))]
+		            (vlerp  
+		              (vectorize (second (vals 0))) 
+		              (vectorize (second (vals 1)))
+                  `(/ (- ~v ~lo) (- ~hi ~lo))))
+		      :else
+		        (let [mid (quot c 2)
+		              mv (first (vals mid))
+		              vsym (gensym "val")
+		              upper (colour-map (subvec vals mid c))
+		              lower (colour-map (subvec vals 0 (inc mid)))]
+		          (vec (for [i (range 4)]
+		          `(let [~vsym ~v] 
+		             (if (< ~vsym ~mv)
+		               ~(component i (lower vsym))
+		               ~(component i (upper vsym))))))))))))
+
 (def scalar-hash-function
   "Hash function producing a scalar value in the range [0..1) for every unique point in space"
   `(phash ~'x ~'y ~'z ~'t))
@@ -183,14 +247,16 @@
   (vector-offsets scalar-hash-function))
 
 (def vmin
-  (vectorize-op2 min))
+  (vectorize-op2 'Math/min))
 
 (def vmax
-  (vectorize-op2 max))
+  (vectorize-op2 'Math/max))
 
-(def vmax
-  (vectorize-op2 max))
-
+(defn vclamp [v low high]
+  (let [v (vectorize v)
+        low (vectorize low)
+        high (vectorize high)]
+    (vmax low (vmin high v))))
 
 
 
