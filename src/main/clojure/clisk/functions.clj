@@ -90,7 +90,18 @@
         (vectorize-op (vectorize-op v1 v2) (first more) more-more)
         (vectorize-op (vectorize-op v1 v2) (first more))))))
 
-
+(defn vlet 
+  "let one or more scalar values within a vector function" 
+  ([bindings form]
+	  (if (seq bindings)
+	    (let [transformer 
+               (fn [x]
+	               `(let [~@bindings] 
+	                  ~x))]
+	      (if (vector? form)
+          (vec (map transformer form))
+          (transformer form)))
+	    form)))
 
 (defn vif [c a b]
   "Conditional vector function. First scalar argument is used as conditional value, > 0.0  is true."
@@ -165,7 +176,10 @@
 	        `(clojure.core/* ~(component i a) ~(component i b)))))))
 
 (defn length [a]
-  `(Math/sqrt ~(dot a a)))
+  (let [a (vectorize a)
+        syms (vec (map (fn [_] (gensym "temp")) a))] 
+    (vlet (vec (interleave syms a))
+       `(Math/sqrt ~(dot syms syms)))))
 
 (defn vwarp 
   [warp f]

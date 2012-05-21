@@ -16,3 +16,17 @@
     (is (= [2.0 2.0] (map eval (vlerp [1.0 1.0] [2.0 2.0] 2 )))))
   (testing "Vlerp 2 args"
     (is (= [1.0 1.0] (map eval ((vlerp [1.0 1.0] [2.0 2.0]) 0 ))))))
+
+(deftest test-vlet
+  (testing "vlet double"
+    (is (== 1.0 (eval (component 0 (vlet ['a 1.0] 'a))))))
+   (testing "vlet double"
+    (is (== 3.0 (eval (component 0 (vlet ['a 1.0 'b 2.0] `(+ ~'a ~'b)))))))
+  (testing "vlet vector"
+    (is (== 2 (eval (component 0 (vlet ['a [2 2]] `(count ~'a))))))))
+
+(deftest test-lenths
+  (testing "dot"
+    (is (== 1.0 (eval (dot [1 0] [1 0])))))
+  (testing "length"
+    (is (== 1.0 (eval (length [1 0 0]))))))
