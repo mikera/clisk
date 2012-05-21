@@ -3,6 +3,12 @@
   (:use clisk.functions)
   (:import clisk.Util))
 
+(deftest test-vectorize
+  (testing "Scalars"
+    (is (= [1.0 1.0 1.0 1.0] (vectorize 1)))
+    (is (= ['x 'x 'x 'x] (vectorize x)))))
+
+
 (deftest test-plus
   (testing "Colours"
     (is (= [1.0 2.0] (map eval (v+ [1.0 1.0] [0.0 1.0]))))))
@@ -25,7 +31,7 @@
   (testing "vlet vector"
     (is (== 2 (eval (component 0 (vlet ['a [2 2]] `(count ~'a))))))))
 
-(deftest test-lenths
+(deftest test-lengths
   (testing "dot"
     (is (== 1.0 (eval (dot [1 0] [1 0])))))
   (testing "length"

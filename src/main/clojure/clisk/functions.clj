@@ -181,6 +181,12 @@
     (vlet (vec (interleave syms a))
        `(Math/sqrt ~(dot syms syms)))))
 
+(defn vnormalise [a]
+  (let [a (vectorize a)
+        syms (vec (map (fn [_] (gensym "temp")) a))]
+    (vlet (vec (interleave syms a))
+          (vdivide a `(Math/sqrt ~(dot syms syms))))))
+
 (defn vwarp 
   [warp f]
   (let [warp (vectorize warp)
@@ -318,8 +324,19 @@
     (vmax low (vmin high v))))
 
 
+(defn viewport 
+  "Rescales the texture as if viwed from [ax, ay] to [bx ,by]"
+  ([a b function]
+    (let [[x1 y1] a
+          [x2 y2] b
+          w (- x2 x1)
+          h (- y2 y1)]
+      (vscale [(/ 1.0 w) (/ 1.0 h) 1 1] (voffset [x1 y1] function)))))
+
+
 
 (defn vseamless 
+  "Creates a seamless 2D tileable version of a 4D texture in the [0 0] to [1 1] region. The scale argument detrmines the amount of the source texture to be used per repeat."
   ([scale v4]
     (let [v4 (vectorize v4)
           scale (/ 1.0 (component 0 scale) TAO)
@@ -332,3 +349,9 @@
          `(* (Math/sin (* ~'y TAO)) ~scale)]
         v4))))
 
+(defn height-normal [heightmap]
+  (v+ [0 0 1] heightmap))
+
+(defn light-value [light-direction normal-direction]
+  `(max 0.0 
+        ~(dot (vnormalise light-direction) (vnormalise normal-direction))))
