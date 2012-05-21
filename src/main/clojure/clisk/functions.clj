@@ -11,23 +11,48 @@
 (defn error [& vals]
   (throw (Error. (str (reduce str vals)))))
 
+(defn ensure-scalar [x]
+  "Ensure x is a scalar value. If x is a vector, resturns the first component (index 0)."
+  (cond 
+    (vector? x)
+      (ensure-scalar (first x))
+    (fn? x)
+      (x pos)
+    (number? x)
+      (double x)
+    :else x))
+
 (defn vectorize [x]
   "Converts a value into a vector function form. If x is already a factor, does nothing. If x is a function, apply it to the current position."
   (cond
     (vector? x)
-      x
+      (vec (map ensure-scalar x))
     (number? x)
       (vec (repeat 4 (double x)))
     (fn? x)
-      (x pos)
+      (vectorize (x pos))
     :else
       (vec (repeat 4 x))))
 
 (defn component [i a]
+  "Gets the scalar component of the vector a at index i. "
   (let [a (vectorize a)]
     (if (< i (count a))
-      (a i)
+      (let [ret (a i)]
+        (ensure-scalar ret))
       0.0)))
+
+(defn x [v]
+  (component 0 v))
+
+(defn y [v]
+  (component 1 v))
+
+(defn z [v]
+  (component 2 v))
+
+(defn t [v]
+  (component 3 v))
 
 (defn check-dims [& vectors]
   "Ensure that parameters are equal sized vectors. Returns the size of the vector(s) if successful."
@@ -137,9 +162,9 @@
 	        dims (min adims bdims)]
 	    (cons 'clojure.core/+
 	      (for [i (range dims)]
-	        `(clojure.core/* ~(component a i) ~(component b i)))))))
+	        `(clojure.core/* ~(component i a) ~(component i b)))))))
 
-(defn vlength [a]
+(defn length [a]
   `(Math/sqrt ~(dot a a)))
 
 (defn vwarp 
