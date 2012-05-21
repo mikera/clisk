@@ -37,9 +37,9 @@
   ([vector-function w h dx dy]
     (let [vector-function (vectorize vector-function)
           image (Util/newImage (int w) (int h))
-          fr (compile-fn (vector-function 0))
-          fg (compile-fn (vector-function 1))
-          fb (compile-fn (vector-function 2))
+          fr (compile-fn (component 0 vector-function))
+          fg (compile-fn (component 1 vector-function))
+          fb (compile-fn (component 2 vector-function))
           w (int w)
           h (int h)
           dx (double dx)
