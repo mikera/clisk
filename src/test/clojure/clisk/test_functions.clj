@@ -19,6 +19,10 @@
   (testing "Colours"
     (is (= [1.0 2.0] (map eval (v+ [1.0 1.0] [0.0 1.0]))))))
 
+(deftest test-mul
+  (testing "Colours"
+    (is (= [2.0 2.0] (map eval (v* [1.0 1.0] [2.0 2.0]))))))
+
 (deftest test-vlerp
   (testing "Vlerp 3 args"
     (is (= [1.0 1.0] (map eval (vlerp [1.0 1.0] [2.0 2.0] 0 ))))
