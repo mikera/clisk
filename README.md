@@ -14,5 +14,7 @@ Features:
 * Fast image synthesis thanks to compiled image generation functions (typically sub-second generation 256*256 4x antialiased textures)
 * Anti-aliasing (arbitrary precision)
 * A wide variety of patterns and transforms
+* (In development) ability to render and light 3D surfaces
 * Easily extensible with your own image generation functions
 
+![Plasma Globe](https://raw.github.com/wiki/mikera/clisk/images/PlasmaGlobe.png)
