@@ -194,7 +194,7 @@
   (let [a (vectorize a)
         syms (vec (map (fn [_] (gensym "temp")) a))]
     (vlet (vec (interleave syms a))
-          (vdivide a `(Math/sqrt ~(dot syms syms))))))
+          (vdivide syms `(Math/sqrt ~(dot syms syms))))))
 
 (defn vwarp 
   [warp f]
@@ -359,7 +359,7 @@
         v4))))
 
 (defn height-normal [heightmap]
-  (vnormalize (v- [0 0 1] (vgradient (z heightmap)))))
+  (v- [0 0 1] (vgradient (z heightmap))))
 
 (defn light-value [light-direction normal-direction]
   `(max 0.0 
