@@ -28,6 +28,16 @@
          ([]
            (.calc ~'this 0.0))))))
 
+(defn sample 
+  ([code pos]
+    (let [pos (vectorize pos)
+          code (vectorize code)
+          fns (vec (map compile-fn code))
+          [x y z t] pos]
+      (vec 
+        (map #(% (double x) (double y) (double z) (double t))
+             fns)))))
+
 (defn img
   "Creates a BufferedImage from the given vector function."
   ([vector-function]

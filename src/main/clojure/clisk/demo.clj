@@ -7,7 +7,7 @@
   (show (vscale 0.1 vfrac))
   
   ;; Dot products
-  (show (vscale 0.25 (vdot vfrac vfrac)))
+  (show (vscale 0.25 (dot vfrac vfrac)))
   
   ;; Chess board
   (show (vscale 0.25 (checker 0 1)))
@@ -33,4 +33,8 @@
                      [0.5 [1 0.5 0]] 
                      [1   [0 0 0]]] 
                     'y))
+  
+  ;; tileable rock texture
+  (show  (v+ [0.9 0.6 0.3] (dot [0.2 0.2 0] (vgradient (vseamless 1.0 plasma) ))))
+  
   )

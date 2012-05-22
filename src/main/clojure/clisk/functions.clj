@@ -175,13 +175,22 @@
 	      (for [i (range dims)]
 	        `(clojure.core/* ~(component i a) ~(component i b)))))))
 
+(defn vcross3
+  "Returns the cross product of 2 3D vectors"
+  ([a b]
+    (let [[x1 y1 z1] (vectorize a)
+          [x2 y2 z2] (vectorize b)]
+	    [`(- (* ~y1 ~z2) (* ~z1 ~y2))
+	     `(- (* ~z1 ~x2) (* ~x1 ~z1))
+	     `(- (* ~x1 ~y2) (* ~y1 ~x1))])))
+
 (defn length [a]
   (let [a (vectorize a)
         syms (vec (map (fn [_] (gensym "temp")) a))] 
     (vlet (vec (interleave syms a))
        `(Math/sqrt ~(dot syms syms)))))
 
-(defn vnormalise [a]
+(defn vnormalize [a]
   (let [a (vectorize a)
         syms (vec (map (fn [_] (gensym "temp")) a))]
     (vlet (vec (interleave syms a))
@@ -350,8 +359,8 @@
         v4))))
 
 (defn height-normal [heightmap]
-  (v+ [0 0 1] heightmap))
+  (vnormalize (v- [0 0 1] (vgradient (z heightmap)))))
 
 (defn light-value [light-direction normal-direction]
   `(max 0.0 
-        ~(dot (vnormalise light-direction) (vnormalise normal-direction))))
+        ~(dot (vnormalize light-direction) (vnormalize normal-direction))))
