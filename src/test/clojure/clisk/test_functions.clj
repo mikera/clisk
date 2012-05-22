@@ -6,6 +6,12 @@
 (deftest test-vectorize
   (testing "Scalars"
     (is (= [1.0 1.0 1.0 1.0] (vectorize 1)))
+    (is (= [1.0 1.0 1.0 1.0] (vectorize [1 1 1 1])))
+    (is (= ['x 'x 'x 'x] (vectorize x)))))
+
+(deftest test-cross
+  (testing "Scalars"
+    (is (= [0.0 0.0 1.0] (map eval (vcross3 [1.0 0.0 0.0] [0.0 1.0 0.0]))))
     (is (= ['x 'x 'x 'x] (vectorize x)))))
 
 
