@@ -42,6 +42,17 @@
         (ensure-scalar ret))
       0.0)))
 
+(defn components [mask a]
+  "Gets a subset of components from a, where the mask vector is > 0. Other components are zeroed"
+  (let [a (vectorize a)]
+    (vec (map 
+           (fn [m v]
+             (if (> m 0.0)
+               v
+               0.0)) 
+           mask
+           a))))
+
 (defn x [v]
   (component 0 v))
 
@@ -359,7 +370,7 @@
         v4))))
 
 (defn height-normal [heightmap]
-  (v- [0 0 1] (vgradient (z heightmap))))
+  (v- [0 0 1] (components [1 1 0] (vgradient (z heightmap)))))
 
 (defn light-value [light-direction normal-direction]
   `(max 0.0 

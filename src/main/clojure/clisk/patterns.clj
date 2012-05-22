@@ -49,5 +49,5 @@
   ([function background]
     (vif 
       `(- ~(length [x y]) 1.0)
-      (vwarp [x y `(- 1.0 ~(dot [x y] [x y]))] function )
+      (vwarp [x y `(Math/sqrt (- 1.0 ~(dot [x y] [x y])))] function )
       background)))
