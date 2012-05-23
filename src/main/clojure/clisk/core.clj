@@ -33,7 +33,7 @@
     (let [pos (vectorize pos)
           code (vectorize code)
           fns (vec (map compile-fn code))
-          [x y z t] pos]
+          [x y z t] (map #(component % pos) (range 4))]
       (vec 
         (map #(% (double x) (double y) (double z) (double t))
              fns)))))

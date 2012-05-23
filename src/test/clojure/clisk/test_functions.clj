@@ -1,6 +1,7 @@
 (ns clisk.test-functions
   (:use clojure.test)
   (:use clisk.functions)
+  (:use clisk.core)
   (:import clisk.Util))
 
 (deftest test-vectorize
@@ -46,3 +47,9 @@
     (is (== 1.0 (eval (dot [1 0] [1 0])))))
   (testing "length"
     (is (== 1.0 (eval (length [1 0 0]))))))
+
+(deftest test-normal
+  (testing "Normal of flat surface"
+    (is 
+      (= (sample (height-normal [x y 1]) [0.0 0.0])
+         [0.0 0.0 1.0]))))
