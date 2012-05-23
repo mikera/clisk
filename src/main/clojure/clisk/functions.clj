@@ -31,6 +31,8 @@
       (vec (repeat 4 (double x)))
     (fn? x)
       (vectorize (x pos))
+    (nil? x)
+      0.0
     :else
       (vec (repeat 4 x))))
 
@@ -324,20 +326,26 @@
 		               ~(component i (upper vsym))))))))))))
 
 (def scalar-hash-function
-  "Hash function producing a scalar value in the range [0..1) for every unique point in space"
+  "Hash function producing a scalar value in the range [0..1) for every 
+   unique point in space"
   `(phash ~'x ~'y ~'z ~'t))
 
 (def vhash
-  "Hash function producing a vector value in the range [0..1)^4 for every unique point in space"
+  "Hash function producing a vector value 
+   in the range [0..1)^4 for every 
+   unique point in space"
   (vector-offsets scalar-hash-function))
 
 (def vmin
+  "Computes the maximum of two vectors"
   (vectorize-op2 'Math/min))
 
 (def vmax
   (vectorize-op2 'Math/max))
 
 (defn vclamp [v low high]
+  "Clamps a vector between a low and high vector. Typically used to limit 
+   a vector to a range e.g. (vclamp something [0 0 0] [1 1 1])."
   (let [v (vectorize v)
         low (vectorize low)
         high (vectorize high)]
@@ -369,9 +377,16 @@
          `(* (Math/sin (* ~'y TAO)) ~scale)]
         v4))))
 
-(defn height-normal [heightmap]
-  (v- [0 0 1] (components [1 1 0] (vgradient (z heightmap)))))
+(defn height [f]
+  "Calculates the height value (z) of a source function"
+  (z f))
 
+(defn height-normal 
+  "Calculates a vector normal to the surface defined by the z-value of a source vector or a scalar height value. The result is *not* normalised."
+  ([heightmap]
+    (v- [0 0 1] (components [1 1 0] (vgradient (z heightmap))))))
+ 
 (defn light-value [light-direction normal-direction]
+  "Calculates diffuse light intensity given a light direction and a normal vector. This function performs its own normalisation, so neither the light vector nor the normal vector need to be normalised."
   `(max 0.0 
         ~(dot (vnormalize light-direction) (vnormalize normal-direction))))
