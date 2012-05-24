@@ -1,7 +1,7 @@
 # Clisk
 
 
-Clisk is a toolkit for procedural image generation (Clisk = Clojure Image Synthesis Kit)
+Clisk is a DSL library for procedural image generation that can be use from Clojure and Java.
 
 Example image:
 
@@ -11,7 +11,7 @@ Example image:
 
 ![Golden rock](https://raw.github.com/wiki/mikera/clisk/images/GoldRock.png)
 
-For [examples see the Wiki](https://github.com/mikera/clisk/wiki)
+For [more examples see the Wiki](https://github.com/mikera/clisk/wiki)
 
 Features:
 
