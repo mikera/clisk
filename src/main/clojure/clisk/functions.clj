@@ -384,9 +384,17 @@
 (defn height-normal 
   "Calculates a vector normal to the surface defined by the z-value of a source vector or a scalar height value. The result is *not* normalised."
   ([heightmap]
-    (v- [0 0 1] (components [1 1 0] (vgradient (z heightmap))))))
- 
-(defn light-value [light-direction normal-direction]
+    (v- [0 0 1] (components [1 1 0] (vgradient (z heightmap)))))
+  ([scale heightmap]
+    (v- [0 0 1] (components [1 1 0] (vgradient `(* ~scale ~(z heightmap)))))))
+
+
+(defn light-value 
+  ([light-direction normal-direction]
   "Calculates diffuse light intensity given a light direction and a normal vector. This function performs its own normalisation, so neither the light vector nor the normal vector need to be normalised."
-  `(max 0.0 
-        ~(dot (vnormalize light-direction) (vnormalize normal-direction))))
+	  `(max 0.0 
+	        ~(dot (vnormalize light-direction) (vnormalize normal-direction)))))
+
+(defn diffuse-light 
+  ([light-colour light-direction normal-direction]
+    (v* light-colour (light-value light-direction normal-direction))))
