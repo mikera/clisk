@@ -73,6 +73,10 @@
 
 (defn rgb
   "Creates an RGB colour vector"
+  ([^java.awt.Color java-colour]
+    (rgb (/ (.getRed java-colour) 255.0)
+         (/(.getBlue java-colour) 255.0)
+         (/ (.getGreen java-colour) 255.0)))
   ([r g b]
     [r g b 1.0])
   ([r g b a]
@@ -80,6 +84,11 @@
 
 (defn rgba
   "Creates an RGBA colour vector"
+  ([^java.awt.Color java-colour]
+    (rgba (/(.getRed java-colour) 255.0)
+          (/(.getBlue java-colour) 255.0)
+          (/(.getGreen java-colour) 255.0)
+          (/(.getAlpha java-colour) 255.0)))
   ([r g b a]
     [r g b a]))
 
