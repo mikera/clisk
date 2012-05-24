@@ -48,6 +48,11 @@
   (testing "length"
     (is (== 1.0 (eval (length [1 0 0]))))))
 
+(deftest test-colours
+  (testing "rgb"
+    (is (= [0.3 0.4 0.5 1.0] (rgb 0.3 0.4 0.5)))
+    (is (= [0.3 0.4 0.5 0.6] (rgb 0.3 0.4 0.5 0.6)))))
+
 (deftest test-normal
   (testing "Normal of flat surface"
     (is 

@@ -56,16 +56,33 @@
            a))))
 
 (defn x [v]
+  "Extracts the x component of a vector"
   (component 0 v))
 
 (defn y [v]
+  "Extracts the y component of a vector"
   (component 1 v))
 
 (defn z [v]
+  "Extracts the z component of a vector"
   (component 2 v))
 
 (defn t [v]
+  "Extracts the t component of a vector"
   (component 3 v))
+
+(defn rgb
+  "Creates an RGB colour vector"
+  ([r g b]
+    [r g b 1.0])
+  ([r g b a]
+    [r g b a]))
+
+(defn rgba
+  "Creates an RGBA colour vector"
+  ([r g b a]
+    [r g b a]))
+
 
 (defn check-dims [& vectors]
   "Ensure that parameters are equal sized vectors. Returns the size of the vector(s) if successful."
@@ -341,6 +358,7 @@
   (vectorize-op2 'Math/min))
 
 (def vmax
+  "Computes the maximum of two vectors"
   (vectorize-op2 'Math/max))
 
 (defn vclamp [v low high]
@@ -377,9 +395,10 @@
          `(* (Math/sin (* ~'y TAO)) ~scale)]
         v4))))
 
-(defn height [f]
+(defn height 
   "Calculates the height value (z) of a source function"
-  (z f))
+  ([f] 
+    (z f)))
 
 (defn height-normal 
   "Calculates a vector normal to the surface defined by the z-value of a source vector or a scalar height value. The result is *not* normalised."
@@ -390,8 +409,8 @@
 
 
 (defn light-value 
-  ([light-direction normal-direction]
   "Calculates diffuse light intensity given a light direction and a normal vector. This function performs its own normalisation, so neither the light vector nor the normal vector need to be normalised."
+  ([light-direction normal-direction]
 	  `(max 0.0 
 	        ~(dot (vnormalize light-direction) (vnormalize normal-direction)))))
 
