@@ -1,7 +1,7 @@
 (ns clisk.demo
   (:use [clisk core functions patterns]))
 
-(comment
+(defn demo []
   
   ;; coloured red/green ramps using frac
   (show (vscale 0.1 vfrac))
@@ -16,6 +16,7 @@
   (show (vscale 0.1 noise))
   
   ;; offset of checkers using perlin noise
+  ;; 512*512 output
   (show 
     (vscale 0.2 
             (voffset
