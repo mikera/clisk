@@ -335,10 +335,12 @@
 		      (== c 2) 
 		        (let [lo (first (vals 0))
 		              hi (first (vals 1))]
-		            (vlerp  
-		              (vectorize (second (vals 0))) 
-		              (vectorize (second (vals 1)))
-                  `(/ (- ~v ~lo) (- ~hi ~lo))))
+                (if (<= hi lo)
+                  (vectorize (second (vals 0)))
+			            (vlerp  
+			              (vectorize (second (vals 0))) 
+			              (vectorize (second (vals 1)))
+	                  `(/ (- ~v ~lo) ~(- hi lo)))))
 		      :else
 		        (let [mid (quot c 2)
 		              mv (first (vals mid))
@@ -347,7 +349,7 @@
 		              lower (colour-map (subvec vals 0 (inc mid)))]
 		          (vec (for [i (range 4)]
 		          `(let [~vsym ~v] 
-		             (if (< ~vsym ~mv)
+		             (if (<= ~vsym ~mv)
 		               ~(component i (lower vsym))
 		               ~(component i (upper vsym))))))))))))
 
@@ -418,11 +420,14 @@
 
 
 (defn light-value 
-  "Calculates diffuse light intensity given a light direction and a normal vector. This function performs its own normalisation, so neither the light vector nor the normal vector need to be normalised."
+  "Calculates diffuse light intensity given a light direction and a surface normal vector. 
+   This function performs its own normalisation, so neither the light vector nor the normal vector need to be normalised."
   ([light-direction normal-direction]
 	  `(max 0.0 
 	        ~(dot (vnormalize light-direction) (vnormalize normal-direction)))))
 
 (defn diffuse-light 
+  "Calculate the diffuse light on a surface normal vector.
+   This function performs its own normalisation, so neither the light vector nor the normal vector need to be normalised."
   ([light-colour light-direction normal-direction]
     (v* light-colour (light-value light-direction normal-direction))))

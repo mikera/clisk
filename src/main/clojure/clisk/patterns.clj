@@ -43,6 +43,11 @@
   "4 dimensional vector plasma in range [0..1]^4"
   (vector-offsets plasma))
 
+(defn turbulence
+  "Adds random turbulence to a pattern according to a perlin noise offset"
+  ([factor func]
+    (voffset (v* factor vsnoise) func)))
+
 (defn checker 
   "Checker pattern in (x,y) space, with 2*2 grid in [0..1,0..1] range"
   ([a b]
