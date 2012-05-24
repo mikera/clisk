@@ -1,5 +1,6 @@
 (ns clisk.core
   (:import clisk.Util)
+  (:import java.awt.image.BufferedImage)
   (:use clisk.functions))
 
 (set! *warn-on-reflection* true)
@@ -94,4 +95,4 @@
 	                    (scale-image img nw nh)))
                   img))]
 
-      (Util/show img))))
+      (Util/show ^BufferedImage img))))

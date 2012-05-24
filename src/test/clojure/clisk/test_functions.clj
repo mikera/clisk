@@ -53,3 +53,11 @@
     (is 
       (= (sample (height-normal [x y 1]) [0.0 0.0])
          [0.0 0.0 1.0]))))
+
+(deftest test-error
+  (testing "Clisk Error"
+    (is 
+      (= clisk.CliskError
+         (try 
+           (error "Foobar")
+           (catch Throwable t (type t)))))))
