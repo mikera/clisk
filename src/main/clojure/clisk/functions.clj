@@ -9,7 +9,7 @@
 (def pos ['x 'y 'z 't])
 
 (defn error [& vals]
-  (throw (Error. (str (reduce str vals)))))
+  (throw (clisk.CliskError. (str (reduce str vals)))))
 
 (defn ensure-scalar [x]
   "Ensure x is a scalar value. If x is a vector, resturns the first component (index 0)."

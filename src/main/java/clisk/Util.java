@@ -89,12 +89,25 @@ public class Util {
 		return f;
 	}	
 	
-	
+	/**
+	 * Shows an image in a new clisk JFrame
+	 * @param image
+	 * @return
+	 */
 	public static JFrame show(final Image image) {
 		JFrame f=frame(image);
 		f.setVisible(true);
 		f.pack();		
 		return f;
+	}	
+	
+	/**
+	 * Shows an image generated from the given script in a new clisk JFrame
+	 * @param script
+	 * @return
+	 */
+	public static JFrame show(String script) {
+		return show(Generator.generate(script));
 	}	
 	
 	public static final long longHash(long a) {
