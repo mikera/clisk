@@ -35,7 +35,9 @@
                      [1   [0 0 0]]] 
                     'y))
   
-  ;; tileable rock texture
-  (show  (v+ [0.9 0.6 0.3] (dot [0.2 0.2 0] (vgradient (vseamless 1.0 plasma) ))))
+  ;; tileable rock texture with faked lighting
+  (show  (v+ [0.9 0.6 0.3] 
+             (dot [0.2 0.2 0] 
+                  (vgradient (vseamless 1.0 plasma) ))))
   
   )

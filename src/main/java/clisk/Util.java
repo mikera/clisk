@@ -9,12 +9,15 @@ import java.awt.RenderingHints;
 import java.awt.TexturePaint;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.StringReader;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+
+import clojure.lang.Compiler;
 
 public class Util {
 	
@@ -157,5 +160,9 @@ public class Util {
 	public static final double dhash(double x, double y , double z, double t) {
 		long h = hash(x,y,z,t);
 		return (h&Long.MAX_VALUE)*LONG_SCALE_FACTOR;
+	}
+
+	public static Object execute(String script) {
+		return Compiler.load(new StringReader(script));
 	}
 }

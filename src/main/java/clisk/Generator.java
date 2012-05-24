@@ -11,17 +11,13 @@ public class Generator {
 	private static final String NAMESPACE="clisk.demo";
 	private static IFn imageGenerator=(IFn) Compiler.load(new StringReader("(use '"+NAMESPACE+") clisk.core/img"));
 
-	private static Object execute(String script) {
-		return Compiler.load(new StringReader(script));
-	}
-	
 	public static BufferedImage generate(String script) {
 		return generate(script,256,256);
 	}
 	
 	public static BufferedImage generate(String script, int width, int height) {
 		script = "(in-ns '"+NAMESPACE+") "+script;
-		Object result = execute(script);
+		Object result = Util.execute(script);
 		if (result instanceof BufferedImage) {
 			return (BufferedImage)result;
 		} else {
@@ -35,6 +31,6 @@ public class Generator {
 	 */
 	public static void main(String[] args) {
 		Util.show(generate("vplasma"));
-		execute("(shutdown-agents)");
+		Util.execute("(shutdown-agents)");
 	}
 }
