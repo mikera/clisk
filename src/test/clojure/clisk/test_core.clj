@@ -11,4 +11,4 @@
 
 (deftest test-compile
   (testing "Colours"
-    (is (= 1.0 ((compile-fn 1.0) 0)))))
+    (is (= 1.0 (.calc (compile-fn 1.0) 0)))))

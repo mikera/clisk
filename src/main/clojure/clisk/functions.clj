@@ -5,11 +5,15 @@
 
 (def ^:const TAO (* 2.0 Math/PI))
 
+(def ^:const COMPONENT_TO_DOUBLE (/ 1.0 255.0))
+
 ;; standard position vector
 (def pos ['x 'y 'z 't])
 
-(defn error [& vals]
-  (throw (clisk.CliskError. (str (reduce str vals)))))
+(defn error
+  "Throws a clisk error with the provided message(s)"
+  ([& vals]
+    (throw (clisk.CliskError. (str (reduce str vals))))))
 
 (defn ensure-scalar [x]
   "Ensure x is a scalar value. If x is a vector, resturns the first component (index 0)."
@@ -54,6 +58,22 @@
                0.0)) 
            mask
            a))))
+
+(defn ^:static red-from-argb 
+  (^double [^long argb]
+    (* COMPONENT_TO_DOUBLE (bit-and (int 0xFF) (bit-shift-right argb 16)))))
+
+(defn ^:static green-from-argb 
+  (^double [^long argb]
+    (* COMPONENT_TO_DOUBLE (bit-and (int 0xFF) (bit-shift-right argb 8)))))
+
+(defn ^:static blue-from-argb 
+  (^double [^long argb]
+    (* COMPONENT_TO_DOUBLE (bit-and (int 0xFF) argb))))
+
+(defn ^:static alpha-from-argb 
+  (^double [^long argb]
+    (* COMPONENT_TO_DOUBLE (bit-and (int 0xFF) (bit-shift-right argb 24)))))
 
 (defn x [v]
   "Extracts the x component of a vector"
@@ -108,7 +128,7 @@
     (let [v1 (vectorize v1)
          dims (check-dims v1)]
       (vec (for [i (range dims)]
-           (list f (v1 i)))))))
+             (list f (v1 i)))))))
 
 (defn vectorize-op2 [f]
   (fn vectorize-op
@@ -222,6 +242,20 @@
 	    [`(- (* ~y1 ~z2) (* ~z1 ~y2))
 	     `(- (* ~z1 ~x2) (* ~x1 ~z1))
 	     `(- (* ~x1 ~y2) (* ~y1 ~x1))])))
+
+(defn max-component 
+  "Returns the max component of a vector"
+  ([v]
+    (if (vector? v)
+      `(max ~@v)
+      v)))
+
+(defn min-component 
+  "Returns the min component of a vector"
+  ([v]
+    (if (vector? v)
+      `(min ~@v)
+      v)))
 
 (defn length [a]
   (let [a (vectorize a)

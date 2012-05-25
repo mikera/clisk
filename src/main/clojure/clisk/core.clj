@@ -13,21 +13,25 @@
 
 (def ^:dynamic *anti-alias* 2)
  
-(defn ^clisk.Function compile-fn [code]
+(defn ^clisk.IFunction compile-fn [code]
   "Compiles clisk function code into an object that extends clisk.Function and clojure.lang.IFn"
   (eval
-    `(proxy [clisk.Function] []
+    `(reify clisk.IFunction
        (calc 
-         ([~'x ~'y ~'z ~'t]
+         [~'this ~'x ~'y ~'z ~'t]
            (double ~code))
-         ([~'x ~'y ~'z]
+       (calc
+         [~'this ~'x ~'y ~'z]
            (.calc ~'this ~'x ~'y ~'z 0.0))
-         ([~'x ~'y]
+       (calc
+         [~'this ~'x ~'y]
            (.calc ~'this ~'x ~'y 0.0))
-         ([~'x]
+       (calc
+         [~'this ~'x]
            (.calc ~'this ~'x 0.0))
-         ([]
-           (.calc ~'this 0.0))))))
+       (calc
+         [~'this]
+           (.calc ~'this 0.0)))))
 
 (defn sample 
   ([code pos]
@@ -36,7 +40,7 @@
           fns (vec (map compile-fn code))
           [x y z t] (map #(component % pos) (range 4))]
       (vec 
-        (map #(% (double x) (double y) (double z) (double t))
+        (map #(.calc ^clisk.IFunction % (double x) (double y) (double z) (double t))
              fns)))))
 
 (defn img
