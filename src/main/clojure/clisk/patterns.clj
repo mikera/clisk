@@ -1,5 +1,6 @@
 (ns clisk.patterns
   (:use clisk.functions)
+  (:import java.awt.image.BufferedImage)
   (:import clisk.Perlin))
 
 
@@ -47,6 +48,24 @@
   "Adds random turbulence to a pattern according to a perlin noise offset"
   ([factor func]
     (voffset (v* factor vsnoise) func)))
+
+(defmethod clojure.core/print-dup java.awt.image.BufferedImage
+  [^BufferedImage bi writer]
+  (print-dup "[BufferedImage]" writer))
+
+(defn texture-map 
+  ([^BufferedImage texture]
+    (texture-map texture 0 0 (.getWidth texture) (.getHeight texture)))
+  ([^BufferedImage texture x y w h]
+    (let [tx (atom texture)]
+      (vec (for [i (range 4)]
+             `(let [~'tx (long (+ ~x (* ~'x ~w)))
+                    ~'ty (long (+ ~y (* ~'y ~h)))
+                    ~'argb (.getRGB ^java.awt.image.BufferedImage ~texture ~'tx ~'ty)]
+                ~([`(red-from-argb ~'argb)
+                   `(green-from-argb ~'argb)
+                   `(blue-from-argb ~'argb)
+                   `(alpha-from-argb ~'argb)] i)))))))
 
 (defn checker 
   "Checker pattern in (x,y) space, with 2*2 grid in [0..1,0..1] range"

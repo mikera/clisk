@@ -2,7 +2,7 @@ package clisk;
 
 import clojure.lang.ISeq;
 
-public class Function implements clojure.lang.IFn {
+public class Function implements IFunction, clojure.lang.IFn {
 	public double calc() {
 		return calc(0.0);
 	}
