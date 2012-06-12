@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>org.clojure</groupId>
 			<artifactId>clojure</artifactId>
-			<version>1.4.0-beta6</version>
+			<version>1.4.0</version>
 		</dependency>
 	</dependencies>
 </project>
