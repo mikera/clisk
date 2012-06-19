@@ -2,6 +2,7 @@
   (:use clojure.test)
   (:use clisk.functions)
   (:use clisk.core)
+  (:use clisk.util)
   (:import clisk.Util))
 
 (deftest test-vectorize
