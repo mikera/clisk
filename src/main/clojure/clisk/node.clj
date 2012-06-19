@@ -11,8 +11,10 @@
 (defn constant-node [v]
   (cond
     (vector? v)
-      (node {:type :scalar
-             :codes v})
+      (node {:type :vector
+             :codes (vec (map double v))
+             :constant true})
     :else 
       (node {:type :scalar 
-             :code v})))
+             :code (double v)
+             :constant true})))
