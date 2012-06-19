@@ -1,5 +1,6 @@
 (ns clisk.functions
-  (:import clisk.Util))
+  (:import clisk.Util)
+  (:use clisk.node))
 
 (set! *unchecked-math* true)
 
