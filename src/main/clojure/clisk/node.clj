@@ -1,4 +1,5 @@
-(ns clisk.node)
+(ns clisk.node
+  (:use clisk.util))
 
 (defrecord Node [])
 
@@ -18,3 +19,8 @@
       (node {:type :scalar 
              :code (double v)
              :constant true})))
+
+(defn validate [node]
+  (cond
+    (not (xor (:code node) (:codes node))) (error "AST node must have :code or :codes")
+    :else node))

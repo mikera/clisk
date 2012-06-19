@@ -1,6 +1,7 @@
 (ns clisk.functions
   (:import clisk.Util)
-  (:use clisk.node))
+  (:use clisk.node)
+  (:use clisk.util))
 
 (set! *unchecked-math* true)
 
@@ -11,10 +12,7 @@
 ;; standard position vector
 (def pos ['x 'y 'z 't])
 
-(defn error
-  "Throws a clisk error with the provided message(s)"
-  ([& vals]
-    (throw (clisk.CliskError. (str (reduce str vals))))))
+
 
 (defn ensure-scalar [x]
   "Ensure x is a scalar value. If x is a vector, resturns the first component (index 0)."
