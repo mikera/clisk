@@ -39,14 +39,6 @@
     :else
       (vec (repeat 4 x))))
 
-(defn component [i a]
-  "Gets the scalar component of the vector a at index i. "
-  (let [a (vectorize a)]
-    (if (< i (count a))
-      (let [ret (a i)]
-        (ensure-scalar ret))
-      0.0)))
-
 (defn components [mask a]
   "Gets a subset of components from a, where the mask vector is > 0. Other components are zeroed"
   (let [a (vectorize a)]

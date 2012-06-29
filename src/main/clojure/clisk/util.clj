@@ -1,9 +1,9 @@
 (ns clisk.util)
 
-(defn error
+(defmacro error
   "Throws a clisk error with the provided message(s)"
   ([& vals]
-    (throw (clisk.CliskError. (str (reduce str vals))))))
+    `(throw (clisk.CliskError. (str ~@vals)))))
 
 (defmacro xor 
   "Returns logical xor of values"

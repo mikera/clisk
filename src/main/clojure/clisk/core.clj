@@ -1,6 +1,7 @@
 (ns clisk.core
   (:import clisk.Util)
   (:import java.awt.image.BufferedImage)
+  (:use clisk.node)
   (:use clisk.functions))
 
 (set! *warn-on-reflection* true)
@@ -13,28 +14,30 @@
 
 (def ^:dynamic *anti-alias* 2)
  
-(defn ^clisk.IFunction compile-fn [code]
-  "Compiles clisk function code into an object that extends clisk.Function and clojure.lang.IFn"
-  (eval
-    `(reify clisk.IFunction
-       (calc 
-         [~'this ~'x ~'y ~'z ~'t]
-           (double ~code))
-       (calc
-         [~'this ~'x ~'y ~'z]
-           (.calc ~'this ~'x ~'y ~'z 0.0))
-       (calc
-         [~'this ~'x ~'y]
-           (.calc ~'this ~'x ~'y 0.0))
-       (calc
-         [~'this ~'x]
-           (.calc ~'this ~'x 0.0))
-       (calc
-         [~'this]
-           (.calc ~'this 0.0)))))
+(defn ^clisk.IFunction compile-fn [node]
+  "Compiles clisk scalar node into an object that extends clisk.Function and clojure.lang.IFn"
+  (let [code (:code (clisk.node/node node))]
+    (if (nil? code) (error "Nil code in node: " node))
+	  (eval
+	    `(reify clisk.IFunction
+	       (calc 
+	         [~'this ~'x ~'y ~'z ~'t]
+	           (double ~code))
+	       (calc
+	         [~'this ~'x ~'y ~'z]
+	           (.calc ~'this ~'x ~'y ~'z 0.0))
+	       (calc
+	         [~'this ~'x ~'y]
+	           (.calc ~'this ~'x ~'y 0.0))
+	       (calc
+	         [~'this ~'x]
+	           (.calc ~'this ~'x 0.0))
+	       (calc
+	         [~'this]
+	           (.calc ~'this 0.0))))))
 
 (defn sample 
-  ([code pos]
+  ([node pos]
     (let [pos (vectorize pos)
           code (vectorize code)
           fns (vec (map compile-fn code))
@@ -45,16 +48,16 @@
 
 (defn img
   "Creates a BufferedImage from the given vector function."
-  ([vector-function]
-    (img vector-function DEFAULT-IMAGE-WIDTH DEFAULT-IMAGE-HEIGHT))
-  ([vector-function w h]
-    (img vector-function w h 1.0 (/ (double h) (double w))))
-  ([vector-function w h dx dy]
-    (let [vector-function (vectorize vector-function)
+  ([node]
+    (img node DEFAULT-IMAGE-WIDTH DEFAULT-IMAGE-HEIGHT))
+  ([node w h]
+    (img node w h 1.0 (/ (double h) (double w))))
+  ([node w h dx dy]
+    (let [node (clisk.node/node node)
           image (Util/newImage (int w) (int h))
-          fr (compile-fn (component 0 vector-function))
-          fg (compile-fn (component 1 vector-function))
-          fb (compile-fn (component 2 vector-function))
+          fr (compile-fn (:code (component 0 vector-function)))
+          fg (compile-fn (:code (component 1 vector-function)))
+          fb (compile-fn (:code (component 2 vector-function)))
           w (int w)
           h (int h)
           dx (double dx)
