@@ -1,8 +1,7 @@
 (ns clisk.core
   (:import clisk.Util)
   (:import java.awt.image.BufferedImage)
-  (:use clisk.node)
-  (:use clisk.functions))
+  (:use [clisk node functions util]))
 
 (set! *warn-on-reflection* true)
 

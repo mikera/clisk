@@ -1,5 +1,5 @@
 (ns clisk.demo
-  (:use [clisk core functions patterns colours]))
+  (:use [clisk core functions patterns colours util]))
 
 (defn demo []
   
