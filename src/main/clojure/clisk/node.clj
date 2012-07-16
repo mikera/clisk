@@ -10,20 +10,41 @@
 ;; standard position vector
 (def pos ['x 'y 'z 't])
 
-(defn value-node [num]
-  (Node. nil
-         {:type :scalar 
-          :code (double num)
-          :constant true}))
+(defn value-node [v]
+  (if 
+    (sequential? v)
+    (Node. nil
+         {:type :vector 
+          :nodes (vec (map node v))
+          :codes (vec (map double v))
+          :constant true})
+	  (Node. nil
+	         {:type :scalar 
+	          :code (double v)
+	          :constant true})))
+
+
 
 (defn new-node 
   "Create a new AST node with the given properties"
   ([props]
 	  (let [n (Node. nil props)]
 		  (if (and (:constant props) (not (number? (:code props))))
-		    (value-node (evaluate n))
+        (if (vector-node? n)
+          (value-node (map evaluate (:nodes n)))
+          (value-node (evaluate n)))
 		    n))))
 
+
+(defn object-node 
+  "Creates a node with an embedded Java object"
+  ([v]
+	  (let [sym (gensym "obj")]
+	    (new-node 
+	          {:type :scalar
+	           :code sym
+	           :objects {sym v}
+	           :constant true}))))
 
 (defn compile-scalar-node [n]
   "Compile a scalar node to a clisk.IFunction"
@@ -32,6 +53,7 @@
         syms (keys obj-map)
         objs (vals obj-map)
         code (:code n)]
+    (if-not (scalar-node? n) (error "Trying to compile non-scalar node"))
     (apply
       (eval
 		   `(fn [~@syms]
@@ -55,10 +77,14 @@
 	      objs)))
 
 (defn evaluate 
-  "Evaluates a node at the zero position"
-  ([n]
+  "Evaluates a scalar node at a given position (defaults to zero)."
+  ([n] (evaluate n 0.0 0.0 0.0 0.0))
+  ([n x] (evaluate n x 0.0 0.0 0.0))
+  ([n x y] (evaluate n x y 0.0 0.0))
+  ([n x y z] (evaluate n x y z 0.0))
+  ([n x y z t]
     (let [n (node n)]
-      (.calc (compile-scalar-node n)))))
+      (.calc (compile-scalar-node n) (double x) (double y) (double z) (double t)))))
 
 (defn node? [x] 
   (instance? Node x))
@@ -72,29 +98,24 @@
 (defn scalar-node? [x] 
   (and (node? x) (= :scalar (:type x))))
 
-(defn vec-node [xs]
-  (let [nodes (map node xs)]
-    (cond
-      (not (every? #(= :scalar (:type %)) nodes))
-        (error "vec-node requires scalar values as input")
-      :else
-        (new-node 
-          {:type :vector
-           :nodes (vec nodes)
-           :codes (vec (map :code nodes))
-           :objects (apply merge (map :objects nodes))
-           :constant (every? constant-node? nodes)}))))
+(defn vec-node 
+  "Creates a node from a sequence of scalar nodes"
+  ([xs]
+	  (let [nodes (map node xs)]
+	    (cond
+	      (not (every? #(= :scalar (:type %)) nodes))
+	        (error "vec-node requires scalar values as input")
+	      :else
+	        (new-node 
+	          {:type :vector
+	           :nodes (vec nodes)
+	           :codes (vec (map :code nodes))
+	           :objects (apply merge (map :objects nodes))
+	           :constant (every? constant-node? nodes)})))))
 
 (defn vector-node [& xs] 
   (vec-node xs))
 
-(defn object-node [v]
-  (let [sym (gensym "obj")]
-    (new-node 
-          {:type :scalar
-           :code sym
-           :objects {sym v}
-           :constant true})))
 
 (defn transform-node
   "Creates a node containing code that trasnforms the other scalar vectors into a new code form"
