@@ -19,14 +19,14 @@
 	      x
 	    :else x)))
 
-(defn vectorize [x]
-  "Converts a value into a vector function form. If x is already a vector, does nothing. If x is a function, apply it to the current position."
-  (let [x (node x)] 
+(defn vectorize [a]
+  "Converts a value into a vector function form. If a is already a vector, does nothing. If a is a function, apply it to the current position."
+  (let [a (node a)] 
     (cond
-	    (vector-node? x)
-	      x
-	    (scalar-node? x)
-	      (vector-node x)
+	    (vector-node? a)
+	      a
+	    (scalar-node? a)
+	      (vector-node a)
 	    :else
 	      (error "Should not be possible!"))))
 
@@ -82,7 +82,7 @@
   "Creates an RGB colour vector"
   ([^java.awt.Color java-colour]
     (rgb (/ (.getRed java-colour) 255.0)
-         (/(.getBlue java-colour) 255.0)
+         (/ (.getBlue java-colour) 255.0)
          (/ (.getGreen java-colour) 255.0)))
   ([r g b]
     [r g b 1.0])
@@ -109,15 +109,19 @@
         dims
         (error "Unequal vector sizes: " (map count vectors))))))
 
+;; todo handle  zeros and ones efficiently
 (defn vectorize-op 
+  "Make an arbitrary function work on clisk vectors"
   ([f]
 	  (fn [& vs]
-	    (let [vs (map vectorize vs)
-	         dims (apply max (map check-dims vs))]
-	      (apply
-           vector-node 
-           (for [i (range dims)]
-	           (cons f (map #(:code (component i %)) vs))))))))
+	    (let [vs (map node vs)
+	          dims (apply max (map dimensions vs))]
+        (if 
+          (some vector-node? vs)
+		      (apply vector-node 
+	          (for [i (range dims)]
+		          (apply function-node f (map #(component i %) vs))))
+          (apply function-node f vs))))))
 
 (defn vlet 
   "let one or more scalar values within a vector function" 
@@ -140,7 +144,8 @@
         adims (check-dims a)
         bdims (check-dims b)
         dims (max adims bdims)]
-    (vec (for [i (range dims)]
+    (vec-node
+      (for [i (range dims)]
            (let [av (component i a)
                  bv (component i b)
                  cv (component 0 c)]
@@ -149,11 +154,8 @@
 (defn apply-to-components
   "Applies a function f to all components of a vector"
   ([f v]
-    (let [v (vectorize v)
-          code (cons f (:codes v))]
-      (if (constant-node? v)
-        (constant-node (eval code))
-        (code-node code)))))
+    (let [v (vectorize v)]
+      (apply function-node f (:nodes v)))))
 
 (defn ^:static frac
   "Retuns the fractional part of a number. Equivalent to Math/floor."
@@ -328,7 +330,7 @@
 	  (let [a (vectorize a)
 	        b (vectorize b)
 	        v (component 0 v)
-	        dims (max (count a) (count b))
+	        dims (max (dimensions a) (dimensions b))
 	        vsym (gensym "val")]
 	    (vec (for [i (range dims)]
 			  `(let [~vsym ~v]
