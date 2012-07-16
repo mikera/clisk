@@ -2,6 +2,7 @@
   (:import clisk.Util)
   (:import java.awt.image.BufferedImage)
   (:use clisk.node)
+  (:use clisk.util)
   (:use clisk.functions))
 
 (set! *warn-on-reflection* true)
@@ -39,7 +40,7 @@
 (defn sample 
   ([node pos]
     (let [pos (vectorize pos)
-          code (vectorize code)
+          code (vectorize node)
           fns (vec (map compile-fn code))
           [x y z t] (map #(component % pos) (range 4))]
       (vec 
