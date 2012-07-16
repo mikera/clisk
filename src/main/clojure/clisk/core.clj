@@ -15,31 +15,13 @@
  
 (defn ^clisk.IFunction compile-fn [node]
   "Compiles clisk scalar node into an object that extends clisk.Function and clojure.lang.IFn"
-  (let [code (:code (clisk.node/node node))]
-    (if (nil? code) (error "Nil code in node: " node))
-	  (eval
-	    `(reify clisk.IFunction
-	       (calc 
-	         [~'this ~'x ~'y ~'z ~'t]
-	           (double ~code))
-	       (calc
-	         [~'this ~'x ~'y ~'z]
-	           (.calc ~'this ~'x ~'y ~'z 0.0))
-	       (calc
-	         [~'this ~'x ~'y]
-	           (.calc ~'this ~'x ~'y 0.0))
-	       (calc
-	         [~'this ~'x]
-	           (.calc ~'this ~'x 0.0))
-	       (calc
-	         [~'this]
-	           (.calc ~'this 0.0))))))
+  (clisk.node/compile-scalar-node node))
 
 (defn sample 
   ([node pos]
     (let [pos (vectorize pos)
-          code (vectorize code)
-          fns (vec (map compile-fn code))
+          node (vectorize node)
+          fns (vec (map compile-fn node))
           [x y z t] (map #(component % pos) (range 4))]
       (vec 
         (map #(.calc ^clisk.IFunction % (double x) (double y) (double z) (double t))
@@ -54,9 +36,9 @@
   ([node w h dx dy]
     (let [node (clisk.node/node node)
           image (Util/newImage (int w) (int h))
-          fr (compile-fn (:code (component 0 vector-function)))
-          fg (compile-fn (:code (component 1 vector-function)))
-          fb (compile-fn (:code (component 2 vector-function)))
+          fr (compile-fn (component 0 node))
+          fg (compile-fn (component 1 node))
+          fb (compile-fn (component 2 node))
           w (int w)
           h (int h)
           dx (double dx)
