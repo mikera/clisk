@@ -9,46 +9,38 @@
 
 (def ^:const COMPONENT_TO_DOUBLE (/ 1.0 255.0))
 
-;; standard position vector
-(def pos ['x 'y 'z 't])
-
-
-
 (defn ensure-scalar [x]
   "Ensure x is a scalar value. If x is a vector, resturns the first component (index 0)."
-  (cond 
-    (vector? x)
-      (ensure-scalar (first x))
-    (fn? x)
-      (x pos)
-    (number? x)
-      (double x)
-    :else x))
+  (let [x (node x)]
+	  (cond 
+	    (vector-node? x)
+	      (component 0 x)
+	    (scalar-node? x)
+	      x
+	    :else x)))
 
 (defn vectorize [x]
-  "Converts a value into a vector function form. If x is already a factor, does nothing. If x is a function, apply it to the current position."
-  (cond
-    (vector? x)
-      (vec (map ensure-scalar x))
-    (number? x)
-      (vec (repeat 4 (double x)))
-    (fn? x)
-      (vectorize (x pos))
-    (nil? x)
-      0.0
-    :else
-      (vec (repeat 4 x))))
+  "Converts a value into a vector function form. If x is already a vector, does nothing. If x is a function, apply it to the current position."
+  (let [x (node x)] 
+    (cond
+	    (vector-node? x)
+	      x
+	    (scalar-node? x)
+	      (vector-node x)
+	    :else
+	      (error "Should not be possible!"))))
 
 (defn components [mask a]
   "Gets a subset of components from a, where the mask vector is > 0. Other components are zeroed"
   (let [a (vectorize a)]
-    (vec (map 
+    (apply vector-node 
+         (map 
            (fn [m v]
              (if (> m 0.0)
                v
                0.0)) 
            mask
-           a))))
+           (:nodes a)))))
 
 (defn ^:static red-from-argb 
   (^double [^long argb]
@@ -66,21 +58,25 @@
   (^double [^long argb]
     (* COMPONENT_TO_DOUBLE (bit-and (int 0xFF) (bit-shift-right argb 24)))))
 
-(defn x [v]
-  "Extracts the x component of a vector"
-  (component 0 v))
+(defn x 
+  ([v]
+	  "Extracts the x component of a vector"
+	  (component 0 v)))
 
-(defn y [v]
-  "Extracts the y component of a vector"
-  (component 1 v))
+(defn y 
+  ([v]
+	  "Extracts the y component of a vector"
+	  (component 1 v)))
 
-(defn z [v]
-  "Extracts the z component of a vector"
-  (component 2 v))
+(defn z 
+  ([v]
+    "Extracts the z component of a vector"
+    (component 2 v)))
 
-(defn t [v]
-  "Extracts the t component of a vector"
-  (component 3 v))
+(defn t 
+  ([v]
+    "Extracts the t component of a vector"
+    (component 3 v)))
 
 (defn rgb
   "Creates an RGB colour vector"
@@ -106,52 +102,36 @@
 
 (defn check-dims [& vectors]
   "Ensure that parameters are equal sized vectors. Returns the size of the vector(s) if successful."
-  (if (every? vector? vectors)
+  (let [vectors (map node vectors)]
     (let [[v & vs] vectors
-          dims (count v)]
-      (if (every? #(= dims (count %)) vs)
+          dims (dimensions v)]
+      (if (every? #(= dims (dimensions %)) vs)
         dims
-        (error "Unequal vector sizes: " (map count vectors))))
-    (error "Not all vectors: " vectors)))
+        (error "Unequal vector sizes: " (map count vectors))))))
 
-(defn vectorize-op1 [f]
-  (fn [v1]
-    (let [v1 (vectorize v1)
-         dims (check-dims v1)]
-      (vec (for [i (range dims)]
-             (list f (v1 i)))))))
-
-(defn vectorize-op2 [f]
-  (fn vectorize-op
-    ([v1 v2]
-	    (let [v1 (vectorize v1)
-	          v2 (vectorize v2)
-	          dims1 (check-dims v1)
-	          dims2 (check-dims v2)
-	          dims (max dims1 dims2)]
-	      (vec 
-	        (for [i (range dims)]
-	          (cond 
-	            (>= i dims1) (list f 0.0 (v2 i))
-	            (>= i dims2) (list f (v1 i) 0.0)
-	            :else (list f (v1 i) (v2 i)))))))
-    ([v1 v2 & more]
-      (if-let [more-more (next more)]
-        (vectorize-op (vectorize-op v1 v2) (first more) more-more)
-        (vectorize-op (vectorize-op v1 v2) (first more))))))
+(defn vectorize-op 
+  ([f]
+	  (fn [& vs]
+	    (let [vs (map vectorize vs)
+	         dims (apply max (map check-dims vs))]
+	      (apply
+           vector-node 
+           (for [i (range dims)]
+	           (cons f (map #(:code (component i %)) vs))))))))
 
 (defn vlet 
   "let one or more scalar values within a vector function" 
   ([bindings form]
-	  (if (seq bindings)
-	    (let [transformer 
-               (fn [x]
-	               `(let [~@bindings] 
-	                  ~x))]
-	      (if (vector? form)
-          (vec (map transformer form))
-          (transformer form)))
-	    form)))
+    (let [form (node form)]
+		  (if (seq bindings)
+		    (let [transformer 
+	               (fn [x]
+		               `(let [~@bindings] 
+		                  ~x))]
+		      (if (vector-node? form)
+	          (vec-node (map transformer (:codes form)))
+	          (node (transformer (:code form)))))
+      form))))
 
 (defn vif [c a b]
   "Conditional vector function. First scalar argument is used as conditional value, > 0.0  is true."
@@ -165,6 +145,15 @@
                  bv (component i b)
                  cv (component 0 c)]
              `(if (> 0.0 ~cv) ~av ~bv))))))
+
+(defn apply-to-components
+  "Applies a function f to all components of a vector"
+  ([f v]
+    (let [v (vectorize v)
+          code (cons f (:codes v))]
+      (if (constant-node? v)
+        (constant-node (eval code))
+        (code-node code)))))
 
 (defn ^:static frac
   "Retuns the fractional part of a number. Equivalent to Math/floor."
@@ -183,35 +172,35 @@
     (Util/dhash x y z t)))
 
 (def vsin
-  (vectorize-op1 'Math/sin))
+  (vectorize-op 'Math/sin))
 
 (def vabs
-  (vectorize-op1 'Math/abs))
+  (vectorize-op 'Math/abs))
 
 (def vround
-  (vectorize-op1 'Math/round))
+  (vectorize-op 'Math/round))
 
 (def vfloor
-  (vectorize-op1 'Math/floor))
+  (vectorize-op 'Math/floor))
 
 (def vfrac
-  (vectorize-op1 'clisk.functions/frac))
+  (vectorize-op 'clisk.functions/frac))
 
 (def v+ 
   "Adds two or more vectors"
-  (vectorize-op2 'clojure.core/+))
+  (vectorize-op 'clojure.core/+))
 
 (def v* 
   "Multiplies two or more vectors"
-  (vectorize-op2 'clojure.core/*))
+  (vectorize-op 'clojure.core/*))
 
 (def v- 
   "Subtracts two or more vectors"
-  (vectorize-op2 'clojure.core/-))
+  (vectorize-op 'clojure.core/-))
 
 (def vdivide 
   "Divides two or more vectors"
-  (vectorize-op2 'clojure.core//))
+  (vectorize-op 'clojure.core//))
 
 (defn dot 
 	"Returns the dot product of two vectors"
@@ -221,38 +210,39 @@
 	        adims (check-dims a)
 	        bdims (check-dims b)
 	        dims (min adims bdims)]
-	    (cons 'clojure.core/+
-	      (for [i (range dims)]
-	        `(clojure.core/* ~(component i a) ~(component i b)))))))
+     (node
+		    (cons 'clojure.core/+
+		      (for [i (range dims)]
+		        `(clojure.core/* ~(:code (component i a)) ~(:code (component i b)))))))))
 
 (defn vcross3
   "Returns the cross product of 2 3D vectors"
   ([a b]
-    (let [[x1 y1 z1] (vectorize a)
-          [x2 y2 z2] (vectorize b)]
-	    [`(- (* ~y1 ~z2) (* ~z1 ~y2))
-	     `(- (* ~z1 ~x2) (* ~x1 ~z1))
-	     `(- (* ~x1 ~y2) (* ~y1 ~x1))])))
+    (let [[x1 y1 z1] (:codes (vectorize a))
+          [x2 y2 z2] (:codes (vectorize b))]
+      (vec-node
+        [`(- (* ~y1 ~z2) (* ~z1 ~y2))
+         `(- (* ~z1 ~x2) (* ~x1 ~z1))
+         `(- (* ~x1 ~y2) (* ~y1 ~x1))]))))
 
 (defn max-component 
   "Returns the max component of a vector"
   ([v]
-    (if (vector? v)
-      `(max ~@v)
-      v)))
+    (let [v (vectorize v)]
+      (node `(max ~@(:codes v))))))
 
 (defn min-component 
   "Returns the min component of a vector"
   ([v]
-    (if (vector? v)
-      `(min ~@v)
-      v)))
+    (let [v (vectorize v)]
+      (node `(min ~@(:codes v))))))
 
 (defn length [a]
   (let [a (vectorize a)
         syms (vec (map (fn [_] (gensym "temp")) a))] 
-    (vlet (vec (interleave syms a))
-       `(Math/sqrt ~(dot syms syms)))))
+    (vlet 
+       (vec (interleave syms (:codes a)))
+       `(Math/sqrt (+ ~@(map #(do `(* ~% ~%)) syms))))))
 
 (defn vnormalize [a]
   (let [a (vectorize a)
@@ -391,11 +381,11 @@
 
 (def vmin
   "Computes the maximum of two vectors"
-  (vectorize-op2 'Math/min))
+  (vectorize-op 'Math/min))
 
 (def vmax
   "Computes the maximum of two vectors"
-  (vectorize-op2 'Math/max))
+  (vectorize-op 'Math/max))
 
 (defn vclamp [v low high]
   "Clamps a vector between a low and high vector. Typically used to limit 
