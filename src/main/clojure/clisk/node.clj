@@ -7,6 +7,20 @@
 (declare constant-node)
 (declare evaluate)
 
+;; predicates
+
+(defn node? [x] 
+  (instance? Node x))
+
+(defn constant-node? [x] 
+  (and (node? x) (:constant x)))
+
+(defn vector-node? [x] 
+  (and (node? x) (= :vector (:type x))))
+
+(defn scalar-node? [x] 
+  (and (node? x) (= :scalar (:type x))))
+
 ;; standard position vector
 (def pos ['x 'y 'z 't])
 
@@ -86,17 +100,6 @@
     (let [n (node n)]
       (.calc (compile-scalar-node n) (double x) (double y) (double z) (double t)))))
 
-(defn node? [x] 
-  (instance? Node x))
-
-(defn constant-node? [x] 
-  (and (node? x) (:constant x)))
-
-(defn vector-node? [x] 
-  (and (node? x) (= :vector (:type x))))
-
-(defn scalar-node? [x] 
-  (and (node? x) (= :scalar (:type x))))
 
 (defn vec-node 
   "Creates a node from a sequence of scalar nodes"
