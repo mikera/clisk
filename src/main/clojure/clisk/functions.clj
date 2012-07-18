@@ -136,9 +136,9 @@
           symbols (map first (partition 2 bindings))]
       (if-not (every? scalar-node? binding-nodes) (error "All binding values must be scalar"))
 		  (if (seq bindings)
-		    (transform-components
+		    (apply transform-components
           (fn [form & binds]
-            `(let [~@(interleave symbols (map :code binding-nodes))]
+            `(let [~@(interleave symbols (map :code binds))]
                ~(:code form)))
           (cons form binding-nodes))
       form))))
@@ -264,7 +264,8 @@
 
 (defn length [a]
   "Calculates the length of a vector"
-  (let [comps (:nodes (vectorize a))] 
+  (let [comps (:nodes (vectorize a))
+        syms (for [c comps] (gensym "length-comp"))] 
     (vlet 
        (vec (interleave syms comps))
        `(Math/sqrt (+ ~@(map #(do `(* ~% ~%)) syms))))))
