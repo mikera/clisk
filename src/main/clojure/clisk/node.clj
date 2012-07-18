@@ -60,7 +60,7 @@
 	           :objects {sym v}
 	           :constant true}))))
 
-(defn compile-scalar-node [n]
+(defn compile-scalar-node ^clisk.IFunction [n]
   "Compile a scalar node to a clisk.IFunction"
   (let [n (node n)
         obj-map (:objects n)
@@ -123,10 +123,10 @@
 (defn transform-node
   "Creates a scalar node containing code based on transforming the other nodes into a new code form"
   ([f & nodes]
-    (let [nodes (map node nodes)]
- 	    (new-node
+    (let [nodes (map node nodes)
+          new-node (node (apply f nodes))]
+ 	    (merge new-node
 	      {:type :scalar
-	       :code (apply f nodes)
 	       :objects (apply merge (map :objects nodes))
 	       :constant (every? constant-node? nodes)}))))
 

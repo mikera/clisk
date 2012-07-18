@@ -146,15 +146,22 @@
   "Conditional vector function. First scalar argument is used as conditional value, > 0.0  is true."
   (let [a (vectorize a)
         b (vectorize b)
-        adims (check-dims a)
-        bdims (check-dims b)
+        c (component 0 c)
+        adims (dimensions a)
+        bdims (dimensions b)
         dims (max adims bdims)]
     (vec-node
       (for [i (range dims)]
-           (let [av (component i a)
-                 bv (component i b)
-                 cv (component 0 c)]
-             `(if (> 0.0 ~cv) ~av ~bv))))))
+           (transform-node
+             (fn [c a b]
+               (if (:constant c)
+                 ;; constant case - use appropriate branch directly
+                 (if (> 0.0 (evaluate c)) a b) 
+                 ;; variable case
+                 `(if (> 0.0 ~(:code c)) ~(:code a) ~(:code b)) ))
+             (component 0 c)
+             (component i a)
+             (component i b))))))
 
 (defn apply-to-components
   "Applies a function f to all components of a vector"
