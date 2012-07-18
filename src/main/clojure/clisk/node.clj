@@ -156,10 +156,13 @@
       scalars)))
 
 (defn code-node [form]
-  (new-node {:type :scalar 
-             :code form
-             :objects (apply merge (map :objects (filter node? (flatten form))))
-             :constant false}))
+  "Creates a node from a given code form (may be a vector)"
+  (if (vector? form)
+    (vec-node (map code-node form))
+	  (new-node {:type :scalar 
+	             :code form
+	             :objects (apply merge (map :objects (filter node? (flatten form))))
+	             :constant false})))
 
 (defn node [a]
   "Creates a node from arbitrary input. Idempotent, can be used to force conversion to node."
