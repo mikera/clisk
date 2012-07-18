@@ -1,5 +1,6 @@
 (ns clisk.test-functions
   (:use clojure.test)
+  (:use clisk.node)
   (:use clisk.functions)
   (:use clisk.core)
   (:use clisk.util)
@@ -7,8 +8,8 @@
 
 (deftest test-vectorize
   (testing "Scalars"
-    (is (= [1.0 1.0 1.0 1.0] (vectorize 1)))
-    (is (= [1.0 1.0 1.0 1.0] (vectorize [1 1 1 1])))
+    (is (= 1.0 (evaluate 1)))
+    (is (= [1.0 1.0 1.0 1.0] (evaluate [1 1 1 1])))
     (is (= ['x 'x 'x 'x] (vectorize x)))))
 
 (deftest test-cross

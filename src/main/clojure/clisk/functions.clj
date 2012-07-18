@@ -262,40 +262,43 @@
           `(min ~@(:codes v)))
         v))))
 
-(defn length [a]
+(defn length 
   "Calculates the length of a vector"
-  (let [comps (:nodes (vectorize a))
-        syms (for [c comps] (gensym "length-comp"))] 
-    (vlet 
-       (vec (interleave syms comps))
-       `(Math/sqrt (+ ~@(map #(do `(* ~% ~%)) syms))))))
+  ([a]
+	  (let [comps (:nodes (vectorize a))
+	        syms (for [c comps] (gensym "length-comp"))] 
+	    (vlet (vec (interleave syms comps))
+           `(Math/sqrt (+ ~@(map #(do `(* ~% ~%)) syms)))))))
 
-(defn vnormalize [a]
-  (let [a (vectorize a)
-        syms (vec (map (fn [_] (gensym "temp")) a))]
-    (vlet (vec (interleave syms a))
-          (vdivide syms `(Math/sqrt ~(dot syms syms))))))
+(defn vnormalize 
+  "Normalizes a vector"
+  ([a]
+	  (let [a (vectorize a)
+	        syms (vec (map (fn [_] (gensym "temp")) a))]
+	    (vlet (vec (interleave syms a))
+	          (vdivide syms `(Math/sqrt ~(dot syms syms)))))))
 
 (defn vwarp 
-  [warp f]
-  (let [warp (vectorize warp)
-        f (vectorize f)
-        wdims (check-dims warp)
-        fdims (check-dims f)
-        vars (take wdims ['x 'y 'z 't])
-        temps (take wdims ['x-temp 'y-temp 'z-temp 't-temp])
-        bindings 
-          (concat
-            (interleave temps warp)
-            (interleave vars temps))]
-    (vec
-      (for [i (range fdims)]
-        `(let [~@bindings] ~(f i))))))
+  "Warps the position vector before calculating a vector function"
+  ([warp f]
+	  (let [warp (vectorize warp)
+	        f (vectorize f)
+	        wdims (dimensions warp)
+	        fdims (dimensions f)
+	        vars (take wdims ['x 'y 'z 't])
+	        temps (take wdims ['x-temp 'y-temp 'z-temp 't-temp])
+	        bindings 
+	          (vec (concat
+                  (interleave temps (take wdims (map :code (:nodes warp)))) ;; needed so that symbols x,y,z,t aren't overwritten too early
+                  (interleave vars temps)))]
+     (vlet bindings f))))
 
-(defn vscale [factor f] 
-  (let [factor (vectorize factor)
-        f (vectorize f)]
-    (vwarp (vdivide pos factor) f)))
+(defn vscale 
+  "Scales a function by a given factor."
+  ([factor f] 
+	  (let [factor (node factor)
+	        f (node f)]
+	    (vwarp (vdivide pos factor) f))))
 
 (defn voffset 
   [warp f]
