@@ -6,8 +6,10 @@
 (declare node)
 (declare constant-node)
 (declare evaluate)
+(declare ZERO-NODE)
 
-;; predicates
+;; ==============================
+;; Node predicates
 
 (defn node? [x] 
   (instance? Node x))
@@ -23,6 +25,30 @@
 
 ;; standard position vector
 (def pos ['x 'y 'z 't])
+
+;; =====================================
+;; basic Node functions
+
+(defn dimensions 
+  "Returns the number of dimensions in a vector node, or 1 if scalar"
+  ([x]
+	  (let [x (node x)]
+	    (cond
+	      (scalar-node? x)
+	        1
+	      (vector-node? x)
+	        (count (:nodes x))))))
+
+
+(defn component [i n]
+  "Returns a scalar node that represents the specified component of an input node"
+  (let [n (node n)]
+	  (if (vector-node? n)
+	    (nth (:nodes n) i ZERO-NODE)
+	    n))) 
+
+;; ========================================
+;; Node constructors
 
 (defn value-node [v]
   (if 
@@ -147,6 +173,16 @@
           generated-node
           {:objects (apply merge (map :objects nodes))})))))
 
+(defn transform-components
+  "Calls transform-node separately on each component of a set of nodes. Returns a scalar iff all input nodes are scalar."
+  ([f & nodes]
+    (if (some vector-node? nodes)
+      (let [dims (apply max (map dimensions nodes))]
+	      (vec-node 
+	        (for [i (range dims)]
+	          (apply transform-node f (map #(component i %) nodes)))))
+      (apply transform-node f nodes))))
+
 (defn function-node
   "Creates a node which is a function of scalar nodes"
   ([f & scalars]
@@ -178,22 +214,6 @@
 
 (def ZERO-NODE (node 0.0))
 
-(defn component [i n]
-  "Returns a node that represents the specified component of an input node"
-  (let [n (node n)]
-	  (if (vector-node? n)
-	    (nth (:nodes n) i ZERO-NODE)
-	    n))) 
-
-(defn dimensions 
-  "Returns the number of dimensions in a vector node, or 1 if scalar"
-  ([x]
-	  (let [x (node x)]
-	    (cond
-	      (scalar-node? x)
-	        1
-	      (vector-node? x)
-	        (count (:nodes x))))))
 
 (defn validate [node]
   (cond
