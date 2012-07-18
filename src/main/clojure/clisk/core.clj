@@ -18,6 +18,7 @@
   (clisk.node/compile-scalar-node node))
 
 (defn sample 
+  "Samples the value of a node at a given position"
   ([node pos]
     (let [pos (vectorize pos)
           node (vectorize node)
@@ -60,6 +61,7 @@
      image)))
 
 (defn scale-image [img w h]
+  "Scales an image to a given width and height"
   (Util/scaleImage img (int w) (int h)))
 
 (defn show 

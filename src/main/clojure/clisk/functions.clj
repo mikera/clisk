@@ -43,18 +43,22 @@
            (:nodes a)))))
 
 (defn ^:static red-from-argb 
+  "Gets the red component value from an ARGB integer"
   (^double [^long argb]
     (* COMPONENT_TO_DOUBLE (bit-and (int 0xFF) (bit-shift-right argb 16)))))
 
 (defn ^:static green-from-argb 
+  "Gets the green component value from an ARGB integer"
   (^double [^long argb]
     (* COMPONENT_TO_DOUBLE (bit-and (int 0xFF) (bit-shift-right argb 8)))))
 
 (defn ^:static blue-from-argb 
+  "Gets the blue component value from an ARGB integer"
   (^double [^long argb]
     (* COMPONENT_TO_DOUBLE (bit-and (int 0xFF) argb))))
 
 (defn ^:static alpha-from-argb 
+  "Gets the alpha component value from an ARGB integer"
   (^double [^long argb]
     (* COMPONENT_TO_DOUBLE (bit-and (int 0xFF) (bit-shift-right argb 24)))))
 
