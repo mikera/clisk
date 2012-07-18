@@ -131,15 +131,16 @@
 (defn vlet 
   "let one or more scalar values within a vector function" 
   ([bindings form]
-    (let [form (node form)]
+    (let [form (node form)
+          binding-nodes (map (comp node second) (partition 2 bindings))
+          symbols (map first (partition 2 bindings))]
+      (if-not (every? scalar-node? binding-nodes) (error "All binding values must be scalar"))
 		  (if (seq bindings)
-		    (let [transformer 
-	               (fn [x]
-		               `(let [~@bindings] 
-		                  ~x))]
-		      (if (vector-node? form)
-	          (vec-node (map transformer (:codes form)))
-	          (node (transformer (:code form)))))
+		    (transform-components
+          (fn [form & binds]
+            `(let [~@(interleave symbols (map :code binding-nodes))]
+               ~(:code form)))
+          (cons form binding-nodes))
       form))))
 
 (defn vif [c a b]
@@ -262,10 +263,10 @@
         v))))
 
 (defn length [a]
-  (let [a (vectorize a)
-        syms (vec (map (fn [_] (gensym "temp")) a))] 
+  "Calculates the length of a vector"
+  (let [comps (:nodes (vectorize a))] 
     (vlet 
-       (vec (interleave syms (:codes a)))
+       (vec (interleave syms comps))
        `(Math/sqrt (+ ~@(map #(do `(* ~% ~%)) syms))))))
 
 (defn vnormalize [a]
