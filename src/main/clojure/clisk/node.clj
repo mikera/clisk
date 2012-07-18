@@ -121,32 +121,33 @@
 
 
 (defn transform-node
-  "Creates a node containing code that trasnforms the other scalar vectors into a new code form"
-  ([f & scalars]
-    (let [scalars (map node scalars)]
-      (if-not (every? scalar-node? scalars) (error "Nodes to transform must be scalar"))
-	    (new-node
+  "Creates a scalar node containing code based on transforming the other nodes into a new code form"
+  ([f & nodes]
+    (let [nodes (map node nodes)]
+ 	    (new-node
 	      {:type :scalar
-	       :code (apply f (map :code scalars))
-	       :objects (apply merge (map :objects scalars))
-	       :constant (every? constant-node? scalars)}))))
+	       :code (apply f nodes)
+	       :objects (apply merge (map :objects nodes))
+	       :constant (every? constant-node? nodes)}))))
 
 (defn function-node
   "Creates a node which is a function of scalar nodes"
   ([f & scalars]
     (apply 
       transform-node
-      (fn [& xs] `(~f ~@xs))
+      (fn [& xs] `(~f ~@(map :code xs)))
       scalars)))
 
-(defn constant-node [v]
-  (cond
-    (vector? v)
-      (let [node (vec-node v)]
-        (if (not (:constant node)) (error "Not a constant vector!"))
-        node) 
-    :else 
-      (value-node (double v))))
+(defn constant-node 
+  "Create a node that returns a constant value, can be either a constant vector or scalar value"
+  ([v]
+	  (cond
+	    (vector? v)
+	      (let [node (vec-node v)]
+	        (if (not (:constant node)) (error "Not a constant vector!"))
+	        node) 
+	    :else 
+	      (value-node (double v)))))
 
 (defn code-node [form]
   (new-node {:type :scalar 

@@ -19,16 +19,17 @@
 	      x
 	    :else x)))
 
-(defn vectorize [a]
-  "Converts a value into a vector function form. If a is already a vector, does nothing. If a is a function, apply it to the current position."
-  (let [a (node a)] 
-    (cond
-	    (vector-node? a)
-	      a
-	    (scalar-node? a)
-	      (vector-node a)
-	    :else
-	      (error "Should not be possible!"))))
+(defn vectorize 
+	"Converts a value into a vector function form. If a is already a vector node, does nothing. If a is a function, apply it to the current position."
+  ([a]
+	  (let [a (node a)] 
+	    (cond
+		    (vector-node? a)
+		      a
+		    (scalar-node? a)
+		      (vector-node a)
+		    :else
+		      (error "Should not be possible!")))))
 
 (defn components [mask a]
   "Gets a subset of components from a, where the mask vector is > 0. Other components are zeroed"
@@ -63,23 +64,23 @@
     (* COMPONENT_TO_DOUBLE (bit-and (int 0xFF) (bit-shift-right argb 24)))))
 
 (defn x 
+  "Extracts the x component of a vector"
   ([v]
-	  "Extracts the x component of a vector"
 	  (component 0 v)))
 
 (defn y 
+  "Extracts the y component of a vector"
   ([v]
-	  "Extracts the y component of a vector"
 	  (component 1 v)))
 
 (defn z 
+  "Extracts the z component of a vector"
   ([v]
-    "Extracts the z component of a vector"
     (component 2 v)))
 
 (defn t 
+  "Extracts the t component of a vector"
   ([v]
-    "Extracts the t component of a vector"
     (component 3 v)))
 
 (defn rgb
@@ -115,7 +116,7 @@
 
 ;; todo handle  zeros and ones efficiently
 (defn vectorize-op 
-  "Make an arbitrary function work on clisk vectors"
+  "Make an arbitrary function work on clisk vectors in a component-wise manner"
   ([f]
 	  (fn [& vs]
 	    (let [vs (map node vs)
@@ -216,10 +217,11 @@
 	        adims (check-dims a)
 	        bdims (check-dims b)
 	        dims (min adims bdims)]
-     (node
-		    (cons 'clojure.core/+
+     (transform-node
+		   #(cons 'clojure.core/+
 		      (for [i (range dims)]
-		        `(clojure.core/* ~(:code (component i a)) ~(:code (component i b)))))))))
+		        `(clojure.core/* ~(:code (component i %1)) ~(:code (component i %2)))))
+       a b))))
 
 (defn vcross3
   "Returns the cross product of 2 3D vectors"
@@ -235,13 +237,19 @@
   "Returns the max component of a vector"
   ([v]
     (let [v (vectorize v)]
-      (node `(max ~@(:codes v))))))
+      (transform-node 
+        (fn [v]
+          `(max ~@(:codes v)))
+        v))))
 
 (defn min-component 
   "Returns the min component of a vector"
   ([v]
     (let [v (vectorize v)]
-      (node `(min ~@(:codes v))))))
+      (transform-node 
+        (fn [v]
+          `(min ~@(:codes v)))
+        v))))
 
 (defn length [a]
   (let [a (vectorize a)
