@@ -70,9 +70,7 @@
   ([props]
 	  (let [n (Node. nil props)]
 		  (if (and (:constant props) (not (number? (:code props))))
-        (if (vector-node? n)
-          (value-node (map evaluate (:nodes n)))
-          (value-node (evaluate n)))
+        (value-node (evaluate n))
 		    n))))
 
 
