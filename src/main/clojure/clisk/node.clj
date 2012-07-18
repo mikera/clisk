@@ -91,14 +91,19 @@
 	      objs)))
 
 (defn evaluate 
-  "Evaluates a scalar node at a given position (defaults to zero)."
+  "Evaluates a node at a given position (defaults to zero). Can return either vector or scalar result."
   ([n] (evaluate n 0.0 0.0 0.0 0.0))
   ([n x] (evaluate n x 0.0 0.0 0.0))
   ([n x y] (evaluate n x y 0.0 0.0))
   ([n x y z] (evaluate n x y z 0.0))
   ([n x y z t]
     (let [n (node n)]
-      (.calc (compile-scalar-node n) (double x) (double y) (double z) (double t)))))
+      (if (scalar-node? n)
+        (.calc (compile-scalar-node n) (double x) (double y) (double z) (double t))
+        (vec
+          (map
+            #(.calc (compile-scalar-node %) (double x) (double y) (double z) (double t))
+            (:nodes n)))))))
 
 
 (defn vec-node 
@@ -120,24 +125,6 @@
   (vec-node xs))
 
 
-(defn transform-node
-  "Creates a scalar node containing code based on transforming the other nodes into a new code form"
-  ([f & nodes]
-    (let [nodes (map node nodes)
-          new-node (node (apply f nodes))]
- 	    (merge new-node
-	      {:type :scalar
-	       :objects (apply merge (map :objects nodes))
-	       :constant (every? constant-node? nodes)}))))
-
-(defn function-node
-  "Creates a node which is a function of scalar nodes"
-  ([f & scalars]
-    (apply 
-      transform-node
-      (fn [& xs] `(~f ~@(map :code xs)))
-      scalars)))
-
 (defn constant-node 
   "Create a node that returns a constant value, can be either a constant vector or scalar value"
   ([v]
@@ -148,6 +135,25 @@
 	        node) 
 	    :else 
 	      (value-node (double v)))))
+
+(defn transform-node
+  "Creates a node containing code based on transforming the other nodes into a new form"
+  ([f & nodes]
+    (let [nodes (map node nodes)
+          generated-node (node (apply f nodes))]
+      (if (every? constant-node? nodes)
+        (constant-node (evaluate generated-node))
+        (merge
+          generated-node
+          {:objects (apply merge (map :objects nodes))})))))
+
+(defn function-node
+  "Creates a node which is a function of scalar nodes"
+  ([f & scalars]
+    (apply 
+      transform-node
+      (fn [& xs] `(~f ~@(map :code xs)))
+      scalars)))
 
 (defn code-node [form]
   (new-node {:type :scalar 

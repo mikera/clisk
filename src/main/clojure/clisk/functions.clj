@@ -143,7 +143,7 @@
       form))))
 
 (defn vif [c a b]
-  "Conditional vector function. First scalar argument is used as conditional value, > 0.0  is true."
+  "Conditional vector function. First scalar argument is used as conditional value, > 0.0  is true. aLways returns a vector node."
   (let [a (vectorize a)
         b (vectorize b)
         c (component 0 c)
@@ -233,12 +233,15 @@
 (defn vcross3
   "Returns the cross product of 2 3D vectors"
   ([a b]
-    (let [[x1 y1 z1] (:codes (vectorize a))
-          [x2 y2 z2] (:codes (vectorize b))]
-      (vec-node
-        [`(- (* ~y1 ~z2) (* ~z1 ~y2))
-         `(- (* ~z1 ~x2) (* ~x1 ~z1))
-         `(- (* ~x1 ~y2) (* ~y1 ~x1))]))))
+    (transform-node
+	    (fn [a b]
+	       (let [[x1 y1 z1] (:codes (vectorize a))
+		          [x2 y2 z2] (:codes (vectorize b))]
+		        [`(- (* ~y1 ~z2) (* ~z1 ~y2))
+		         `(- (* ~z1 ~x2) (* ~x1 ~z1))
+		         `(- (* ~x1 ~y2) (* ~y1 ~x1))]))
+     (node a)
+     (node b))))
 
 (defn max-component 
   "Returns the max component of a vector"
