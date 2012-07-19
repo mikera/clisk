@@ -327,16 +327,17 @@
 	([f]
 	  (let [epsilon 0.000001
 	        f (component 0 f)]
-	    (vec 
-	      (map 
-	        (fn [sym] 
+	    (transform-components 
+        (fn [f pos] 
+          (let [sym (:code pos)]
 	          `(clojure.core// 
 	             (clojure.core/-
 	               (let [~sym (clojure.core/+ ~epsilon ~sym)]
-	                 ~f)
-	               ~f)
-	             ~epsilon))
-	        pos)))))
+	                 ~(:code f))
+	               ~(:code f))
+	             ~epsilon)))
+	      f
+        (node pos)))))
 
 (defn lerp 
   "Performs clamped linear interpolation between two values, according to the proportion given in the 3rd parameter."

@@ -22,8 +22,8 @@
   ([node pos]
     (let [pos (vectorize pos)
           node (vectorize node)
-          fns (vec (map compile-fn node))
-          [x y z t] (map #(component % pos) (range 4))]
+          fns (vec (map compile-fn (:nodes node)))
+          [x y z t] (map #(evaluate (component % pos)) (range 4))]
       (vec 
         (map #(.calc ^clisk.IFunction % (double x) (double y) (double z) (double t))
              fns)))))

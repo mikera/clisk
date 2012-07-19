@@ -206,6 +206,7 @@
     (vector? a) (vec-node a)
     (fn? a) (node (a pos))
     (symbol? a) (code-node a)
+    (keyword? a) (error "Can't convert keyword to node: " a)
     (sequential? a) (code-node a)
     :object (object-node a)
     :else (error "Unable to build an AST node from: " a)))
