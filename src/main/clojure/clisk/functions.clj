@@ -423,6 +423,8 @@
 
 (defn vseamless 
   "Creates a seamless 2D tileable version of a 4D texture in the [0 0] to [1 1] region. The scale argument detrmines the amount of the source texture to be used per repeat."
+  ([v4]
+    (vseamless 1.0 v4))
   ([scale v4]
     (let [v4 (node v4)
           scale-factor (/ 1.0 (double scale) TAO)
