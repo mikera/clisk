@@ -425,15 +425,15 @@
 (defn vseamless 
   "Creates a seamless 2D tileable version of a 4D texture in the [0 0] to [1 1] region. The scale argument detrmines the amount of the source texture to be used per repeat."
   ([scale v4]
-    (let [v4 (vectorize v4)
-          scale (/ 1.0 (component 0 scale) TAO)
-          dims (check-dims v4)]
-      (if (< dims 4) (error "vseamless requires 4D input texture, found " dims))
+    (let [v4 (node v4)
+          scale-factor (/ 1.0 (double scale) TAO)
+          dims (dimensions v4)]
+      ;;(if (< dims 4) (error "vseamless requires 4D input texture, found " dims))
       (vwarp
-        [`(* (Math/cos (* ~'x TAO)) ~scale) 
-         `(* (Math/sin (* ~'x TAO)) ~scale) 
-         `(* (Math/cos (* ~'y TAO)) ~scale)
-         `(* (Math/sin (* ~'y TAO)) ~scale)]
+        [`(* (Math/cos (* ~'x TAO)) ~scale-factor) 
+         `(* (Math/sin (* ~'x TAO)) ~scale-factor) 
+         `(* (Math/cos (* ~'y TAO)) ~scale-factor)
+         `(* (Math/sin (* ~'y TAO)) ~scale-factor)]
         v4))))
 
 (defn height 
