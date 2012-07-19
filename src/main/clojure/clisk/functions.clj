@@ -144,25 +144,23 @@
       form))))
 
 (defn vif [c a b]
-  "Conditional vector function. First scalar argument is used as conditional value, > 0.0  is true. aLways returns a vector node."
-  (let [a (vectorize a)
-        b (vectorize b)
+  "Conditional vector function. First scalar argument is used as conditional value, > 0.0  is true."
+  (let [a (node a)
+        b (node b)
         c (component 0 c)
         adims (dimensions a)
         bdims (dimensions b)
         dims (max adims bdims)]
-    (vec-node
-      (for [i (range dims)]
-           (transform-node
-             (fn [c a b]
-               (if (:constant c)
-                 ;; constant case - use appropriate branch directly
-                 (if (> 0.0 (evaluate c)) a b) 
-                 ;; variable case
-                 `(if (> 0.0 ~(:code c)) ~(:code a) ~(:code b)) ))
-             (component 0 c)
-             (component i a)
-             (component i b))))))
+    (transform-components
+       (fn [c a b]
+         (if (:constant c)
+           ;; constant case - use appropriate branch directly
+           (if (> (evaluate c) 0.0 ) a b) 
+           ;; variable case
+           `(if (> ~(:code c) 0.0 ) ~(:code a) ~(:code b)) ))
+       c
+       a
+       b)))
 
 (defn apply-to-components
   "Applies a function f to all components of a vector"
