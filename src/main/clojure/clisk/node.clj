@@ -182,8 +182,9 @@
       (apply transform-node f nodes))))
 
 (defn function-node
-  "Creates a node which is a function of scalar nodes"
+  "Creates a node which is a scalar function of scalar nodes"
   ([f & scalars]
+    (if-not (every? scalar-node? scalars) (error "Input nodes to function-node must be scalar"))
     (apply 
       transform-node
       (fn [& xs] `(~f ~@(map :code xs)))

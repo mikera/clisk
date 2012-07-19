@@ -43,6 +43,17 @@
    (testing "vlet double"
     (is (== 3.0 (evaluate (component 0 (vlet ['a 1.0 'b 2.0] `(+ ~'a ~'b))))))))
 
+(deftest test-vif
+  (testing "vif scalar conditions"
+    (is (= 1.0 (evaluate (vif 0.1 1 2))))
+    (is (= 2.0 (evaluate (vif 0.0 1 2))))
+    (is (= 2.0 (evaluate (vif -0.1 1 2)))))
+  (testing "vif vector conditions"
+    (is (= 2.0 (evaluate (vif [-0.1 0.1] 1 2))))
+    (is (= 1.0 (evaluate (vif [0.1 -0.1] 1 2)))))
+  (testing "vif results"
+    (is (= [3.0 3.0] (evaluate (vif 1 3.0 [4.0 5.0]))))))
+
 (deftest test-vlerp
   (testing "Vlerp 3 args"
     (is (= [1.0 1.0] (evaluate (vlerp [1.0 1.0] [2.0 2.0] 0 ))))
