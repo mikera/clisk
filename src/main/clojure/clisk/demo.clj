@@ -30,10 +30,16 @@
   (show (vscale 0.2 (voffset (v* 10 (vwarp vfloor vhash)) vnoise)))
   
   ;; basic colour map in y-direction
-  (show (colour-map [[0   [1 1 1]] 
+  (show (colour-map [[0   [1 1   1]] 
                      [0.5 [1 0.5 0]] 
-                     [1   [0 0 0]]] 
+                     [1   [0 0   0]]] 
                     'y))
+  
+    ;; colour map with variable components
+  (show (colour-map [[0 [1 1   'z        ]] 
+                     [x [1 0.5 0         ]] 
+                     [1 [0 0   `(- 1 ~'x)]]] 
+                    y))
   
   ;; tileable rock texture with faked lighting
   (show  (v+ [0.9 0.6 0.3] 
