@@ -282,7 +282,7 @@
   "Warps the position vector before calculating a vector function"
   ([warp f]
 	  (let [warp (vectorize warp)
-	        f (vectorize f)
+	        f (node f)
 	        wdims (dimensions warp)
 	        fdims (dimensions f)
 	        vars (take wdims ['x 'y 'z 't])
