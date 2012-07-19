@@ -301,11 +301,12 @@
 	    (vwarp (vdivide pos factor) f))))
 
 (defn voffset 
-  [warp f]
+  "Offsets a function by a specified amount"
+  ([offset f]
     (vwarp (v+ 
              pos
-             warp)
-           f))
+             offset)
+           f)))
 
 (def offsets-for-vectors [[-120.34 +340.21 -13.67 +56.78]
                           [+12.301 +70.261 -167.678 +34.568]
@@ -340,36 +341,24 @@
 (defn lerp 
   "Performs clamped linear interpolation between two values, according to the proportion given in the 3rd parameter."
   ([a b v]
-  `(let [a# ~a
-         b# ~b
-         v# ~v]
-     (if (<= v# 0) a#
-       (if (>= v# 1) b#
-         (+ 
-           (* v# b#)
-           (* (- 1.0 v#) a#)))))))
+	  (let [a# a
+	        b# b
+	        v# v]
+	     (if (<= v# 0) a#
+	       (if (>= v# 1) b#
+	         (+ 
+	           (* v# b#)
+	           (* (- 1.0 v#) a#)))))))
 
-(defn vlerp 
+(def vlerp 
   "Performs clamped linear interpolation between two vectors, according to the proportion given in the 3rd parameter."
-  ([a b]
-    (fn [v] (vlerp a b v)))
-  ([a b v]
-	  (let [a (vectorize a)
-	        b (vectorize b)
-	        v (component 0 v)
-	        dims (max (dimensions a) (dimensions b))
-	        vsym (gensym "val")]
-	    (vec (for [i (range dims)]
-			  `(let [~vsym ~v]
-			     (if (<= ~vsym 0) ~(component i a)
-			       (if (>= ~vsym 1) ~(component i b)
-			         (+ (* ~vsym ~(component i b)) (* (- 1.0 ~vsym) ~(component i a)))))))))))
+  (vectorize-op lerp))
 
 (defn colour-map 
-  ([mapping v]
-    ((colour-map mapping) v))
   ([mapping]
-	  (fn [x]
+    (fn [x]
+      (colour-map mapping x)))
+  ([mapping x]
 		  (let [vals (vec mapping)
 		        v (component 0 x)
 		        c (count vals)]
@@ -395,7 +384,7 @@
 		          `(let [~vsym ~v] 
 		             (if (<= ~vsym ~mv)
 		               ~(component i (lower vsym))
-		               ~(component i (upper vsym))))))))))))
+		               ~(component i (upper vsym)))))))))))
 
 (def scalar-hash-function
   "Hash function producing a scalar value in the range [0..1) for every 
