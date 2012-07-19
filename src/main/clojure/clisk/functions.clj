@@ -263,18 +263,17 @@
 (defn length 
   "Calculates the length of a vector"
   ([a]
-	  (let [comps (:nodes (vectorize a))
-	        syms (for [c comps] (gensym "length-comp"))] 
-	    (vlet (vec (interleave syms comps))
-           `(Math/sqrt (+ ~@(map #(do `(* ~% ~%)) syms)))))))
+	  (let [comps (:nodes (vectorize a))]
+	    (apply transform-node
+            (fn [& comps]
+              (node `(Math/sqrt (+ ~@(map #(do `(let [v# ~%] (* v# v#))) (map :code comps))))))
+            comps))))
 
 (defn vnormalize 
   "Normalizes a vector"
   ([a]
-	  (let [a (vectorize a)
-	        syms (vec (map (fn [_] (gensym "temp")) a))]
-	    (vlet (vec (interleave syms a))
-	          (vdivide syms `(Math/sqrt ~(dot syms syms)))))))
+	  (let [a (vectorize a)]
+	    (vdivide a (length a)))))
 
 (defn vwarp 
   "Warps the position vector before calculating a vector function"
@@ -446,15 +445,15 @@
   ([heightmap]
     (v- [0 0 1] (components [1 1 0] (vgradient (z heightmap)))))
   ([scale heightmap]
-    (v- [0 0 1] (components [1 1 0] (vgradient `(* ~scale ~(z heightmap)))))))
+    (v- [0 0 1] (components [1 1 0] (vgradient (v* scale (z heightmap)))))))
 
 
 (defn light-value 
   "Calculates diffuse light intensity given a light direction and a surface normal vector. 
    This function performs its own normalisation, so neither the light vector nor the normal vector need to be normalised."
   ([light-direction normal-direction]
-	  `(max 0.0 
-	        ~(dot (vnormalize light-direction) (vnormalize normal-direction)))))
+      (vmax 0.0 
+	        (dot (vnormalize light-direction) (vnormalize normal-direction)))))
 
 (defn diffuse-light 
   "Calculate the diffuse light on a surface normal vector.
