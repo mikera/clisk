@@ -363,27 +363,25 @@
 		        c (count vals)]
 		    (cond 
 		      (<= c 0) (error "No colour map available!")
-		      (== c 1) (vectorize (second (vals 0)))
+		      (== c 1) (node (second (vals 0)))
 		      (== c 2) 
 		        (let [lo (first (vals 0))
 		              hi (first (vals 1))]
-                (if (<= hi lo)
-                  (vectorize (second (vals 0)))
+                (vif 
+                  (v- lo hi)
+                  (node (second (vals 0)))   ;; degenerate case with zero range
 			            (vlerp  
-			              (vectorize (second (vals 0))) 
-			              (vectorize (second (vals 1)))
-	                  `(/ (- ~v ~lo) ~(- hi lo)))))
+			              (node (second (vals 0))) 
+			              (node (second (vals 1)))
+	                  (vdivide (v- v lo) (v- hi lo)))))
 		      :else
 		        (let [mid (quot c 2)
 		              mv (first (vals mid))
-		              vsym (gensym "val")
-		              upper (colour-map (subvec vals mid c))
-		              lower (colour-map (subvec vals 0 (inc mid)))]
-		          (vec (for [i (range 4)]
-		          `(let [~vsym ~v] 
-		             (if (<= ~vsym ~mv)
-		               ~(component i (lower vsym))
-		               ~(component i (upper vsym)))))))))))
+		              upper (colour-map (subvec vals mid c) v)
+		              lower (colour-map (subvec vals 0 (inc mid)) v)]
+		          (vif (v- v mv)
+	              upper
+	              lower))))))
 
 (def scalar-hash-function
   "Hash function producing a scalar value in the range [0..1) for every 
