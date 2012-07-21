@@ -40,10 +40,15 @@
                      [x [1 0.5 0         ]] 
                      [1 [0 0   `(- 1 ~'x)]]] 
                     y))
-  
+
   ;; tileable rock texture with faked lighting
   (show  (v+ [0.9 0.6 0.3] 
              (dot [0.2 0.2 0] 
                   (vgradient (vseamless 1.0 plasma) ))))
   
-  )
+  ;; aplha blend using vlerp
+  (show (vlerp (v- (v* 4 plasma) 1.3) 
+               (vscale 0.1 (checker 0 1))
+               [1 0 0]))
+  
+)
