@@ -338,10 +338,10 @@
 
 (defn lerp 
   "Performs clamped linear interpolation between two values, according to the proportion given in the 3rd parameter."
-  ([a b v]
+  ([proportion a b]
 	  (let [a# a
 	        b# b
-	        v# v]
+	        v# proportion]
 	     (if (<= v# 0) a#
 	       (if (>= v# 1) b#
 	         (+ 

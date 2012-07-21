@@ -64,13 +64,13 @@
 
 (deftest test-vlerp
   (testing "Vlerp 3 args"
-    (is (= [1.0 1.0] (evaluate (vlerp [1.0 1.0] [2.0 2.0] 0 ))))
-    (is (= [1.0 1.0] (evaluate (vlerp [1.0 1.0] [2.0 2.0] -1 ))))
-    (is (= [1.5 1.5] (evaluate (vlerp [1.0 1.0] [2.0 2.0] 0.5 ))))
-    (is (= [2.0 2.0] (evaluate (vlerp [1.0 1.0] [2.0 2.0] 1 ))))
-    (is (= [2.0 2.0] (evaluate (vlerp [1.0 1.0] [2.0 2.0] 2 )))))
+    (is (= [1.0 1.0] (evaluate (vlerp 0   [1.0 1.0] [2.0 2.0]))))
+    (is (= [1.0 1.0] (evaluate (vlerp -1  [1.0 1.0] [2.0 2.0]))))
+    (is (= [1.5 1.5] (evaluate (vlerp 0.5 [1.0 1.0] [2.0 2.0]))))
+    (is (= [2.0 2.0] (evaluate (vlerp 1   [1.0 1.0] [2.0 2.0]))))
+    (is (= [2.0 2.0] (evaluate (vlerp 2   [1.0 1.0] [2.0 2.0])))))
   (testing "vlerp scalars"
-    (is (= 2.5 (evaluate (vlerp 2 3 0.5 ))))))
+    (is (= 2.5 (evaluate (vlerp 0.5 2 3))))))
 
 
 (deftest test-lengths
