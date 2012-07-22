@@ -78,7 +78,7 @@
   "Creates a node with an embedded Java object"
   ([v]
 	  (let [sym (gensym "obj")]
-	    (new-node 
+	    (Node. nil
 	          {:type :scalar
 	           :code sym
 	           :objects {sym v}
