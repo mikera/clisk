@@ -1,5 +1,6 @@
 (ns clisk.functions
   (:import clisk.Util)
+  (:import java.awt.image.BufferedImage)
   (:use clisk.node)
   (:use clisk.util))
 
@@ -351,6 +352,36 @@
 (def vlerp 
   "Performs clamped linear interpolation between two vectors, according to the proportion given in the 3rd parameter."
   (vectorize-op lerp))
+
+(defmacro texture-bound [v offset width max]
+  `(let [tv# (double (+ (* (double ~v) ~(double width)) ~(double offset)) ) 
+         max# (int (dec ~max)) ]
+       (if (>= tv# max#) 
+         max# 
+         (if (<= tv# 0)
+           (int 0)
+           (int tv#)))))
+
+(defn texture-map
+  ([^BufferedImage image]
+    (texture-map image 0 0 (.getWidth image) (.getHeight image)))
+  ([^BufferedImage image x y w h]
+    (let [texture (object-node image)
+          tsym (first (keys (:objects texture)))
+          mw (.getWidth image)
+          mh (.getHeight image)]
+      (vec-node
+        (map
+          (fn [fsym]
+            (assoc 
+              (code-node
+                `(let [image# ^java.awt.image.BufferedImage ~tsym
+                       tx# (int (texture-bound ~'x ~x ~w ~mw))
+                       ty# (int (texture-bound ~'y ~y ~h ~mh))]
+                   (~fsym (.getRGB ^BufferedImage image# tx# ty#)) ) )
+              :objects (:objects texture)) )
+            [`red-from-argb `green-from-argb `blue-from-argb `alpha-from-argb])))))
+  
 
 (defn colour-map 
   ([mapping]
