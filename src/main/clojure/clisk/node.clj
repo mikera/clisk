@@ -1,4 +1,5 @@
 (ns clisk.node
+  "Functions for managing nodes in the clisk AST tree. Should not normally be needed by users."
   (:use clisk.util))
 
 (defrecord Node [])
@@ -31,17 +32,17 @@
 
 (defn dimensions 
   "Returns the number of dimensions in a vector node, or 1 if scalar"
-  ([x]
-	  (let [x (node x)]
+  ([a]
+	  (let [a (node a)]
 	    (cond
-	      (scalar-node? x)
+	      (scalar-node? a)
 	        1
-	      (vector-node? x)
-	        (count (:nodes x))))))
+	      (vector-node? a)
+	        (count (:nodes a))))))
 
 
 (defn component [i n]
-  "Returns a scalar node that represents the specified component of an input node"
+  "Returns a scalar node that represents the specified component of an input node. Taking any component of a scalr results in the same scalar."
   (let [n (node n)]
 	  (if (vector-node? n)
 	    (nth (:nodes n) i ZERO-NODE)

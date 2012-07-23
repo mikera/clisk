@@ -1,4 +1,5 @@
 (ns clisk.colours
+  "Library of colours, colour gradients and colour-handling functions."
   (:use clisk.functions)
   (:import java.awt.Color))
 
