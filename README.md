@@ -3,7 +3,7 @@
 
 Clisk is a DSL library for procedural image generation that can be use from Clojure and Java.
 
-Example image:
+## Example code and resulting image:
 
       (show  (v+ [0.9 0.6 0.3] 
                  (dot [0.2 0.2 0] 
@@ -13,7 +13,18 @@ Example image:
 
 For [more examples see the Wiki](https://github.com/mikera/clisk/wiki)
 
-Features:
+## Installation:
+
+The best way to get started with clisk is to [install it from Clojars](https://clojars.org/net.mikera/clisk) using either leiningen or Maven.
+
+Once you have clisk as a dependency, you should be able to get going with the key functionality as follows:
+
+    (ns my-ns
+      (:use [clisk core functions patterns colours]))
+     
+    (show (checker red white))
+
+## Features:
 
 * A concise DSL for specifying image generators through function composition
 * Up to 4D texture generation (including time dimension for animations) 
