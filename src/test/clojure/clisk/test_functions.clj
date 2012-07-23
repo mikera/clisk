@@ -10,7 +10,7 @@
 (deftest test-values
   (testing "Scalars"
     (is (= 1.0 (evaluate 1)))
-    ))
+    (is (= 1.0 (evaluate 1N)))))
 
 
 (deftest test-vectorize
@@ -22,10 +22,11 @@
     (is (= [1.0 2.0] (evaluate (vectorize 2 [1 2 3]))))
     (is (= [1.0 2.0 3.0] (evaluate (vectorize 3 [1 2 3]))))
     (is (= [1.0 2.0 3.0 0.0] (evaluate (vectorize 4 [1 2 3]))))
-    (is (= [2.0 2.0] (evaluate (vectorize 2 2))))))
+    (is (= [2.0 2.0] (evaluate (vectorize 2 2))))
+    (is (= [] (evaluate (vectorize 0 2))))))
 
 (deftest test-cross
-  (testing "Scalars"
+  (testing "Cross product"
     (is (= [0.0 0.0 1.0] (evaluate (vcross3 [1.0 0.0 0.0] [0.0 1.0 0.0]))))))
 
 
@@ -48,6 +49,7 @@
     (is (= 10.0 (evaluate (component 2 [0 5 10 15]))))
     (is (= 1.0 (evaluate (component 0 1))))
     (is (= 1.0 (evaluate (component 10 1))))
+    (is (= 0.0 (evaluate (component 10 [1]))))
     (is (= [0.0 3.0 4.0] (evaluate (components [0 1 1] [2 3 4 5]))))))
 
 
@@ -65,8 +67,9 @@
   (testing "vif vector conditions"
     (is (= 2.0 (evaluate (vif [-0.1 0.1] 1 2))))
     (is (= 1.0 (evaluate (vif [0.1 -0.1] 1 2)))))
-  (testing "vif results"
-    (is (= [3.0 3.0] (evaluate (vif 1 3.0 [4.0 5.0]))))))
+  (testing "vif results vectorised to largest vector"
+    (is (= [3.0 3.0] (evaluate (vif 1 3.0 [4.0 5.0]))))
+    (is (= [3.0 0.0] (evaluate (vif 1 [3.0] [4.0 5.0]))))))
 
 (deftest test-vlerp
   (testing "Vlerp 3 args"
