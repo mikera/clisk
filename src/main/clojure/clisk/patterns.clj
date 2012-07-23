@@ -1,4 +1,5 @@
 (ns clisk.patterns
+  "Patterns and pattern generators"
   (:use clisk.functions)
   (:import java.awt.image.BufferedImage)
   (:import clisk.Perlin))

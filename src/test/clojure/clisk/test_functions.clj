@@ -17,7 +17,12 @@
   (testing "Vectorising"
     (is (= [1.0 1.0 1.0 1.0] (evaluate [1 1 1 1])))
     (is (= (node ['x]) (vectorize x)))
-    (is (= (node [1.0]) (vectorize 1)))))
+    (is (= (node [1.0]) (vectorize 1))))
+  (testing "Resized vectors"
+    (is (= [1.0 2.0] (evaluate (vectorize 2 [1 2 3]))))
+    (is (= [1.0 2.0 3.0] (evaluate (vectorize 3 [1 2 3]))))
+    (is (= [1.0 2.0 3.0 0.0] (evaluate (vectorize 4 [1 2 3]))))
+    (is (= [2.0 2.0] (evaluate (vectorize 2 2))))))
 
 (deftest test-cross
   (testing "Scalars"
