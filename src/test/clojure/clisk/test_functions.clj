@@ -4,7 +4,8 @@
   (:use clisk.functions)
   (:use clisk.core)
   (:use clisk.util)
-  (:import clisk.Util))
+  (:import clisk.Util)
+  (:import java.awt.image.BufferedImage))
 
 (deftest test-values
   (testing "Scalars"
@@ -91,6 +92,13 @@
     (is 
       (= (sample (height-normal [x y 1]) [0.0 0.0])
          [0.0 0.0 1.0]))))
+
+(deftest test-texture
+  (testing "Basic texture map"
+    (let [^BufferedImage im (clisk.util/new-image 10 10)]
+      (is (= [0.0 0.0 0.0 0.0] (evaluate (texture-map im) )))
+      (.setRGB im 0 0 (unchecked-int 0xFFFFFFFF) )
+      (is (= [1.0 1.0 1.0 1.0] (evaluate (texture-map im) ))))))
 
 (deftest test-error
   (testing "Clisk Error"

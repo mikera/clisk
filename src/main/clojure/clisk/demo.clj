@@ -51,4 +51,13 @@
                (vscale 0.1 (checker 0 1))
                [1 0 0]))
   
-)
+   ;; aplha blend using vlerp
+  (show (vlerp (v- (v* 4 plasma) 1.3) 
+               (vscale 0.1 (checker 0 1))
+               [1 0 0]))
+  
+   ;; texture mapping example
+   (show (texture-map (clisk.util/load-image "Clojure_300x300.png")) 300 300 )
+
+   
+   )
