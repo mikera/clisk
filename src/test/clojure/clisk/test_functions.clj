@@ -81,6 +81,12 @@
   (testing "vlerp scalars"
     (is (= 2.5 (evaluate (vlerp 0.5 2 3))))))
 
+(deftest test-colour-map
+  (testing "Out of range"
+    (is (= 2.0 (evaluate ((colour-map [[0 2] [1 3]]) -1))))
+    (is (= 3.0 (evaluate ((colour-map [[0 2] [1 3]]) 10)))))
+  (testing "Midpoint"
+    (is (= 2.5 (evaluate ((colour-map [[0 2] [1 3]]) 0.5))))))
 
 (deftest test-lengths
   (testing "dot"
