@@ -407,12 +407,13 @@
 		        (let [lo (first (vals 0))
 		              hi (first (vals 1))]
                 (vif 
-                  (v- lo hi)
-                  (node (second (vals 0)))   ;; degenerate case with zero range
-			            (vlerp  
-			              (node (second (vals 0))) 
-			              (node (second (vals 1)))
-	                  (vdivide (v- v lo) (v- hi lo)))))
+                  (v- hi lo)
+                  (vlerp  ;; normal case interpolation with positive range
+			              (vdivide (v- v lo) (v- hi lo))
+                    (node (second (vals 0))) 
+			              (node (second (vals 1))))      
+                  (node (second (vals 0)))   ;; degenerate case with zero or less range
+			            ))
 		      :else
 		        (let [mid (quot c 2)
 		              mv (first (vals mid))
