@@ -61,4 +61,10 @@
 
    ;; tiled clojure pattern
    (show (vscale 0.1 (tile clojure)))
+   
+   ;; interesting noisy wood patterns
+   (show (v* [1.0 0.7 0.3] (voffset (v* noise plasma 5) wood)))
+   
+   ;; purple vortex-like texture
+   (show (v* [0.9 0.7 1.0] (voffset (v* noise flecks 1) agate)))
    )
