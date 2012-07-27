@@ -74,22 +74,27 @@
     (* COMPONENT_TO_DOUBLE (bit-and (int 0xFF) (bit-shift-right argb 24)))))
 
 (defn x 
-  "Extracts the x component of a vector"
+  "Extracts the x component of a position vector"
   ([v]
 	  (component 0 v)))
 
 (defn y 
-  "Extracts the y component of a vector"
+  "Extracts the y component of a position vector"
   ([v]
 	  (component 1 v)))
 
 (defn z 
-  "Extracts the z component of a vector"
+  "Extracts the z component of a position vector"
   ([v]
     (component 2 v)))
 
 (defn t 
-  "Extracts the t component of a vector"
+  "Extracts the t component of a position vector"
+  ([v]
+    (component 3 v)))
+
+(defn alpha 
+  "Extracts the aplha component of a colour vector"
   ([v]
     (component 3 v)))
 
@@ -459,8 +464,6 @@
           w (- x2 x1)
           h (- y2 y1)]
       (vscale [(/ 1.0 w) (/ 1.0 h) 1 1] (voffset [x1 y1] function)))))
-
-
 
 (defn vseamless 
   "Creates a seamless 2D tileable version of a 4D texture in the [0 0] to [1 1] region. The scale argument detrmines the amount of the source texture to be used per repeat."
