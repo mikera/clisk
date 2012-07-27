@@ -4,6 +4,7 @@
   (:use clisk.functions)
   (:use clisk.core)
   (:use clisk.util)
+  (:use clisk.patterns)
   (:import clisk.Util)
   (:import java.awt.image.BufferedImage))
 
@@ -33,11 +34,13 @@
 (deftest test-plus
   (testing "Plus"
     (is (= [1.0 2.0] (evaluate (v+ [1.0 1.0] [0.0 1.0]))))
+    (is (= [1.0 2.0] (evaluate (v+ 1.0 [0.0 1.0]))))
     (is (= 3.0 (evaluate (v+ 1.0 2.0))))))
 
 (deftest test-mul
   (testing "Multiply"
     (is (= [2.0 6.0] (evaluate (v* [1.0 2.0] [2.0 3.0]))))
+    (is (= [2.0 6.0 0.0] (evaluate (v* [1.0 2.0 3.0] [2.0 3.0]))))
     (is (= 10.0 (evaluate (v* 2.0 5.0))))))
 
 (deftest test-height
@@ -112,7 +115,10 @@
     (let [^BufferedImage im (clisk.util/new-image 10 10)]
       (is (= [0.0 0.0 0.0 0.0] (evaluate (texture-map im) )))
       (.setRGB im 0 0 (unchecked-int 0xFFFFFFFF) )
-      (is (= [1.0 1.0 1.0 1.0] (evaluate (texture-map im) ))))))
+      (is (= [1.0 1.0 1.0 1.0] (evaluate (texture-map im) )))))
+  (testing "Clojure image"
+      (is (= [0.0 0.0 0.0 0.0] (evaluate clojure )))
+      (is (= [0.5 0.5 0.5 0.5] (evaluate (v+ 0.5 clojure) )))))
 
 (deftest test-error
   (testing "Clisk Error"

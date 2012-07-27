@@ -59,5 +59,6 @@
    ;; texture mapping example
    (show (texture-map (clisk.util/load-image "Clojure_300x300.png")) 300 300 )
 
-   
+   ;; tiled clojure pattern
+   (show (vscale 0.1 (tile clojure)))
    )

@@ -1,6 +1,6 @@
 (ns clisk.patterns
   "Patterns and pattern generators"
-  (:use clisk.functions)
+  (:use [clisk util functions])
   (:import java.awt.image.BufferedImage)
   (:import clisk.Perlin))
 
@@ -8,6 +8,14 @@
 (def perlin-noise 
   "Standard 4-dimensional scalar perlin noise in range [0..1]"
   '(clisk.Perlin/noise x y z t))
+
+(def clojure
+  (texture-map (load-image "Clojure_300x300.png")))
+
+(defn tile
+  "Tiles a pattern in the range [0..1,0..1]"
+  ([pattern]
+    (vwarp vfrac pattern)))
 
 (def noise
   perlin-noise)
