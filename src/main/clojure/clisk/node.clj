@@ -192,12 +192,11 @@
       scalars)))
 
 (defn code-node [form]
-  "Creates a node from a given code form (may be a vector)"
+  "Creates a node from a given code form (may be a vector). Does not preserve objects - must be copied over manually."
   (if (vector? form)
     (vec-node (map code-node form))
 	  (new-node {:type :scalar 
 	             :code form
-	             :objects (apply merge (map :objects (filter node? (flatten form))))
 	             :constant false})))
 
 (defn node [a]

@@ -19,6 +19,7 @@
 
 (defn sample 
   "Samples the value of a node at a given position"
+  ([node] (sample node [0.0 0.0]))
   ([node pos]
     (let [pos (vectorize pos)
           node (vectorize node)
