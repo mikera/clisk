@@ -465,6 +465,27 @@
     (vmax low (vmin high v))))
 
 
+(defn theta 
+  "Returns the angle of a vector in polar co-ordinates"
+  ([v]
+    (transform-node
+      (fn [x y]
+        `(Math/atan2 ~(:code y) ~(:code x)))
+      (component 0 v)
+      (component 1 v))) )
+
+
+(defn radius 
+  "Returns the raidus of a vector in polar co-ordinates"
+  ([v]
+    (transform-node
+      (fn [x y]
+        `(let [x# ~(:code x) y# ~(:code y)] (Math/sqrt (+ (* x# x#) (* y# y#)) ) ))
+      (component 0 v)
+      (component 1 v))) )
+
+
+
 (defn viewport 
   "Rescales the texture as if viwed from [ax, ay] to [bx ,by]"
   ([a b function]
