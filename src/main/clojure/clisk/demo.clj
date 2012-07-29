@@ -67,4 +67,7 @@
    
    ;; purple vortex-like texture
    (show (v* [0.9 0.7 1.0] (voffset (v* noise flecks 1) agate)))
+   
+   ;; colour polar co-ordinates
+   (show (vscale 0.1 [(vfrac radius) (vfrac theta)]))
    )
