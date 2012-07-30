@@ -1,6 +1,7 @@
 (ns clisk.util
   (:import javax.imageio.ImageIO)
   (:import clisk.Util)
+  (:import [clojure.lang RT Compiler Compiler$C])
   (:import java.awt.image.BufferedImage))
 
 (defmacro error
@@ -20,6 +21,21 @@
        (if a#
          (if b# nil a#)
          b#))))
+
+(defn expression-info
+  "Uses the Clojure compiler to analyze the given s-expr.  Returns
+  a map with keys :class and :primitive? indicating what the compiler
+  concluded about the return value of the expression.  Returns nil if
+  not type info can be determined at compile-time.
+  
+  Example: (expression-info '(+ (int 5) (float 10)))
+  Returns: {:class float, :primitive? true}"
+  [expr]
+  (let [fn-ast (Compiler/analyze Compiler$C/EXPRESSION `(fn [] ~expr))
+        expr-ast (.body (first (.methods fn-ast)))]
+    (when (.hasJavaClass expr-ast)
+      {:class (.getJavaClass expr-ast)
+       :primitive? (.isPrimitive (.getJavaClass expr-ast))})))
 
 (defn ^ClassLoader context-class-loader []
   (.getContextClassLoader (Thread/currentThread)))
