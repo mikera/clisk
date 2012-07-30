@@ -37,6 +37,14 @@
     (is (= [1.0 2.0] (evaluate (v+ 1.0 [0.0 1.0]))))
     (is (= 3.0 (evaluate (v+ 1.0 2.0))))))
 
+(deftest test-ops
+  (testing "Sigmoid"
+    (is (= 0.5 (evaluate (sigmoid 0.0))))
+    (is (= 0.0 (evaluate (sigmoid -1000.0))))
+    (is (= 1.0 (evaluate (sigmoid 1000.0))))
+    ))
+
+
 (deftest test-mul
   (testing "Multiply"
     (is (= [2.0 6.0] (evaluate (v* [1.0 2.0] [2.0 3.0]))))

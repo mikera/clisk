@@ -3,6 +3,7 @@
   (:import clisk.Util)
   (:import java.awt.image.BufferedImage)
   (:import java.lang.Math)
+  (:import clisk.Maths)
   (:use clisk.node)
   (:use clisk.util))
 
@@ -238,6 +239,9 @@
   "Raises a vector to an exponent"
   (vectorize-op 'Math/pow))
 
+(def sigmoid
+  "Sigmoid function on a scalar or vector in range [0..1]"
+  (vectorize-op 'clisk.Maths/sigmoid))
 
 (defn dot 
 	"Returns the dot product of two vectors"
