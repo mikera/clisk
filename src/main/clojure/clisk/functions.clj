@@ -253,7 +253,7 @@
 		        `(clojure.core/* ~(:code (component i %1)) ~(:code (component i %2)))))
        a b))))
 
-(defn vcross3
+(defn cross3
   "Returns the cross product of 2 3D vectors"
   ([a b]
     (transform-node
@@ -293,13 +293,13 @@
               (node `(Math/sqrt (+ ~@(map #(do `(let [v# ~%] (* v# v#))) (map :code comps))))))
             comps))))
 
-(defn vnormalize 
+(defn normalize 
   "Normalizes a vector"
   ([a]
 	  (let [a (vectorize a)]
 	    (vdivide a (length a)))))
 
-(defn vwarp 
+(defn warp 
   "Warps the position vector before calculating a vector function"
   ([warp f]
 	  (let [warp (vectorize warp)
@@ -314,17 +314,17 @@
                   (interleave vars temps)))]
      (vlet bindings f))))
 
-(defn vscale 
+(defn scale 
   "Scales a function by a given factor."
   ([factor f] 
 	  (let [factor (node factor)
 	        f (node f)]
-	    (vwarp (vdivide pos factor) f))))
+	    (warp (vdivide pos factor) f))))
 
-(defn voffset 
+(defn offset 
   "Offsets a function by a specified amount"
   ([offset f]
-    (vwarp (v+ 
+    (warp (v+ 
              pos
              offset)
            f)))
@@ -343,7 +343,7 @@
            ~func))
       offsets-for-vectors)))
 
-(defn vgradient 
+(defn gradient 
   "Computes the gradient of a scalar function f with respect to [x y z t]"
 	([f]
 	  (let [epsilon 0.000001
@@ -360,7 +360,7 @@
 	      f
         (node pos)))))
 
-(defn lerp 
+(defn scalar-lerp 
   "Performs clamped linear interpolation between two values, according to the proportion given in the 3rd parameter."
   ([proportion a b]
 	  (let [a# a
@@ -372,9 +372,9 @@
 	           (* v# b#)
 	           (* (- 1.0 v#) a#)))))))
 
-(def vlerp 
+(def lerp 
   "Performs clamped linear interpolation between two vectors, according to the proportion given in the 3rd parameter."
-  (vectorize-op lerp))
+  (vectorize-op scalar-lerp))
 
 (defmacro texture-bound [v offset width max]
   `(let [tv# (double (+ (* (double ~v) ~(double width)) ~(double offset)) ) 
@@ -422,7 +422,7 @@
 		              hi (first (vals 1))]
                 (vif 
                   (v- hi lo)
-                  (vlerp  ;; normal case interpolation with positive range
+                  (lerp  ;; normal case interpolation with positive range
 			              (vdivide (v- v lo) (v- hi lo))
                     (node (second (vals 0))) 
 			              (node (second (vals 1))))      
@@ -442,7 +442,7 @@
    unique point in space"
   `(phash ~'x ~'y ~'z ~'t))
 
-(def vhash
+(def vector-hash
   "Hash function producing a vector value 
    in the range [0..1)^4 for every 
    unique point in space"
@@ -456,7 +456,7 @@
   "Computes the maximum of two vectors"
   (vectorize-op 'Math/max))
 
-(defn vclamp [v low high]
+(defn clamp [v low high]
   "Clamps a vector between a low and high vector. Typically used to limit 
    a vector to a range e.g. (vclamp something [0 0 0] [1 1 1])."
   (let [v (vectorize v)
@@ -464,6 +464,7 @@
         high (vectorize high)]
     (vmax low (vmin high v))))
 
+;; polar co-ordinate functions
 
 (defn theta 
   "Returns the angle of a vector in polar co-ordinates"
@@ -484,7 +485,10 @@
       (component 0 v)
       (component 1 v))) )
 
-
+(defn polar
+  "Returns the polar co-ordinates of a vector"
+  ([v]
+    (vector-node (radius v) (theta v))))
 
 (defn viewport 
   "Rescales the texture as if viwed from [ax, ay] to [bx ,by]"
@@ -493,18 +497,18 @@
           [x2 y2] b
           w (- x2 x1)
           h (- y2 y1)]
-      (vscale [(/ 1.0 w) (/ 1.0 h) 1 1] (voffset [x1 y1] function)))))
+      (scale [(/ 1.0 w) (/ 1.0 h) 1 1] (offset [x1 y1] function)))))
 
-(defn vseamless 
+(defn seamless 
   "Creates a seamless 2D tileable version of a 4D texture in the [0 0] to [1 1] region. The scale argument detrmines the amount of the source texture to be used per repeat."
   ([v4]
-    (vseamless 1.0 v4))
+    (seamless 1.0 v4))
   ([scale v4]
     (let [v4 (node v4)
           scale-factor (/ 1.0 (double scale) TAO)
           dims (dimensions v4)]
       ;;(if (< dims 4) (error "vseamless requires 4D input texture, found " dims))
-      (vwarp
+      (warp
         [`(* (Math/cos (* ~'x TAO)) ~scale-factor) 
          `(* (Math/sin (* ~'x TAO)) ~scale-factor) 
          `(* (Math/cos (* ~'y TAO)) ~scale-factor)
@@ -519,9 +523,9 @@
 (defn height-normal 
   "Calculates a vector normal to the surface defined by the z-value of a source vector or a scalar height value. The result is *not* normalised."
   ([heightmap]
-    (v- [0 0 1] (components [1 1 0] (vgradient (z heightmap)))))
+    (v- [0 0 1] (components [1 1 0] (gradient (z heightmap)))))
   ([scale heightmap]
-    (v- [0 0 1] (components [1 1 0] (vgradient (v* scale (z heightmap)))))))
+    (v- [0 0 1] (components [1 1 0] (gradient (v* scale (z heightmap)))))))
 
 
 (defn light-value 
@@ -529,7 +533,7 @@
    This function performs its own normalisation, so neither the light vector nor the normal vector need to be normalised."
   ([light-direction normal-direction]
       (vmax 0.0 
-	        (dot (vnormalize light-direction) (vnormalize normal-direction)))))
+	        (dot (normalize light-direction) (normalize normal-direction)))))
 
 (defn diffuse-light 
   "Calculate the diffuse light on a surface normal vector.
