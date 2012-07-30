@@ -7,7 +7,7 @@ Clisk is a DSL library for procedural image generation that can be use from Cloj
 
       (show  (v+ [0.9 0.6 0.3] 
                  (dot [0.2 0.2 0] 
-                      (vgradient (vseamless 1.0 plasma) ))))
+                      (gradient (seamless 1.0 plasma) ))))
 
 ![Golden rock](https://raw.github.com/wiki/mikera/clisk/images/GoldRock.png)
 
