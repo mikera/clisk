@@ -11,9 +11,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-				    <executable>${java.home}/bin/javac</executable>
 					<source>1.7</source>
-					<target>1.7</target>
+					<target>1.6</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -74,11 +73,6 @@
 			<groupId>org.clojure</groupId>
 			<artifactId>clojure</artifactId>
 			<version>1.4.0</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.10</version>
 		</dependency>
 	</dependencies>
 </project>
