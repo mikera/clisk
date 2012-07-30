@@ -4,30 +4,30 @@
 (defn demo []
   
   ;; coloured red/green ramps using frac
-  (show (vscale 0.1 vfrac))
+  (show (scale 0.1 vfrac))
   
   ;; Dot products
-  (show (vscale 0.25 (dot vfrac vfrac)))
+  (show (scale 0.25 (dot vfrac vfrac)))
   
   ;; Chess board
-  (show (vscale 0.25 (checker 0 1)))
+  (show (scale 0.25 (checker 0 1)))
   
   ;; Basic perlin noise
-  (show (vscale 0.1 noise))
+  (show (scale 0.1 noise))
   
   ;; offset of checkers using perlin noise
   ;; 512*512 output
   (show 
-    (vscale 0.2 
-            (voffset
+    (scale 0.2 
+            (offset
               (v* 7 vnoise) 
               (checker [1 0 0] [1 1 0]))) 512 512)
   
-  ;; hash cube colours
-  (show (vscale 0.1 (vwarp vfloor vhash)))
+  ;; grain-based cube colours
+  (show (scale 0.1 (warp vfloor grain)))
   
-  ;; vnoise warped by hash cubes
-  (show (vscale 0.2 (voffset (v* 10 (vwarp vfloor vhash)) vnoise)))
+  ;; vnoise warped by grain-based cubes
+  (show (scale 0.2 (offset (v* 10 (warp vfloor grain)) vnoise)))
   
   ;; basic colour map in y-direction
   (show (colour-map [[0   [1 1   1]] 
@@ -44,30 +44,30 @@
   ;; tileable rock texture with faked lighting
   (show  (v+ [0.9 0.6 0.3] 
              (dot [0.2 0.2 0] 
-                  (vgradient (vseamless 1.0 plasma) ))))
+                  (gradient (seamless 1.0 plasma) ))))
   
   ;; aplha blend using vlerp
-  (show (vlerp (v- (v* 4 plasma) 1.3) 
-               (vscale 0.1 (checker 0 1))
+  (show (lerp (v- (v* 4 plasma) 1.3) 
+               (scale 0.1 (checker 0 1))
                [1 0 0]))
   
    ;; aplha blend using vlerp
-  (show (vlerp (v- (v* 4 plasma) 1.3) 
-               (vscale 0.1 (checker 0 1))
+  (show (lerp (v- (v* 4 plasma) 1.3) 
+               (scale 0.1 (checker 0 1))
                [1 0 0]))
   
    ;; texture mapping example
    (show (texture-map (clisk.util/load-image "Clojure_300x300.png")) 300 300 )
 
    ;; tiled clojure pattern
-   (show (vscale 0.1 (tile clojure)))
+   (show (scale 0.1 (tile clojure)))
    
    ;; interesting noisy wood patterns
-   (show (v* [1.0 0.7 0.3] (voffset (v* noise plasma 5) wood)))
+   (show (v* [1.0 0.7 0.3] (offset (v* noise plasma 5) wood)))
    
    ;; purple vortex-like texture
-   (show (v* [0.9 0.7 1.0] (voffset (v* noise flecks 1) agate)))
+   (show (v* [0.9 0.7 1.0] (offset (v* noise flecks 1) agate)))
    
    ;; colour polar co-ordinates
-   (show (vscale 0.1 [(vfrac radius) (vfrac theta)]))
-   )
+   (show (scale 0.1 [(vfrac radius) (vfrac theta)]))
+ )

@@ -15,7 +15,11 @@
 (defn tile
   "Tiles a pattern in the range [0..1,0..1]"
   ([pattern]
-    (vwarp vfrac pattern)))
+    (warp vfrac pattern)))
+
+(def grain
+  "Pattern returning a unique vector in [0..1)^4 range value for every point in 4D space"
+  vector-hash)
 
 (def noise
   perlin-noise)
@@ -39,7 +43,7 @@
 
 (def hash-cubes 
     "4 dimensional randomly coloured unit hypercubes filling space"
-    (vwarp vfloor vhash))
+    (warp vfloor grain))
 
 (def vnoise 
   "4 dimensional vector perlin noise in range [0..1]^4"
@@ -56,7 +60,7 @@
 (defn turbulence
   "Adds random turbulence to a pattern according to a perlin noise offset"
   ([factor func]
-    (voffset (v* factor vsnoise) func)))
+    (offset (v* factor vsnoise) func)))
 
 (defmethod clojure.core/print-dup java.awt.image.BufferedImage
   [^BufferedImage bi writer]
@@ -83,5 +87,5 @@
   ([function background]
     (vif 
       (v- 1.0 (length [x y]))
-      (vwarp [x y `(Math/sqrt (- 1.0 ~(:code (dot [x y] [x y]))))] function )
+      (warp [x y `(Math/sqrt (- 1.0 ~(:code (dot [x y] [x y]))))] function )
       background)))
