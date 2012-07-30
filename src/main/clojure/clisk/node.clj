@@ -25,7 +25,7 @@
   (and (node? x) (= :scalar (:type x))))
 
 ;; standard position vector
-(def pos ['x 'y 'z 't])
+(def position-symbol-vector ['x 'y 'z 't])
 
 ;; =====================================
 ;; basic Node functions
@@ -205,7 +205,7 @@
     (node? a) a
     (number? a) (constant-node a)
     (vector? a) (vec-node a)
-    (fn? a) (node (a pos))
+    (fn? a) (node (a position-symbol-vector))
     (symbol? a) (code-node a)
     (keyword? a) (error "Can't convert keyword to node: " a)
     (sequential? a) (code-node a)

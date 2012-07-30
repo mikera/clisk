@@ -109,8 +109,9 @@
 
 (deftest test-colours
   (testing "rgb"
-    (is (= [0.3 0.4 0.5 1.0] (rgb 0.3 0.4 0.5)))
-    (is (= [0.3 0.4 0.5 0.6] (rgb 0.3 0.4 0.5 0.6)))))
+    (is (= [0.3 0.4 0.5] (rgb 0.3 0.4 0.5)))
+    (is (= [0.3 0.4 0.5 1.0] (rgba 0.3 0.4 0.5)))
+    (is (= [0.3 0.4 0.5 0.6] (rgba 0.3 0.4 0.5 0.6)))))
 
 (deftest test-normal
   (testing "Normal of flat surface"

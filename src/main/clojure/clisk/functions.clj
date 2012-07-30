@@ -107,9 +107,9 @@
          (/ (.getBlue java-colour) 255.0)
          (/ (.getGreen java-colour) 255.0)))
   ([r g b]
-    [r g b 1.0])
+    [r g b])
   ([r g b a]
-    [r g b a]))
+    (rgb r g b)))
 
 (defn rgba
   "Creates an RGBA colour vector"
@@ -118,6 +118,8 @@
           (/(.getBlue java-colour) 255.0)
           (/(.getGreen java-colour) 255.0)
           (/(.getAlpha java-colour) 255.0)))
+  ([r g b]
+    (rgba r g b 1.0))
   ([r g b a]
     [r g b a]))
 
@@ -294,7 +296,7 @@
 	  (let [comps (:nodes (vectorize a))]
 	    (apply transform-node
             (fn [& comps]
-              (node `(Math/sqrt (+ ~@(map #(do `(let [v# ~%] (* v# v#))) (map :code comps))))))
+              (node `(Math/sqrt (+ ~@(map #(do `(let [v# (double ~%)] (* v# v#))) (map :code comps))))))
             comps))))
 
 (defn normalize 
@@ -323,13 +325,13 @@
   ([factor f] 
 	  (let [factor (node factor)
 	        f (node f)]
-	    (warp (vdivide pos factor) f))))
+	    (warp (vdivide position-symbol-vector factor) f))))
 
 (defn offset 
   "Offsets a function by a specified amount"
   ([offset f]
     (warp (v+ 
-             pos
+             position-symbol-vector
              offset)
            f)))
 
@@ -343,7 +345,8 @@
   (vec 
     (map
       (fn [offs]
-        `(let [~@(interleave pos (map #(do `(clojure.core/+ ~%1 ~%2)) offs pos))] 
+        `(let [~@(interleave position-symbol-vector 
+                             (map #(do `(double (clojure.core/+ ~%1 ~%2))) offs position-symbol-vector))] 
            ~func))
       offsets-for-vectors)))
 
@@ -357,12 +360,12 @@
           (let [sym (:code pos)]
 	          `(clojure.core// 
 	             (clojure.core/-
-	               (let [~sym (clojure.core/+ ~epsilon (double ~sym))]
+	               (let [~sym (double (clojure.core/+ ~epsilon ~sym))]
 	                 ~(:code f))
 	               ~(:code f))
 	             ~epsilon)))
 	      f
-        (node pos)))))
+        (node position-symbol-vector)))))
 
 (defn scalar-lerp 
   "Performs clamped linear interpolation between two values, according to the proportion given in the 3rd parameter."
@@ -407,7 +410,7 @@
                        ty# (int (texture-bound ~'y ~y ~h ~mh))]
                    (~fsym (.getRGB ^BufferedImage image# tx# ty#)) ) )
               :objects (:objects texture)) )
-            [`red-from-argb `green-from-argb `blue-from-argb `alpha-from-argb])))))
+          [`red-from-argb `green-from-argb `blue-from-argb `alpha-from-argb])))))
   
 
 (defn colour-map 
