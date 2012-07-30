@@ -219,5 +219,14 @@
   (cond
     (not (xor (:code node) (:codes node))) 
       (error "AST node must have :code or :codes")
+    (and (scalar-node? node) 
+         (not (:primitive? (expression-info 
+                             `(let [~'x 1.0 ~'y 1.0 ~'z 1.0 ~'t 1.0]
+                                ~(:code node))))))
+      (error "AST code must be of primitive type: " (:code node))
     :else 
-      node))
+      (if (vector-node? node)
+        (do 
+          (doseq [n (:nodes node)] (validate n))
+          node)
+        node)))
