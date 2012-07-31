@@ -5,6 +5,10 @@
   (:use clisk.functions)
   (:import java.awt.Color))
 
+(set! *warn-on-reflection* true)
+(set! *unchecked-math* true)
+
+
 (def JAVA-COLOURS
   '(black blue cyan darkGray gray green lightGray magenta 
     orange pink red white yellow))

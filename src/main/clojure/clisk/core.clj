@@ -7,7 +7,6 @@
   (:use [clisk node functions util]))
 
 (set! *warn-on-reflection* true)
-
 (set! *unchecked-math* true)
 
 (def DEFAULT-IMAGE-WIDTH 256)
