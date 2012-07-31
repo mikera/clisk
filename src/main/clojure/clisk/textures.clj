@@ -1,6 +1,10 @@
 (ns clisk.textures
   (:use [clisk core functions patterns colours util node]))
 
+(set! *warn-on-reflection* true)
+(set! *unchecked-math* true)
+
+
 (def agate
   "A monochrome agate-style rock texture"
   (scale 0.3 

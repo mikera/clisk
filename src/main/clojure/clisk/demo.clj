@@ -4,6 +4,9 @@
   clisk.demo
   (:use [clisk core node functions patterns colours textures util]))
 
+(set! *warn-on-reflection* true)
+(set! *unchecked-math* true)
+
 (defn demo []
   
   ;; coloured red/green ramps using frac

@@ -4,7 +4,7 @@
   clisk.patterns
   
   "Patterns and pattern generators"
-  (:use [clisk util functions])
+  (:use [clisk util node functions])
   (:import java.awt.image.BufferedImage)
   (:import clisk.Perlin))
 
@@ -34,16 +34,17 @@
 
 (def plasma 
   "4 dimensional plasma, in range [0..1]"
-  (cons 'clojure.core/+
+  (code-node
+    (cons 'clojure.core/+
         (map
           (fn [i]
-            (let [factor (Math/pow 0.5 (inc i))]
+            (let [factor (Math/pow 0.5 (double (inc i)) )]
               `(let [~'x (/ ~'x ~factor)
                      ~'y (/ ~'y ~factor)
                      ~'z (/ ~'z ~factor)
                      ~'t (/ ~'t ~factor)]
                  (clojure.core/* ~factor ~noise))))
-          (range 6))))
+          (range 6)))))
 
 (def hash-cubes 
     "4 dimensional randomly coloured unit hypercubes filling space"

@@ -4,6 +4,10 @@
   clisk.node
   (:use clisk.util))
 
+(set! *warn-on-reflection* true)
+(set! *unchecked-math* true)
+
+
 (defrecord Node [])
 
 (declare node)
@@ -118,7 +122,7 @@
 			           (.calc ~'this 0.0))))))
 	      objs)))
 
-(defn evaluate 
+(defn ^:private evaluate 
   "Evaluates a node at a given position (defaults to zero). Can return either vector or scalar result."
   ([n] (evaluate n 0.0 0.0 0.0 0.0))
   ([n x] (evaluate n x 0.0 0.0 0.0))

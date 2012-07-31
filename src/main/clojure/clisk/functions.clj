@@ -9,17 +9,21 @@
   (:use clisk.node)
   (:use clisk.util))
 
+(set! *warn-on-reflection* true)
 (set! *unchecked-math* true)
 
 (def ^:const TAO (* 2.0 Math/PI))
 
 (def ^:const COMPONENT_TO_DOUBLE (/ 1.0 255.0))
 
-(def pos (code-node ['x 'y 'z 't]))
+(def pos 
+  "A special node that evaluates to the current position in space as a 4D vector."
+  (code-node ['x 'y 'z 't]))
 
+;; alias key private functions from clisk.node
 (def dimensions #'clisk.node/dimensions)
-
 (def component #'clisk.node/component)
+(def evaluate #'clisk.node/evaluate)
 
 (defn ensure-scalar [x]
   "Ensure x is a scalar value. If x is a vector, resturns the first component (index 0)."
