@@ -1,5 +1,7 @@
-(ns clisk.colours
-  "Library of colours, colour gradients and colour-handling functions."
+(ns 
+  ^{:author "mikera"
+    :doc "Library of colours, colour gradients and colour-handling functions."}
+  clisk.colours
   (:use clisk.functions)
   (:import java.awt.Color))
 
