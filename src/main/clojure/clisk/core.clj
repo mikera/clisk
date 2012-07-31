@@ -1,4 +1,7 @@
-(ns clisk.core
+(ns 
+  ^{:author "mikera"
+    :doc "Core clisk image generation functions"}
+  clisk.core
   (:import clisk.Util)
   (:import java.awt.image.BufferedImage)
   (:use [clisk node functions util]))

@@ -1,5 +1,7 @@
-(ns clisk.node
-  "Functions for managing nodes in the clisk AST tree. Should not normally be needed by users."
+(ns 
+  ^{:author "mikera"
+    :doc "Functions for managing clisk AST nodes. Should not normally be needed by library users"}  
+  clisk.node
   (:use clisk.util))
 
 (defrecord Node [])
@@ -29,8 +31,9 @@
 
 ;; =====================================
 ;; basic Node functions
+;; these are private but aliased in clisk.functions
 
-(defn dimensions 
+(defn ^:private dimensions 
   "Returns the number of dimensions in a vector node, or 1 if scalar"
   ([a]
 	  (let [a (node a)]
@@ -41,7 +44,7 @@
 	        (count (:nodes a))))))
 
 
-(defn component [i n]
+(defn ^:private component [i n]
   "Returns a scalar node that represents the specified component of an input node. Taking any component of a scalr results in the same scalar."
   (let [n (node n)]
 	  (if (vector-node? n)

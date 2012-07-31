@@ -1,4 +1,7 @@
-(ns clisk.demo
+(ns 
+  ^{:author "mikera"
+    :doc "Demonstration images."}  
+  clisk.demo
   (:use [clisk core node functions patterns colours textures util]))
 
 (defn demo []

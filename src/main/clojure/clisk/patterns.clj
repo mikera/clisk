@@ -1,4 +1,8 @@
-(ns clisk.patterns
+(ns 
+  ^{:author "mikera"
+    :doc "Library of clisk patterns generators"}
+  clisk.patterns
+  
   "Patterns and pattern generators"
   (:use [clisk util functions])
   (:import java.awt.image.BufferedImage)
