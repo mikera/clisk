@@ -11,15 +11,20 @@
 ;; testing nodes, should all evaluate to 1.0 when evaluated at [1.0 1.0 1.0 1.0]
 (def scalar-node-types
   [(node 1)
-   (node 'x)
    (node 't)
    (node 1N)
+   (component 1 [0 1 2])
+   (v* 1.0 1)
+   (dot [1 1 0] [0 1 1])
+   (component 0 (offset -2 (v- pos))) 
    (node (v+ 0.5 0.5))
-   (node y)])
+   (node y)
+   (vlet ['q 1] `(+ 0 ~'q))])
 
 (def vector-node-types
   [(node [1 'x])
-   (node [1/1 y])])
+   (node [1/1 y])
+   (warp polar [1 1])])
 
 
 (def all-node-types
@@ -28,17 +33,13 @@
 
 (deftest test-node-types
   (testing "Validating expressions"
-    (is (do 
-          (doseq [n all-node-types] (validate n))
-          true)))
+    (doseq [n all-node-types] 
+      (is (validate n))))
   (testing "Validating scalars"
-    (is (every?
-          #(= 1.0 (evaluate % 1.0 1.0 1.0 1.0))
-          scalar-node-types)))
+    (doseq [n scalar-node-types] 
+      (is (= 1.0 (evaluate n 1.0 1.0 1.0 1.0)))))
    (testing "Validating vectors"
-    (is (every?
-          #(= [1.0 1.0] (evaluate % 1.0 1.0 1.0 1.0))
-          vector-node-types)))
-)
+    (doseq [n vector-node-types] 
+      (is (= [1.0 1.0] (evaluate n 1.0 1.0 1.0 1.0)))))) 
 
 
