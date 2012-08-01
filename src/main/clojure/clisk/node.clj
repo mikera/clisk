@@ -191,13 +191,15 @@
 	      (apply transform-node f nodes)))))
 
 (defn function-node
-  "Creates a node which is a scalar function of scalar nodes"
+  "Creates a node which is a scalar function of scalar nodes. Function should be provided as a symbol."
   ([f & scalars]
-    (if-not (every? scalar-node? scalars) (error "Input nodes to function-node must be scalar"))
-    (apply 
-      transform-node
-      (fn [& xs] `(~f ~@(map :code xs)))
-      scalars)))
+    (let [scalars (map node scalars)]
+      (if-not (every? scalar-node? scalars) (error "Input nodes to function-node must be scalar"))
+      (if-not (symbol? f) (error "Function in function-node must be a symbol, got: " f))
+      (apply 
+        transform-node
+        (fn [& xs] `(~f ~@(map :code xs)))
+        scalars))))
 
 (defn code-node [form]
   "Creates a node from a given code form (may be a vector). Does not preserve objects - must be copied over manually."
@@ -231,8 +233,11 @@
 	      (error "AST node must have :code or :codes")
 	    (and (scalar-node? node) 
 	         (not (:primitive? (expression-info 
-	                             `(let [~'x 1.0 ~'y 1.0 ~'z 1.0 ~'t 1.0 
-                                     ~@(let [objs (:objects node)
+	                             `(let [~'x 1.0 
+                                      ~'y 1.0 
+                                      ~'z 1.0 
+                                      ~'t 1.0 
+                                      ~@(let [objs (:objects node)
                                              ks (keys objs)
                                              vs (vals objs)] 
                                          (interleave ks vs))]

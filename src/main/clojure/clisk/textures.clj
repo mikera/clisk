@@ -24,7 +24,7 @@
 
 (def flecks
   "Stranges wispy flecks"
-  (scale 0.1 (v* 2.0 (apply-to-components min vnoise))))
+  (scale 0.1 (v* 2.0 (apply-to-components `min vnoise))))
 
 (def wood
   "Spherical wood-like texture centred at origin"

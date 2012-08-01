@@ -16,5 +16,11 @@ public class Maths {
 		if (Double.isNaN(df)) return (a>0)?1:0;
 		return df;
 	}
+	
+	public static double mod(double num, double div) {
+		double result=num%div;
+		if (result<0) result+=div;
+		return result;
+	}
 
 }

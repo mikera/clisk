@@ -160,12 +160,12 @@
           (apply function-node f vs))))))
 
 (defn ^:private vlet* 
-  "let one or more scalar values within a vector function" 
+  "let one or more values within a vector function" 
   ([bindings form]
     (let [form (node form)
           binding-nodes (map (comp node second) (partition 2 bindings))
           symbols (map first (partition 2 bindings))]
-      (if-not (every? scalar-node? binding-nodes) (error "All binding values must be scalar"))
+      ;; (if-not (every? scalar-node? binding-nodes) (error "All binding values must be scalar"))
 		  (if (seq bindings)
 		    (apply transform-components
           (fn [form & binds]
@@ -175,7 +175,7 @@
       form))))
 
 (defmacro vlet 
-  "let one or more scalar values within a vector function" 
+  "let one or more values within a vector function" 
   [bindings form]
   (let [bind-pairs (partition 2 bindings)
         bindings (interleave (map #(do `(quote ~(first %))) bind-pairs)
@@ -423,7 +423,7 @@
 
 (def lerp 
   "Performs clamped linear interpolation between two vectors, according to the proportion given in the 3rd parameter."
-  (vectorize-op scalar-lerp))
+  (vectorize-op `scalar-lerp))
 
 (defmacro texture-bound [v offset width max]
   `(let [tv# (double (+ (* (double ~v) ~(double width)) ~(double offset)) ) 

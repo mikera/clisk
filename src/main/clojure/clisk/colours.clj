@@ -2,8 +2,10 @@
   ^{:author "mikera"
     :doc "Library of colours, colour gradients and colour-handling functions."}
   clisk.colours
-  (:use clisk.functions)
-  (:import java.awt.Color))
+  (:use [clisk node functions])
+  (:import java.awt.Color)
+  (:import clisk.Maths)
+  (:import java.lang.Math))
 
 (set! *warn-on-reflection* true)
 (set! *unchecked-math* true)
@@ -34,3 +36,83 @@
      [0.7 [0.8 0.3 0.1]]
      [0.9 [1.0 0.6 0.0]]
      [1.0 [1.0 0.9 0.0]]]))
+
+(defn ^:static hue-function 
+  (^double [^double r ^double g ^double b]
+	  (let [M (Math/max r (Math/max g b))
+	        m (Math/min r (Math/min g b))
+	        C (- M m)]
+	      (double (/
+	        (cond
+	          (== C 0.0)
+	            0.0
+	          (== M r)
+	            (Maths/mod (/ (- g b) C) 6.0)
+	          (== M g)
+	            (+ (/ (- b r) C) 2.0)
+	          (== M b)
+	            (+ (/ (- r g) C) 4.0)
+	        )
+	        6.0))))) 
+
+(defn ^:static lightness-function 
+  (^double [^double r ^double g ^double b]
+    (let [M (Math/max r (Math/max g b))
+          m (Math/min r (Math/min g b))]
+      (* 0.5 (+ M m))))) 
+
+(defn ^:static saturation-function 
+  (^double [^double r ^double g ^double b]
+	  (let [M (Math/max r (Math/max g b))
+	        m (Math/min r (Math/min g b))
+	        C (- M m)
+	        L (* 0.5 (+ M m))]
+	      (if (== C 0.0)
+	        0.0
+	        (/ C (- 1.0 (Math/abs (- (* 2.0 L) 1.0)))))))) 
+
+(defn hue-from-rgb [colour-vector]
+  (let [r (component 0 colour-vector)
+        g (component 1 colour-vector)
+        b (component 2 colour-vector)]
+    (function-node `hue-function r g b)))
+
+(defn lightness-from-rgb [colour-vector]
+  (let [r (component 0 colour-vector)
+        g (component 1 colour-vector)
+        b (component 2 colour-vector)]
+    (function-node `lightness-function r g b)))
+
+(defn saturation-from-rgb [colour-vector]
+  (let [r (component 0 colour-vector)
+        g (component 1 colour-vector)
+        b (component 2 colour-vector)]
+    (function-node `saturation-function r g b)))
+
+(defn hsl-from-rgb
+  ([rgb]
+    (vec-node 
+      [(hue-from-rgb rgb) (saturation-from-rgb rgb) (lightness-from-rgb rgb)])))
+
+(defn red-from-hsl [colour-vector]
+  (let [h (component 0 colour-vector)
+        s (component 1 colour-vector)
+        l (component 2 colour-vector)]
+    (function-node 'clisk.Util/redFromHSL h s l)))
+
+(defn green-from-hsl [colour-vector]
+  (let [h (component 0 colour-vector)
+        s (component 1 colour-vector)
+        l (component 2 colour-vector)]
+    (function-node 'clisk.Util/greenFromHSL h s l)))
+
+(defn blue-from-hsl [colour-vector]
+  (let [h (component 0 colour-vector)
+        s (component 1 colour-vector)
+        l (component 2 colour-vector)]
+    (function-node 'clisk.Util/blueFromHSL h s l)))
+
+(defn rgb-from-hsl
+  ([hsl]
+    (vec-node 
+      [(red-from-hsl hsl) (green-from-hsl hsl) (blue-from-hsl hsl)])))
