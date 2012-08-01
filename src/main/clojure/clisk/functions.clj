@@ -409,9 +409,9 @@
 	      f
         (node position-symbol-vector)))))
 
-(defn scalar-lerp 
+(defn ^:static scalar-lerp 
   "Performs clamped linear interpolation between two values, according to the proportion given in the 3rd parameter."
-  ([proportion a b]
+  (^double [^double proportion ^double a ^double b]
 	  (let [a# a
 	        b# b
 	        v# proportion]
