@@ -79,4 +79,7 @@
    
    ;; colour polar co-ordinates
    (show (scale 0.1 [(vfrac radius) (vfrac theta)]))
+   
+   ;; turbulent hue values
+   (show (scale 0.4 (rgb-from-hsl [(v+ (v* 1 turbulence) 0.6 ) 1.0 0.75])))
  )
