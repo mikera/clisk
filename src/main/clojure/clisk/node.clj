@@ -230,7 +230,11 @@
 	      (error "AST node must have :code or :codes")
 	    (and (scalar-node? node) 
 	         (not (:primitive? (expression-info 
-	                             `(let [~'x 1.0 ~'y 1.0 ~'z 1.0 ~'t 1.0]
+	                             `(let [~'x 1.0 ~'y 1.0 ~'z 1.0 ~'t 1.0 
+                                     ~@(let [objs (:objects node)
+                                             ks (keys objs)
+                                             vs (vals objs)] 
+                                         (interleave ks vs))]
 	                                ~(:code node))))))
 	      (error "AST code must be of primitive type: " (:code node))
 	    :else 
