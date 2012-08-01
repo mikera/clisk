@@ -63,6 +63,8 @@
         (range h)))
      image)))
 
+(defn tst [] (clojure.test/run-all-tests))
+
 (defn scale-image [img w h]
   "Scales an image to a given width and height"
   (Util/scaleImage img (int w) (int h)))
