@@ -32,19 +32,18 @@
   "4-dimensional scalar perlin noise standardised with mean zero, range [-1..1]"
   '(clisk.Perlin/snoise x y z t))
 
-(def plasma 
-  "4 dimensional plasma, in range [0..1]"
-  (code-node
-    (cons 'clojure.core/+
-        (map
-          (fn [i]
-            (let [factor (Math/pow 0.5 (double (inc i)) )]
-              `(let [~'x (/ ~'x ~factor)
-                     ~'y (/ ~'y ~factor)
-                     ~'z (/ ~'z ~factor)
-                     ~'t (/ ~'t ~factor)]
-                 (clojure.core/* ~factor ~noise))))
-          (range 6)))))
+(defn make-multi-fractal 
+  ([function & {:keys [octaves lacunarity gain]
+                :or {octaves 8
+                     lacunarity 2.0
+                     gain 0.5}}]
+    (apply v+
+      (for [octave (range 1 (inc octaves))]        
+        (warp 
+          (v* pos (Math/pow lacunarity octave))
+          (v* (Math/pow gain octave) function))))))
+
+
 
 (def hash-cubes 
     "4 dimensional randomly coloured unit hypercubes filling space"
@@ -58,14 +57,26 @@
   "4 dimensional vector standardised perlin noise in range [-1..1]^4"
   (vector-offsets snoise))
 
+(def plasma 
+  "4 dimensional plasma, in range [0..1]"
+  (make-multi-fractal noise))
+
+(def turbulence
+  "Classic Perlin turbulence in one dimension"
+  (make-multi-fractal (vabs snoise)))
+
+(def vturbulence
+  "Classic Perlin turbulence in 4 dimensions"
+  (make-multi-fractal (vabs vsnoise)))
+
 (def vplasma 
   "4 dimensional vector plasma in range [0..1]^4"
   (vector-offsets plasma))
 
-(defn turbulence
+(defn turbulate
   "Adds random turbulence to a pattern according to a perlin noise offset"
   ([factor func]
-    (offset (v* factor vsnoise) func)))
+    (offset (v* factor turbulence) func)))
 
 (defmethod clojure.core/print-dup java.awt.image.BufferedImage
   [^BufferedImage bi writer]
