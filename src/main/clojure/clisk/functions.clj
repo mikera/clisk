@@ -213,6 +213,11 @@
   (^double [^double x]
     (- x (Math/floor x))))
 
+(defn ^:static square-function
+  "Retuns the square of a number."
+  (^double [^double x]
+    (* x x)))
+
 (defn ^:static phash 
   "Returns a hashed double value in the range [0..1)"
   (^double [^double x]
@@ -242,6 +247,9 @@
 (def vfrac
   (vectorize-op 'clisk.functions/frac))
 
+(def square
+  (vectorize-op 'clisk.functions/square-function))
+
 (def v+ 
   "Adds two or more vectors"
   (vectorize-op 'clojure.core/+))
@@ -262,6 +270,9 @@
   "Raises a vector to an exponent"
   (vectorize-op 'Math/pow))
 
+(def vmod
+  "Returns the modulus of a vector by component."
+  (vectorize-op 'clisk.Maths/mod))
 
 (def vsqrt
   "Takes the square root of a value"
