@@ -182,12 +182,13 @@
 (defn transform-components
   "Calls transform-node separately on each component of a set of nodes. Returns a scalar iff all input nodes are scalar."
   ([f & nodes]
-    (if (some vector-node? nodes)
-      (let [dims (apply max (map dimensions nodes))]
-	      (vec-node 
-	        (for [i (range dims)]
-	          (apply transform-node f (map #(component i %) nodes)))))
-      (apply transform-node f nodes))))
+    (let [nodes (map node nodes)]
+      (if (some vector-node? nodes)
+	      (let [dims (apply max (map dimensions nodes))]
+		      (vec-node 
+		        (for [i (range dims)]
+		          (apply transform-node f (map #(component i %) nodes)))))
+	      (apply transform-node f nodes)))))
 
 (defn function-node
   "Creates a node which is a scalar function of scalar nodes"

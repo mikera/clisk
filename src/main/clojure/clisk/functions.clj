@@ -175,6 +175,7 @@
       form))))
 
 (defmacro vlet 
+  "let one or more scalar values within a vector function" 
   [bindings form]
   (let [bind-pairs (partition 2 bindings)
         bindings (interleave (map #(do `(quote ~(first %))) bind-pairs)
@@ -227,7 +228,7 @@
   (vectorize-op 'Math/sin))
 
 (def vcos
-  (vectorize-op 'Math/sin))
+  (vectorize-op 'Math/cos))
 
 (def vabs
   (vectorize-op 'Math/abs))
@@ -260,6 +261,11 @@
 (def vpow 
   "Raises a vector to an exponent"
   (vectorize-op 'Math/pow))
+
+
+(def vsqrt
+  "Takes the square root of a value"
+  (vectorize-op 'Math/sqrt))
 
 (def sigmoid
   "Sigmoid function on a scalar or vector in range [0..1]"
@@ -340,6 +346,20 @@
                   (interleave vars temps)))]
      (vlet* bindings f))))
 
+(defn rotate
+  "Rotates a function in the (x,y plane)"
+  ([angle function]
+    (transform-components
+	     (fn [s c node]
+	        `(let [xt# (- (* ~(:code c) ~'x) (* ~(:code s) ~'y)) 
+                 yt# (+ (* ~(:code s) ~'x) (* ~(:code c) ~'y)) 
+                 ~'x xt#
+                 ~'y yt#]
+            ~(:code node)))
+       (vsin angle)
+       (vcos angle)
+	     function)))
+
 (defn scale 
   "Scales a function by a given factor."
   ([factor f] 
@@ -362,11 +382,13 @@
 
 (defn vector-offsets [func]
   "Creates a vector version of a scalar function, where the components are offset versions of the original scalar function"
-  (vec 
+  (vec-node 
     (map
       (fn [offs]
         `(let [~@(interleave position-symbol-vector 
-                             (map #(do `(double (clojure.core/+ ~%1 ~%2))) offs position-symbol-vector))] 
+                             (map #(do `(double (clojure.core/+ ~%1 ~%2))) 
+                                  offs 
+                                  position-symbol-vector))] 
            ~func))
       offsets-for-vectors)))
 
@@ -434,6 +456,7 @@
   
 
 (defn colour-map 
+  "Creates a colour map function using a set of value-colour mappings"
   ([mapping]
     (fn [x]
       (colour-map mapping x)))
@@ -526,7 +549,7 @@
           h (double (- y2 y1))]
       (scale 
         [(/ 1.0 w) (/ 1.0 h) 1.0 1.0] 
-        (offset [x1 y1] function)))))
+        (offset [(double x1) (double y1)] function)))))
 
 (defn seamless 
   "Creates a seamless 2D tileable version of a 4D texture in the [0 0] to [1 1] region. The scale argument detrmines the amount of the source texture to be used per repeat."

@@ -61,6 +61,13 @@
   "4 dimensional vector standardised perlin noise in range [-1..1]^4"
   (vector-offsets snoise))
 
+(defn swirl
+  "Swirls a function around the origin with a given rate"
+  ([function]
+    (swirl 1.0 function))
+  ([rate function]
+    (rotate (v* rate (vsqrt length) ) function)))
+
 (def plasma 
   "4 dimensional plasma, in range [0..1]"
   (make-multi-fractal noise))
@@ -85,7 +92,6 @@
 (defmethod clojure.core/print-dup java.awt.image.BufferedImage
   [^BufferedImage bi writer]
   (print-dup "[BufferedImage]" writer))
-
 
 (defn checker 
   "Checker pattern in (x,y) space, with 2*2 grid in [0..1,0..1] range"
