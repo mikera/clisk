@@ -85,8 +85,9 @@ public final class Perlin {
 		double u = fade(x);
 		double v = fade(y);
 		int A = p[X] + Y, B = p[X + 1] + Y;
-		return lerp(v, lerp(u, grad(p[A], x, y), grad(p[B], x - 1, y)),
-				lerp(u, grad(p[A + 1], x, y - 1), grad(p[B + 1], x - 1, y - 1)));
+		return lerp(v, 
+				    lerp(u, grad(p[A], x, y), grad(p[B], x - 1, y)),
+				    lerp(u, grad(p[A + 1], x, y - 1), grad(p[B + 1], x - 1, y - 1)));
 	}
 
 	public static final double snoise(double x, double y, double z) {
@@ -170,19 +171,19 @@ public final class Perlin {
 
 
 	public static final double noise(double x) {
-		return 0.5f + 0.5f * snoise(x);
+		return 0.5 + 0.5 * snoise(x);
 	}
 
 	public static final double noise(double x, double y) {
-		return 0.5f + 0.5f * snoise(x, y);
+		return 0.5 + 0.5 * snoise(x, y);
 	}
 
 	public static final double noise(double x, double y, double z) {
-		return 0.5f + 0.5f * snoise(x, y, z);
+		return 0.5 + 0.5 * snoise(x, y, z);
 	}
 
 	public static final double noise(double x, double y, double z, double t) {
-		return 0.5f + 0.5f * snoise(x, y, z, t);
+		return 0.5 + 0.5 * snoise(x, y, z, t);
 	}
 
 
@@ -261,8 +262,8 @@ public final class Perlin {
 				+ noise(x, y_h, z, t_p) * (w_xXy) * (d_zXt)
 				+ noise(x_w, y_h, z_d, t_p) * (xy) * (zXt)
 				+ noise(x, y, z_d, t_p) * (w_xXh_y) * (zXt)
-				+ noise(x, y_h, z_d, t_p) * (w_xXy) * (zXt) + noise(x_w, y,
-				z_d, t_p) * (xXh_y) * (zXt))
+				+ noise(x, y_h, z_d, t_p) * (w_xXy) * (zXt) 
+				+ noise(x_w, y, z_d, t_p) * (xXh_y) * (zXt))
 				/ (w * h * d * t);
 	}
 
