@@ -38,7 +38,7 @@
                      lacunarity 2.0
                      gain 0.5}}]
     (apply v+
-      (for [octave (range 1 (inc octaves))]        
+      (for [octave (range 0 octaves)]        
         (warp 
           (v* pos (Math/pow lacunarity octave))
           (v* (Math/pow gain octave) function))))))
@@ -46,6 +46,10 @@
 
 
 (def hash-cubes 
+    "4 dimensional randomly coloured unit hypercubes filling space"
+    (warp vfloor grain))
+
+(def colour-cubes 
     "4 dimensional randomly coloured unit hypercubes filling space"
     (warp vfloor grain))
 
@@ -81,6 +85,10 @@
 (defmethod clojure.core/print-dup java.awt.image.BufferedImage
   [^BufferedImage bi writer]
   (print-dup "[BufferedImage]" writer))
+
+(def velvet
+  "A nice velvetly pattern."
+  (warp (sigmoid (v* 2 vsnoise)) (scale 0.2 noise)))
 
 (defn checker 
   "Checker pattern in (x,y) space, with 2*2 grid in [0..1,0..1] range"

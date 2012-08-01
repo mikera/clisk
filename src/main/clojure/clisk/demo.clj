@@ -71,6 +71,9 @@
    ;; interesting noisy wood patterns
    (show (v* [1.0 0.7 0.3] (offset (v* noise plasma 5) wood)))
    
+   ;; multifractal cubes
+   (show (scale 0.2 (v* 0.5 (make-multi-fractal hash-cubes))))
+   
    ;; purple vortex-like texture
    (show (v* [0.9 0.7 1.0] (offset (v* noise flecks 1) agate)))
    
