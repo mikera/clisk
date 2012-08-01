@@ -166,31 +166,31 @@ public class Util {
 		return Compiler.load(new StringReader(script));
 	}
 	
-	private static double componentFromPQT(double p, double q, double t) {
-		 t=Maths.mod(t, 1.0);
-         if (t < 1.0/6.0) return p + (q - p) * 6.0 * t;
-         if (t < 0.5) return q;
-         if (t < 2.0/3.0) return p + (q - p) * (2.0/3.0 - t) * 6;
+	private static double componentFromPQT(double p, double q, double h) {
+		 h=Maths.mod(h, 1.0);
+         if (h < 1.0/6.0) return p + (q - p) * 6.0 * h;
+         if (h < 0.5) return q;
+         if (h < 2.0/3.0) return p + (q - p) * (2.0/3.0 - h) * 6.0;
          return p;
 	}
 	
 	public static double redFromHSL(double h, double s, double l) {
 		if (s==0.0) return l;
-	    double q = (l < 0.5) ? l * (1 + s) : l + s - l * s;
+	    double q = (l < 0.5) ? (l * (1 + s)) : (l + s - l * s);
         double p = (2 * l) - q;
         return componentFromPQT(p, q, h + 1.0/3.0);
 	}
 	
 	public static double greenFromHSL(double h, double s, double l) {
 		if (s==0.0) return l;
-	    double q = (l < 0.5) ? l * (1 + s) : l + s - l * s;
+	    double q = (l < 0.5) ? (l * (1 + s)) : (l + s - l * s);
         double p = (2 * l) - q;
         return componentFromPQT(p, q, h);
 	}
 	
 	public static double blueFromHSL(double h, double s, double l) {
 		if (s==0.0) return l;
-	    double q = (l < 0.5) ? l * (1 + s) : l + s - l * s;
+	    double q = (l < 0.5) ? (l * (1 + s)) : (l + s - l * s);
         double p = (2 * l) - q;
         return componentFromPQT(p, q, h - 1.0/3.0);
 	}
