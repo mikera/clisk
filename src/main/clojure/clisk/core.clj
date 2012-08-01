@@ -72,7 +72,8 @@
   ([vector-function]
     (show vector-function DEFAULT-IMAGE-WIDTH DEFAULT-IMAGE-HEIGHT))
   ([vector-function w h]
-    (let [scale *anti-alias*
+    (let [vector-function (validate (node vector-function))
+          scale *anti-alias*
           fw (* w scale)
           fh (* h scale)
           img (img vector-function fw fh)

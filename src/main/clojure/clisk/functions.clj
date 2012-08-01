@@ -514,9 +514,11 @@
   ([a b function]
     (let [[x1 y1] a
           [x2 y2] b
-          w (- x2 x1)
-          h (- y2 y1)]
-      (scale [(/ 1.0 w) (/ 1.0 h) 1 1] (offset [x1 y1] function)))))
+          w (double (- x2 x1))
+          h (double (- y2 y1))]
+      (scale 
+        [(/ 1.0 w) (/ 1.0 h) 1.0 1.0] 
+        (offset [x1 y1] function)))))
 
 (defn seamless 
   "Creates a seamless 2D tileable version of a 4D texture in the [0 0] to [1 1] region. The scale argument detrmines the amount of the source texture to be used per repeat."
@@ -562,8 +564,10 @@
 
 (defn render-lit
   "Renders example lighting on a couloured surface with a given heightmap function"
+  ([height]
+    (render-lit [1.0 1.0 1.0] height))
   ([colour height]
     (v* colour
       (v+ 
-        0.3 
-        (diffuse-light 0.7 [-1 -1 1] (height-normal (v* 0.1 height )))))))
+        0.2 
+        (diffuse-light 0.8 [-1.0 -1.0 1.0] (height-normal (v* 0.1 height )))))))

@@ -38,7 +38,11 @@
   (testing "Validating scalars"
     (doseq [n scalar-node-types] 
       (is (= 1.0 (evaluate n 1.0 1.0 1.0 1.0)))))
-   (testing "Validating vectors"
+  (testing "Validating misc functions"
+    (is (validate (height-normal (vsin pos))))
+    (is (validate (render-lit 1 (vsin pos))))
+    (is (validate (normalize x))))
+  (testing "Validating vectors"
     (doseq [n vector-node-types] 
       (is (= [1.0 1.0] (evaluate n 1.0 1.0 1.0 1.0)))))) 
 
