@@ -17,6 +17,11 @@
   (scale 0.3
      (v- 1 (vpow plasma 3)) ))
 
+
+(def velvet
+  "A nice velvetly pattern."
+  (warp (sigmoid (v* 2 vsnoise)) (scale 0.2 noise)))
+
 (def flecks
   "Stranges wispy flecks"
   (scale 0.1 (v* 2.0 (apply-to-components min vnoise))))

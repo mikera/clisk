@@ -86,9 +86,6 @@
   [^BufferedImage bi writer]
   (print-dup "[BufferedImage]" writer))
 
-(def velvet
-  "A nice velvetly pattern."
-  (warp (sigmoid (v* 2 vsnoise)) (scale 0.2 noise)))
 
 (defn checker 
   "Checker pattern in (x,y) space, with 2*2 grid in [0..1,0..1] range"

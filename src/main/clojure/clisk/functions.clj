@@ -159,7 +159,7 @@
 		          (apply function-node f (map #(component i %) vs))))
           (apply function-node f vs))))))
 
-(defn vlet 
+(defn ^:private vlet* 
   "let one or more scalar values within a vector function" 
   ([bindings form]
     (let [form (node form)
@@ -173,6 +173,14 @@
                ~(:code form)))
           (cons form binding-nodes))
       form))))
+
+(defmacro vlet 
+  [bindings form]
+  (let [bind-pairs (partition 2 bindings)
+        bindings (interleave (map #(do `(quote ~(first %))) bind-pairs)
+                             (map second bind-pairs))]
+    (if-not (even? (count bindings)) (error "vlet requires an even number of binding forms"))
+    `(#'vlet* [~@bindings] ~form))) 
 
 (defn vif [c a b]
   "Conditional vector function. First scalar argument is used as conditional value, > 0.0  is true."
@@ -330,7 +338,7 @@
 	          (vec (concat
                   (interleave temps (take wdims (map :code (:nodes warp)))) ;; needed so that symbols x,y,z,t aren't overwritten too early
                   (interleave vars temps)))]
-     (vlet bindings f))))
+     (vlet* bindings f))))
 
 (defn scale 
   "Scales a function by a given factor."

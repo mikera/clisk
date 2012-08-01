@@ -19,7 +19,7 @@
    (component 0 (offset -2 (v- pos))) 
    (node (v+ 0.5 0.5))
    (node y)
-   (vlet ['q 1] `(+ 0 ~'q))])
+   (vlet [q 1] `(+ 0 ~'q))])
 
 (def vector-node-types
   [(node [1 'x])
