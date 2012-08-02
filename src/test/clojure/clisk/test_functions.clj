@@ -66,9 +66,9 @@
 
 (deftest test-vlet
   (testing "vlet double"
-    (is (== 1.0 (evaluate (component 0 (vlet [a 1.0] 'a))))))
+    (is (== 1.0 (evaluate (component 0 (vlet [a 1.0] a))))))
    (testing "vlet double"
-    (is (== 3.0 (evaluate (component 0 (vlet [a 1.0 b 2.0] `(+ ~'a ~'b))))))))
+    (is (== 3.0 (evaluate (component 0 (vlet [a 1.0 b 2.0] `(+ ~a ~b))))))))
 
 (deftest test-vif
   (testing "vif scalar conditions"

@@ -163,8 +163,9 @@
   "let one or more values within a vector function" 
   ([bindings form]
     (let [form (node form)
-          binding-nodes (map (comp node second) (partition 2 bindings))
-          symbols (map first (partition 2 bindings))]
+          binding-pairs (partition 2 bindings)
+          symbols (map first binding-pairs)
+          binding-nodes (map (comp node second) binding-pairs)]
       ;; (if-not (every? scalar-node? binding-nodes) (error "All binding values must be scalar"))
 		  (if (seq bindings)
 		    (apply transform-components
@@ -178,10 +179,14 @@
   "let one or more values within a vector function" 
   [bindings form]
   (let [bind-pairs (partition 2 bindings)
-        bindings (interleave (map #(do `(quote ~(first %))) bind-pairs)
-                             (map second bind-pairs))]
+        symbols (map first bind-pairs)
+        values (map second bind-pairs)
+        gensyms (map #(gensym (str "alias-" (name %))) symbols)
+        quoted-gensyms (map #(do `(quote ~%)) gensyms)
+        bindings (interleave quoted-gensyms values)]
     (if-not (even? (count bindings)) (error "vlet requires an even number of binding forms"))
-    `(#'vlet* [~@bindings] ~form))) 
+    `(let [~@(interleave symbols quoted-gensyms)]
+       (#'vlet* [~@bindings] ~form)))) 
 
 (defn vif [c a b]
   "Conditional vector function. First scalar argument is used as conditional value, > 0.0  is true."
@@ -404,6 +409,13 @@
                                   position-symbol-vector))] 
            ~func))
       offsets-for-vectors)))
+
+(defn compose
+  "Composes one or more clisk functions"
+  ([f]
+    f)
+  ([f g]
+    (f (g))))
 
 (defn gradient 
   "Computes the gradient of a scalar function f with respect to [x y z t]"
