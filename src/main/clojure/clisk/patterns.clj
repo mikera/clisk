@@ -33,15 +33,16 @@
   '(clisk.Perlin/snoise x y z t))
 
 (defn make-multi-fractal 
-  ([function & {:keys [octaves lacunarity gain]
+  ([function & {:keys [octaves lacunarity gain scale]
                 :or {octaves 8
                      lacunarity 2.0
-                     gain 0.5}}]
+                     gain 0.5
+                     scale 0.5}}]
     (apply v+
       (for [octave (range 0 octaves)]        
         (warp 
           (v* pos (Math/pow lacunarity octave))
-          (v* (Math/pow gain octave) function))))))
+          (v* (* scale (Math/pow gain octave)) function))))))
 
 
 

@@ -12,7 +12,7 @@
 (set! *warn-on-reflection* true)
 (set! *unchecked-math* true)
 
-(def ^:const TAO (* 2.0 Math/PI))
+(def ^:const TAU (* 2.0 Math/PI))
 
 (def ^:const COMPONENT_TO_DOUBLE (/ 1.0 255.0))
 
@@ -249,6 +249,8 @@
 
 (def square
   (vectorize-op 'clisk.functions/square-function))
+
+(def step vfloor)
 
 (def v+ 
   "Adds two or more vectors"
@@ -568,14 +570,14 @@
     (seamless 1.0 v4))
   ([scale v4]
     (let [v4 (node v4)
-          scale-factor (/ 1.0 (double scale) TAO)
+          scale-factor (/ 1.0 (double scale) TAU)
           dims (dimensions v4)]
       ;;(if (< dims 4) (error "vseamless requires 4D input texture, found " dims))
       (warp
-        [`(* (Math/cos (* ~'x TAO)) ~scale-factor) 
-         `(* (Math/sin (* ~'x TAO)) ~scale-factor) 
-         `(* (Math/cos (* ~'y TAO)) ~scale-factor)
-         `(* (Math/sin (* ~'y TAO)) ~scale-factor)]
+        [`(* (Math/cos (* ~'x TAU)) ~scale-factor) 
+         `(* (Math/sin (* ~'x TAU)) ~scale-factor) 
+         `(* (Math/cos (* ~'y TAU)) ~scale-factor)
+         `(* (Math/sin (* ~'y TAU)) ~scale-factor)]
         v4))))
 
 (defn height 
