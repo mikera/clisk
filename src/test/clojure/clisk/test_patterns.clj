@@ -8,4 +8,5 @@
   (testing "Java colours"
     (is (validate colour-cubes))
     (is (validate velvet))
-    (is (validate plasma))))
+    (is (validate plasma))
+    (is (validate vplasma))))
