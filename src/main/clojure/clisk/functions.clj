@@ -255,7 +255,9 @@
 (def square
   (vectorize-op 'clisk.functions/square-function))
 
-(def step vfloor)
+(def step 
+  "A step function that works on both vectors and scalars"
+  vfloor)
 
 (def v+ 
   "Adds two or more vectors"
@@ -346,8 +348,8 @@
 (defn normalize 
   "Normalizes a vector"
   ([a]
-	  (let [a (vectorize a)]
-	    (vdivide a (length a)))))
+	  (let [x (vectorize a)]
+	    (vdivide x (length x)))))
 
 (defn warp 
   "Warps the position vector before calculating a vector function"
@@ -393,22 +395,21 @@
              offset)
            f)))
 
-(def offsets-for-vectors [[-120.34 +340.21 -13.67 +56.78]
-                          [+12.301 +70.261 -167.678 +34.568]
-                          [+78.676 -178.678 -79.612 -80.111]
-                          [-78.678 7.6789 200.567 124.099]])
+(def ^:private 
+      offsets-for-vectors (vec(map node[[-120.34 +340.21 -13.67 +56.78]
+						                            [+12.301 +70.261 -167.678 +34.568]
+						                            [+78.676 -178.678 -79.612 -80.111]
+						                            [-78.678 7.6789 200.567 124.099]])))
 
 (defn vector-offsets [func]
   "Creates a vector version of a scalar function, where the components are offset versions of the original scalar function"
-  (vec-node 
-    (map
-      (fn [offs]
-        `(let [~@(interleave position-symbol-vector 
-                             (map #(do `(double (clojure.core/+ ~%1 ~%2))) 
-                                  offs 
-                                  position-symbol-vector))] 
-           ~func))
-      offsets-for-vectors)))
+  (let [func (node func)] 
+    (if-not (scalar-node? func) (error "vector-offsets requires a scalar function"))
+    (vec-node 
+	    (map 
+	      (fn [off]
+	        (offset off func))
+        offsets-for-vectors))))
 
 (defn compose
   "Composes one or more clisk functions"
