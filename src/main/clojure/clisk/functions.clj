@@ -188,6 +188,26 @@
     `(let [~@(interleave symbols quoted-gensyms)]
        (#'vlet* [~@bindings] ~form)))) 
 
+(defmacro let-vector 
+  "let a vector value into each component of a function" 
+  [binding form]
+  (if-not (= 2 (count binding)) (error "let-vector must have exactly 2 elements in binding form")) 
+  (let [symbol (first binding) 
+        value (second binding)]
+    ;;(print (str (merge {} vector-value))) 
+    `(let [vector-value# (vectorize ~value)
+           components# (:nodes vector-value#) 
+           gensyms# (vec (for [i# (range (count components#))] 
+                           (gensym (str "comp" i#))))
+           vector-node# (node gensyms#)
+           ~symbol vector-node#]
+       (#'vlet* 
+         (vec 
+           (let []
+             (interleave gensyms# components#))) 
+         ~form)))) 
+
+
 (defn vif [c a b]
   "Conditional vector function. First scalar argument is used as conditional value, > 0.0  is true."
   (let [a (node a)
@@ -348,8 +368,8 @@
 (defn normalize 
   "Normalizes a vector"
   ([a]
-	  (let [x (vectorize a)]
-	    (vdivide x (length x)))))
+	  (let-vector [x a]
+               (vdivide x (length x)))))
 
 (defn warp 
   "Warps the position vector before calculating a vector function"
