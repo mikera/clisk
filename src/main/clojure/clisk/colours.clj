@@ -97,8 +97,9 @@
 
 (defn hsl-from-rgb
   ([rgb]
-    (vec-node 
-      [(hue-from-rgb rgb) (saturation-from-rgb rgb) (lightness-from-rgb rgb)])))
+    (let-vector [rgb rgb] 
+      (vec-node 
+        [(hue-from-rgb rgb) (saturation-from-rgb rgb) (lightness-from-rgb rgb)]))))
 
 (defn red-from-hsl [colour-vector]
   (let [h (component 0 colour-vector)
@@ -120,5 +121,6 @@
 
 (defn rgb-from-hsl
   ([hsl]
-    (vec-node 
-      [(red-from-hsl hsl) (green-from-hsl hsl) (blue-from-hsl hsl)])))
+    (let-vector [hsl hsl]
+      (vec-node 
+        [(red-from-hsl hsl) (green-from-hsl hsl) (blue-from-hsl hsl)]))))
