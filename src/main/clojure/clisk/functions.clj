@@ -434,9 +434,9 @@
 (defn compose
   "Composes one or more clisk functions"
   ([f]
-    f)
-  ([f g]
-    (f (g))))
+    (fn [x] (f x)))
+  ([f & more]
+    (fn [x] (f (apply compose more)))))
 
 (defn gradient 
   "Computes the gradient of a scalar function f with respect to [x y z t]"
@@ -448,7 +448,7 @@
           (let [sym (:code pos)]
 	          `(clojure.core// 
 	             (clojure.core/-
-	               (let [~sym (double (clojure.core/+ ~epsilon ~sym))]
+	               (let [~sym (clojure.core/+ ~epsilon ~sym)]
 	                 ~(:code f))
 	               ~(:code f))
 	             ~epsilon)))
@@ -507,8 +507,8 @@
     (fn [x]
       (colour-map mapping x)))
   ([mapping x]
-		  (let [vals (vec mapping)
-		        v (component 0 x)
+		(vlet [v (component 0 x)] 
+      (let [vals (vec mapping)
 		        c (count vals)]
 		    (cond 
 		      (<= c 0) (error "No colour map available!")
@@ -531,7 +531,7 @@
 		              lower (colour-map (subvec vals 0 (inc mid)) v)]
 		          (vif (v- v mv)
 	              upper
-	              lower))))))
+	              lower)))))))
 
 (def scalar-hash-function
   "Hash function producing a scalar value in the range [0..1) for every 
@@ -584,7 +584,8 @@
 (defn polar
   "Returns the polar co-ordinates of a vector"
   ([v]
-    (vector-node (radius v) (theta v))))
+    (let-vector [v v]
+      (vector-node (radius v) (theta v)))))
 
 (defn viewport 
   "Rescales the texture as if viwed from [ax, ay] to [bx ,by]"

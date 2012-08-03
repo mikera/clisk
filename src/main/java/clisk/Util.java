@@ -85,7 +85,7 @@ public class Util {
 			}
 		};
 		c.setMinimumSize(new Dimension(image.getWidth(null),image.getHeight(null)));
-		f.setMinimumSize(new Dimension(image.getWidth(null)+100,image.getHeight(null)+50));
+		f.setMinimumSize(new Dimension(image.getWidth(null)+20,image.getHeight(null)+100));
 		f.add(c);
 		f.setJMenuBar(menuBar);
 		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
