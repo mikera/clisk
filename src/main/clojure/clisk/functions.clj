@@ -190,10 +190,8 @@
 
 (defmacro let-vector 
   "let a vector value into each component of a function" 
-  [binding form]
-  (if-not (= 2 (count binding)) (error "let-vector must have exactly 2 elements in binding form")) 
-  (let [symbol (first binding) 
-        value (second binding)]
+  [bindings form]
+  (let [[symbol value & more] bindings]
     ;;(print (str (merge {} vector-value))) 
     `(let [vector-value# (vectorize ~value)
            components# (:nodes vector-value#) 
@@ -205,7 +203,9 @@
          (vec 
            (let []
              (interleave gensyms# components#))) 
-         ~form)))) 
+         ~(if (empty? more) 
+            form
+            `(let-vector [~@more] ~form)))))) 
 
 
 (defn vif [c a b]

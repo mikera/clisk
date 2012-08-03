@@ -11,6 +11,14 @@
                (offset 
                  (v* 10 (warp vfloor grain)) 
                  vnoise)))
-    
+ 
+  ;; FRACTAL LANDSCAPE
+  ;; 
+  (show 
+	  (scale 0.4 
+      (let [z (v+ (v* 2.5 plasma) -0.75)
+            colour (landscape-map z)
+            height (v* 3.0 (vmax 0.5 z))]
+	       (render-lit colour height ))))
 )
 
