@@ -53,11 +53,11 @@
                   (gradient (seamless 1.0 plasma) ))))
   
   ;; tinted, wrapped frac noise bands
-  (show (scale 0.2 
+  (show (seamless (scale 0.2 
                (rgb-from-hsl [(v* 2 (scale 3 noise)) ;; tinting noise
                               0.6 
                               (vfrac (v* noise 9))   ;; wrapped bands
-                              ])))
+                              ]))))
   
   ;; aplha blend using vlerp
   (show (lerp (v- (v* 4 plasma) 1.3) 
