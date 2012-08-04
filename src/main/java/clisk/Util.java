@@ -7,15 +7,23 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.TexturePaint;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import clojure.lang.Compiler;
 
@@ -70,14 +78,32 @@ public class Util {
 	} 
 	
 	@SuppressWarnings("serial")
-	public static JFrame frame(final Image image) {
-		JFrame f=new JFrame("Clisk Image");
+	public static JFrame frame(final BufferedImage image) {
+		final JFrame f=new JFrame("Clisk Image");
 		
 		JMenuBar menuBar=new JMenuBar();
 		JMenu menu=new JMenu("File");
 		menuBar.add(menu);
-		JMenuItem jmi=new JMenuItem("Save As...");	
+		final JMenuItem jmi=new JMenuItem("Save As...");	
 		menu.add(jmi);
+		jmi.addActionListener(new ActionListener () {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser fcd = new JFileChooser();
+				fcd.setFileFilter(new FileNameExtensionFilter("PNG file", "png"));
+				int result= fcd.showSaveDialog(f);			
+				if (result == JFileChooser.APPROVE_OPTION) {
+					File outputfile = fcd.getSelectedFile();
+			        try {
+						ImageIO.write(image, "png", outputfile);
+						System.out.println("Saving: "+ outputfile.getAbsolutePath());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
 		
 		JComponent c=new JComponent() {
 			public void paint(Graphics g) {
@@ -98,7 +124,7 @@ public class Util {
 	 * @param image
 	 * @return
 	 */
-	public static JFrame show(final Image image) {
+	public static JFrame show(final BufferedImage image) {
 		JFrame f=frame(image);
 		f.setVisible(true);
 		f.pack();		
