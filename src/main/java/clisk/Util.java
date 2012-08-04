@@ -89,6 +89,7 @@ public class Util {
 		f.add(c);
 		f.setJMenuBar(menuBar);
 		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		f.pack();
 		return f;
 	}	
 	

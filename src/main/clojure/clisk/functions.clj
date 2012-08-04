@@ -431,13 +431,6 @@
 	        (offset off func))
         offsets-for-vectors))))
 
-(defn compose
-  "Composes one or more clisk functions"
-  ([f]
-    (fn [x] (f x)))
-  ([f & more]
-    (fn [x] (f (apply compose more)))))
-
 (defn gradient 
   "Computes the gradient of a scalar function f with respect to [x y z t]"
 	([f]
