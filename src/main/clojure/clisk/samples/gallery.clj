@@ -3,6 +3,10 @@
     :doc "Selection of nice sample images."}  
     (:use [clisk core node functions patterns colours textures util]))
 
+;; we define sample gallery as a quoted map
+;; so that we can pull out code later
+;; TODO: build a simple GUI to show samples with corresponding code
+
 (def samples `{
   :coloured-panels
   ;; vnoise provides a nice colourful plasma texture
