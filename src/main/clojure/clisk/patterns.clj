@@ -14,9 +14,17 @@
   "Standard 4-dimensional scalar perlin noise in range [0..1]"
   '(clisk.noise.Perlin/noise x y z t))
 
+(def perlin-snoise
+  "4-dimensional scalar perlin noise standardised with mean zero, range [-1..1]"
+  '(clisk.noise.Perlin/snoise x y z t))
+
 (def simplex-noise 
   "Standard 4-dimensional scalar perlin noise in range [0..1]"
   '(clisk.noise.Simplex/noise x y z t))
+
+(def simplex-snoise
+  "4-dimensional scalar simplex noise standardised with mean zero, range [-1..1]"
+  '(clisk.noise.Simplex/snoise x y z t))
 
 (def clojure
   (texture-map (load-image "Clojure_300x300.png")))
@@ -31,11 +39,10 @@
   vector-hash)
 
 (def noise
-  perlin-noise)
+  simplex-noise)
 
 (def snoise
-  "4-dimensional scalar perlin noise standardised with mean zero, range [-1..1]"
-  '(clisk.noise.Perlin/snoise x y z t))
+  simplex-snoise)
 
 (defn make-multi-fractal 
   ([function & {:keys [octaves lacunarity gain scale]
