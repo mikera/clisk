@@ -1,4 +1,4 @@
-package clisk;
+package clisk.noise;
 
 /*
  * A speed-improved simplex noise algorithm for 2D, 3D and 4D in Java.
@@ -17,7 +17,7 @@ package clisk;
  *
  */
 
-public class SimplexNoise { // Simplex noise in 2D, 3D and 4D
+public class Simplex { // Simplex noise in 2D, 3D and 4D
 	private static Grad grad3[] = { new Grad(1, 1, 0), new Grad(-1, 1, 0),
 			new Grad(1, -1, 0), new Grad(-1, -1, 0), new Grad(1, 0, 1),
 			new Grad(-1, 0, 1), new Grad(1, 0, -1), new Grad(-1, 0, -1),
