@@ -1,19 +1,11 @@
 package clisk.noise;
 
 /*
- * A speed-improved simplex noise algorithm for 2D, 3D and 4D in Java.
- *
- * Based on example code by Stefan Gustavson (stegu@itn.liu.se).
+ * Simplex noise code adapted by Mike Anderson 
+ * 
+ * Based on public domain example code by Stefan Gustavson (stegu@itn.liu.se).
  * Optimisations by Peter Eastman (peastman@drizzle.stanford.edu).
  * Better rank ordering method by Stefan Gustavson in 2012.
- *
- * This could be speeded up even further, but it's useful as it is.
- *
- * Version 2012-03-09
- *
- * This code was placed in the public domain by its original author,
- * Stefan Gustavson. You may use it as you see fit, but
- * attribution is appreciated.
  *
  */
 
@@ -99,7 +91,11 @@ public class Simplex { // Simplex noise in 2D, 3D and 4D
 	}
 
 	// 2D simplex noise
-	public static double noise(double xin, double yin) {
+	public static double noise(double x, double y) {
+		return 0.5+0.5*snoise(x,y);
+	}
+	
+	public static double snoise(double xin, double yin) {
 		double n0, n1, n2; // Noise contributions from the three corners
 		// Skew the input space to determine which simplex cell we're in
 		double s = (xin + yin) * F2; // Hairy factor for 2D
@@ -165,8 +161,14 @@ public class Simplex { // Simplex noise in 2D, 3D and 4D
 		return 70.0 * (n0 + n1 + n2);
 	}
 
+	
+	
 	// 3D simplex noise
-	public static double noise(double xin, double yin, double zin) {
+	public static double noise(double x, double y, double z) {
+		return 0.5+0.5*snoise(x,y,z);
+	}
+	
+	public static double snoise(double xin, double yin, double zin) {
 		double n0, n1, n2, n3; // Noise contributions from the four corners
 		// Skew the input space to determine which simplex cell we're in
 		double s = (xin + yin + zin) * F3; // Very nice and simple skew factor
@@ -297,8 +299,12 @@ public class Simplex { // Simplex noise in 2D, 3D and 4D
 		return 32.0 * (n0 + n1 + n2 + n3);
 	}
 
-	// 4D simplex noise, better simplex rank ordering method 2012-03-09
 	public static double noise(double x, double y, double z, double w) {
+		return 0.5+0.5*snoise(x,y,z,w);
+	}
+	
+	// 4D simplex noise, better simplex rank ordering method 2012-03-09
+	public static double snoise(double x, double y, double z, double w) {
 
 		double n0, n1, n2, n3, n4; // Noise contributions from the five corners
 		// Skew the (x,y,z,w) space to determine which cell of 24 simplices
