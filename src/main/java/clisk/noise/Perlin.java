@@ -1,4 +1,4 @@
-package clisk;
+package clisk.noise;
 
 /**
  * Adapted by Mike Anderson from SunFlow renderer source code (Christopher Kulla)

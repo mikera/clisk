@@ -6,12 +6,17 @@
   "Patterns and pattern generators"
   (:use [clisk util node functions])
   (:import java.awt.image.BufferedImage)
-  (:import clisk.Perlin))
+  (:import clisk.noise.Perlin)
+  (:import clisk.noise.Simplex))
 
 
 (def perlin-noise 
   "Standard 4-dimensional scalar perlin noise in range [0..1]"
-  '(clisk.Perlin/noise x y z t))
+  '(clisk.noise.Perlin/noise x y z t))
+
+(def simplex-noise 
+  "Standard 4-dimensional scalar perlin noise in range [0..1]"
+  '(clisk.noise.Simplex/noise x y z t))
 
 (def clojure
   (texture-map (load-image "Clojure_300x300.png")))
@@ -30,7 +35,7 @@
 
 (def snoise
   "4-dimensional scalar perlin noise standardised with mean zero, range [-1..1]"
-  '(clisk.Perlin/snoise x y z t))
+  '(clisk.noise.Perlin/snoise x y z t))
 
 (defn make-multi-fractal 
   ([function & {:keys [octaves lacunarity gain scale]
