@@ -26,7 +26,7 @@
   "Uses the Clojure compiler to analyze the given s-expr.  Returns
   a map with keys :class and :primitive? indicating what the compiler
   concluded about the return value of the expression.  Returns nil if
-  not type info can be determined at compile-time.
+  no type info can be determined at compile-time.
   
   Example: (expression-info '(+ (int 5) (float 10)))
   Returns: {:class float, :primitive? true}"
@@ -36,6 +36,14 @@
     (when (.hasJavaClass expr-ast)
       {:class (.getJavaClass expr-ast)
        :primitive? (.isPrimitive (.getJavaClass expr-ast))})))
+
+(defmacro typeof 
+  ([expression]
+    (:class (expression-info expression))))
+
+(defmacro primitive? 
+  ([expression]
+    (:primitive? (expression-info expression))))
 
 (defn ^ClassLoader context-class-loader []
   (.getContextClassLoader (Thread/currentThread)))
