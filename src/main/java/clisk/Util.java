@@ -1,6 +1,7 @@
 package clisk;
 
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -87,17 +88,18 @@ public class Util {
 		final JMenuItem jmi=new JMenuItem("Save As...");	
 		menu.add(jmi);
 		jmi.addActionListener(new ActionListener () {
-
-			@Override
+ 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser fcd = new JFileChooser();
-				fcd.setFileFilter(new FileNameExtensionFilter("PNG file", "png"));
-				int result= fcd.showSaveDialog(f);			
-				if (result == JFileChooser.APPROVE_OPTION) {
-					File outputfile = fcd.getSelectedFile();
+ 				FileDialog fileDialog = new FileDialog(f, "Save Image As...", FileDialog.SAVE);
+ 				fileDialog.setFile("*.png");
+ 				
+				fileDialog.setVisible(true);			
+				String fileName = fileDialog.getFile();
+				if (fileName !=null) {
+					File outputFile=new File(fileDialog.getDirectory(), fileName);
 			        try {
-						ImageIO.write(image, "png", outputfile);
-						System.out.println("Saving: "+ outputfile.getAbsolutePath());
+						ImageIO.write(image, "png", outputFile);
+						System.out.println("Saving: "+ outputFile.getAbsolutePath());
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
