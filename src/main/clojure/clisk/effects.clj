@@ -9,8 +9,9 @@
 
 (defn psychedelic 
   "Psychedelic colour effect"
-  ([src]
-    (adjust-hue (scale 0.2 noise) src)))
+  ([src & {:keys [noise-scale noise-bands] 
+           :or {noise-scale 0.2 noise-bands 2.0}}]
+    (adjust-hue (v* noise-bands (scale noise-scale noise)) src)))
 
 (defn monochrome
   "Converts to monochrome"
@@ -18,7 +19,12 @@
     (lightness-from-rgb src)))
 
 (defn posterize
-  ([src]
-    (warp
-      src 
-      (v* 0.2 (vfloor (v* 5.0 pos))))))
+  "Posterization effect with discrete colour bands."
+  ([src & {:keys [bands] 
+           :or {bands 4}}]
+    (let [bands (double bands)
+          inv-bands (/ 1.0 (dec bands))
+          dec-bands (- bands 0.00001)] 
+      (warp
+        src 
+        (v* inv-bands (vfloor (v* dec-bands pos)))))))
