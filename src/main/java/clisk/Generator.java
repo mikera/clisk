@@ -9,7 +9,7 @@ import java.io.StringReader;
 
 public class Generator {
 	private static final String NAMESPACE="clisk.demo";
-	private static IFn imageGenerator=(IFn) Compiler.load(new StringReader("(use '"+NAMESPACE+") clisk.core/img"));
+	private static IFn imageGenerator=(IFn) Compiler.load(new StringReader("(use '"+NAMESPACE+") clisk.node/img"));
 
 	public static BufferedImage generate(String script) {
 		return generate(script,256,256);

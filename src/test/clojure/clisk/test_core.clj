@@ -8,7 +8,3 @@
     (is (= (unchecked-int 0xFF000000) (Util/toARGB 0.0 0.0 0.0)))
     (is (= (unchecked-int 0xFFFF0000) (Util/toARGB 1.0 0.0 0.0)))
     (is (= (unchecked-int 0xFFFFFFFF) (Util/toARGB 1.0 1.0 1.0)))))
-
-(deftest test-compile
-  (testing "Colours"
-    (is (= 1.0 (.calc (compile-fn 1.0) 0)))))

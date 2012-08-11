@@ -29,3 +29,7 @@
 (def wood
   "Spherical wood-like texture centred at origin"
   (scale 0.1 (colour-map [[0 0] [1 1]] (vfrac length))))
+
+(def cannon (texture-map "Cannon.jpg"))
+
+(def clojure (texture-map "Clojure_300x300.png"))

@@ -2,6 +2,7 @@
   ^{:author "mikera"
     :doc "Functions for managing clisk AST nodes. Should not normally be needed by library users"}  
   clisk.node
+  (:import clisk.Util)
   (:use clisk.util))
 
 (set! *warn-on-reflection* true)
@@ -14,6 +15,12 @@
 (declare constant-node)
 (declare evaluate)
 (declare ZERO-NODE)
+
+;; ==============================
+;; Image generation constants
+
+(def DEFAULT-IMAGE-WIDTH 256)
+(def DEFAULT-IMAGE-HEIGHT 256)
 
 ;; ==============================
 ;; Node predicates
@@ -223,6 +230,43 @@
     :else (error "Unable to build an AST node from: " a)))
 
 (def ZERO-NODE (node 0.0))
+
+ 
+(defn ^clisk.IFunction compile-fn [node]
+  "Compiles clisk scalar node into an object that extends clisk.Function and clojure.lang.IFn"
+  (clisk.node/compile-scalar-node node))
+
+(defn img
+  "Creates a BufferedImage from the given vector function."
+  ([node]
+    (img node DEFAULT-IMAGE-WIDTH DEFAULT-IMAGE-HEIGHT))
+  ([node w h]
+    (img node w h 1.0 (/ (double h) (double w))))
+  ([node w h dx dy]
+    (let [node (clisk.node/node node)
+          image (clisk.Util/newImage (int w) (int h))
+          fr (compile-fn (component 0 node))
+          fg (compile-fn (component 1 node))
+          fb (compile-fn (component 2 node))
+          w (int w)
+          h (int h)
+          dx (double dx)
+          dy (double dy)
+          dw (double w)
+          dh (double h)]
+	    (doall (pmap 
+        #(let [iy (int %)]
+		      (dotimes [ix w]
+		        (let [iy (int iy)
+	                x (/ (* dx (+ 0.5 ix)) dw)
+	                y (/ (* dy (+ 0.5 iy)) dh)
+	                r (.calc fr x y 0.0 0.0)
+	                g (.calc fg x y 0.0 0.0)
+	                b (.calc fb x y 0.0 0.0)
+	                argb (Util/toARGB r g b)]
+	           (.setRGB image ix iy argb))))
+        (range h)))
+     image)))
 
 
 (defn validate 

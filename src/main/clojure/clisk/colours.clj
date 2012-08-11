@@ -124,3 +124,8 @@
     (let-vector [hsl hsl]
       (vec-node 
         [(red-from-hsl hsl) (green-from-hsl hsl) (blue-from-hsl hsl)]))))
+
+(defn adjust-hue [shift source]
+  (rgb-from-hsl 
+    (v+ [(component 0 shift) 0 0]
+        (hsl-from-rgb source)))) 

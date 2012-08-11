@@ -48,3 +48,8 @@
       (is (= [1.0 1.0] (evaluate n 1.0 1.0 1.0 1.0)))))) 
 
 
+(deftest test-compile
+  (testing "Compiling function"
+    (is (= 1.0 (.calc (compile-fn 1.0) 0)))))
+
+
