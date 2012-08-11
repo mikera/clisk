@@ -2,7 +2,7 @@
   ^{:author "mikera"
     :doc "Demonstration images."}  
   clisk.demo
-  (:use [clisk core node functions patterns colours textures util]))
+  (:use [clisk core node functions patterns colours textures util effects]))
 
 (set! *warn-on-reflection* true)
 (set! *unchecked-math* true)
