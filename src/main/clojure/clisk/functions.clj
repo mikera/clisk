@@ -385,6 +385,13 @@
                   (interleave vars temps)))]
      (vlet* bindings f))))
 
+(defn compose 
+  "Composes two or more vector functions"
+  ([f g]
+    (warp g f))
+  ([f g & more]
+    (compose f (apply compose g more)))) 
+
 (defn rotate
   "Rotates a function in the (x,y plane)"
   ([angle function]
