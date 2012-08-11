@@ -6,8 +6,7 @@
   (:import java.awt.image.BufferedImage)
   (:import java.lang.Math)
   (:import clisk.Maths)
-  (:use clisk.node)
-  (:use clisk.util))
+  (:use [clisk node util]))
 
 (set! *warn-on-reflection* true)
 (set! *unchecked-math* true)
@@ -474,8 +473,15 @@
            (int tv#)))))
 
 (defn texture-map
-  ([^BufferedImage image]
-    (texture-map image 0 0 (.getWidth image) (.getHeight image)))
+  ([image]
+    (let [^BufferedImage image (cond
+                                 (instance? BufferedImage image) 
+                                   image
+                                 (string? image)
+                                   (clisk.util/load-image image)
+                                 :else
+                                   (clisk.node/img image))]
+      (texture-map image 0 0 (.getWidth image) (.getHeight image))))
   ([^BufferedImage image x y w h]
     (let [texture (object-node image)
           tsym (first (keys (:objects texture)))

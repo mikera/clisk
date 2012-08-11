@@ -5,6 +5,7 @@
   (:use clisk.core)
   (:use clisk.util)
   (:use clisk.patterns)
+  (:use clisk.textures)
   (:import clisk.Util)
   (:import java.awt.image.BufferedImage))
 

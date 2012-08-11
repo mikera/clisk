@@ -26,9 +26,6 @@
   "4-dimensional scalar simplex noise standardised with mean zero, range [-1..1]"
   '(clisk.noise.Simplex/snoise x y z t))
 
-(def clojure
-  (texture-map (load-image "Clojure_300x300.png")))
-
 (defn tile
   "Tiles a pattern in the range [0..1,0..1]"
   ([pattern]
@@ -45,6 +42,7 @@
   simplex-snoise)
 
 (defn make-multi-fractal 
+  "Creates a multi-fractal function from a given source function with additional parameters"
   ([function & {:keys [octaves lacunarity gain scale]
                 :or {octaves 8
                      lacunarity 2.0
@@ -129,3 +127,4 @@
       (v- 1.0 (length [x y]))
       (warp [x y `(Math/sqrt (- 1.0 ~(:code (dot [x y] [x y]))))] function )
       background)))
+
