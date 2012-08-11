@@ -381,7 +381,7 @@
 	        temps (take wdims ['x-temp 'y-temp 'z-temp 't-temp])
 	        bindings 
 	          (vec (concat
-                  (interleave temps (take wdims (map :code (:nodes warp)))) ;; needed so that symbols x,y,z,t aren't overwritten too early
+                  (interleave temps (take wdims (:nodes warp))) ;; needed so that symbols x,y,z,t aren't overwritten too early
                   (interleave vars temps)))]
      (vlet* bindings f))))
 
