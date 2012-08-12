@@ -99,19 +99,15 @@
 	           :objects {sym v}
 	           :constant true}))))
 
-(defn compile-scalar-node ^clisk.IFunction [n]
-  "Compile a scalar node to a clisk.IFunction"
+(defn generate-scalar-code [n]
   (let [n (node n)
         obj-map (:objects n)
         syms (keys obj-map)
-        objs (vals obj-map)
         code (:code n)]
     (if-not (scalar-node? n) (error "Trying to compile non-scalar node"))
-    (apply
-      (eval
-		   `(fn [~@syms]
-	        (let []
-		        (reify clisk.IFunction
+    `(fn [~@syms]
+	       (let []
+		       (reify clisk.IFunction
 			       (calc 
 			         [~'this ~'x ~'y ~'z ~'t]
 			           (double ~code))
@@ -126,8 +122,18 @@
 			           (.calc ~'this ~'x 0.0))
 			       (calc
 			         [~'this]
-			           (.calc ~'this 0.0))))))
-	      objs)))
+			           (.calc ~'this 0.0)))))))
+
+(defn compile-scalar-node ^clisk.IFunction [n]
+  "Compile a scalar node to a clisk.IFunction"
+  (let [n (node n)
+        obj-map (:objects n)
+        objs (vals obj-map)]
+    (if-not (scalar-node? n) (error "Trying to compile non-scalar node"))
+    (apply
+      (eval
+		    (generate-scalar-code n))
+	    objs)))
 
 (defn ^:private evaluate 
   "Evaluates a node at a given position (defaults to zero). Can return either vector or scalar result."
@@ -208,13 +214,18 @@
         (fn [& xs] `(~f ~@(map :code xs)))
         scalars))))
 
-(defn code-node [form]
-  "Creates a node from a given code form (may be a vector). Does not preserve objects - must be copied over manually."
+(defn code-node 
+    "Creates a node from a given code form (may be a vector). Does not preserve objects - must be copied over manually."
+   [form
+    & {:keys [objects] 
+       :or {objects nil}}]
   (if (vector? form)
-    (vec-node (map code-node form))
+    (vec-node (map #(code-node % :objects objects) form))
 	  (new-node {:type :scalar 
 	             :code form
-	             :constant false})))
+	             :constant false
+               :objects objects
+              })))
 
 (defn node [a]
   "Creates a node from arbitrary input. Idempotent, can be used to force conversion to node."
