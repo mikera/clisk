@@ -19,8 +19,8 @@
 ;; ==============================
 ;; Image generation constants
 
-(def DEFAULT-IMAGE-WIDTH 256)
-(def DEFAULT-IMAGE-HEIGHT 256)
+(def ^:const DEFAULT-IMAGE-WIDTH 256)
+(def ^:const DEFAULT-IMAGE-HEIGHT 256)
 
 ;; ==============================
 ;; Node predicates
