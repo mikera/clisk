@@ -39,11 +39,11 @@ public final class Voronoi2D {
 		
 		// distances of best and next best
 		double dd0=dist2(x,y,xs[0],ys[0]);
-		double dd1=dist2(x,y,xs[0],ys[0]);
+		double dd1=dist2(x,y,xs[1],ys[1]);
 		
 		if (dd1<dd0) {
 			i0=1; i1=0;
-			double t=dd0; dd0=dd1; dd1=dd0;
+			double t=dd0; dd0=dd1; dd1=t;
 		}
 		
 		for (int i=2; i<count; i++) {
