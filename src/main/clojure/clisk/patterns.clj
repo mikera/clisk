@@ -133,9 +133,11 @@
 (defn ^clisk.generator.Voronoi2D cast-voronoi [x]
   x)
 
+(def ^:const DEFAULT-VORONOI-POINTS 32)
+
 (defn voronoi-points
   ([& {:keys [points] 
-       :or {points 16}}]
+       :or {points DEFAULT-VORONOI-POINTS}}]
     (let [v-sym (gensym "voronoi")
           voronoi (clisk.generator.Voronoi2D. (int points))
           obj-map {v-sym voronoi}] 
@@ -144,4 +146,16 @@
                      :objects obj-map)
           (code-node `(.nearestY (cast-voronoi ~v-sym) ~'x ~'y) 
                      :objects obj-map)))))
+
+(defn voronoi-function
+  ([function & {:keys [points] 
+                :or {points DEFAULT-VORONOI-POINTS}}]
+    (let [v-sym (gensym "voronoi")
+          f-sym (gensym "func")
+          voronoi (clisk.generator.Voronoi2D. (int points))
+          obj-map {v-sym voronoi
+                   f-sym (compile-scalar-node (component 0 function))}] 
+       (code-node `(.firstSecondFunction (static-cast clisk.generator.Voronoi2D ~v-sym) 
+                     ~'x ~'y ~f-sym) 
+                     :objects obj-map))))
 
