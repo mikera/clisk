@@ -22,6 +22,14 @@
          (if b# nil a#)
          b#))))
 
+(defn expression-info-internal
+  [expr]
+  (let [fn-ast (Compiler/analyze Compiler$C/EXPRESSION expr)
+        expr-ast (.body (first (.methods fn-ast)))]
+    (when (.hasJavaClass expr-ast)
+      {:class (.getJavaClass expr-ast)
+       :primitive? (.isPrimitive (.getJavaClass expr-ast))})))
+
 (defn expression-info
   "Uses the Clojure compiler to analyze the given s-expr.  Returns
   a map with keys :class and :primitive? indicating what the compiler
@@ -31,11 +39,7 @@
   Example: (expression-info '(+ (int 5) (float 10)))
   Returns: {:class float, :primitive? true}"
   [expr]
-  (let [fn-ast (Compiler/analyze Compiler$C/EXPRESSION `(fn [] ~expr))
-        expr-ast (.body (first (.methods fn-ast)))]
-    (when (.hasJavaClass expr-ast)
-      {:class (.getJavaClass expr-ast)
-       :primitive? (.isPrimitive (.getJavaClass expr-ast))})))
+  (expression-info-internal `(fn [] ~expr)))
 
 (defmacro typeof 
   ([expression]
