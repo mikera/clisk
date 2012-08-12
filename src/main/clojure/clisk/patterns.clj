@@ -7,7 +7,9 @@
   (:use [clisk util node functions])
   (:import java.awt.image.BufferedImage)
   (:import clisk.noise.Perlin)
-  (:import clisk.noise.Simplex))
+  (:import clisk.noise.Simplex)
+  (:import clisk.generator.Voronoi2D)
+)
 
 
 (def perlin-noise 
@@ -127,4 +129,16 @@
       (v- 1.0 (length [x y]))
       (warp [x y `(Math/sqrt (- 1.0 ~(:code (dot [x y] [x y]))))] function )
       background)))
+
+(defn voronoi-points
+  ([& {:keys [points] 
+       :or {points 16}}]
+    (let [v-sym (gensym "voronoi")
+          voronoi (clisk.generator.Voronoi2D. (int points))
+          obj-map {v-sym voronoi}] 
+      (vector-node
+          (code-node `(.nearestX (cast ~'clisk.generator.Voronoi2D ~v-sym) ~'x ~'y) 
+                     :objects obj-map)
+          (code-node `(.nearestY (cast ~'clisk.generator.Voronoi2D ~v-sym) ~'x ~'y) 
+                     :objects obj-map)))))
 
