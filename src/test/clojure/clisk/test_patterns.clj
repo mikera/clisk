@@ -7,6 +7,7 @@
 (deftest test-pattern-validity
   (testing "Java colours"
     (is (validate colour-cubes))
+    (is (validate cannon))
     (is (validate velvet))
     (is (validate plasma))
     (is (validate vplasma))))

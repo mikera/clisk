@@ -10,7 +10,7 @@
     (let [cn (code-node `(.length ~'a) :objects {'a "foo"})]
       (is (= 3.0 (.calc (compile-fn cn) 0)))))
   (testing "BufferedImage"
-    (let [bn (code-node `(.getRGB ~(with-meta 'a {:tag 'java.awt.image.BufferedImage}) 0 0) 
+    (let [bn (code-node `(.getRGB (static-cast java.awt.image.BufferedImage ~'a) 0 0) 
                         :objects {'a (clisk.util/new-image 10 10)})]
       (is (validate bn)))))
 

@@ -41,6 +41,12 @@
   [expr]
   (expression-info-internal `(fn [] ~expr)))
 
+(defmacro static-cast 
+  "Performs a static type cast"
+  [class-sym expression]
+  (let [sym (gensym "cast")]
+    `(let [~(with-meta sym {:tag class-sym}) ~expression] ~sym)))
+
 (defmacro typeof 
   ([expression]
     (:class (expression-info expression))))
