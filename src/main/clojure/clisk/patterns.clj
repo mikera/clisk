@@ -130,6 +130,9 @@
       (warp [x y `(Math/sqrt (- 1.0 ~(:code (dot [x y] [x y]))))] function )
       background)))
 
+(defn ^clisk.generator.Voronoi2D cast-voronoi [x]
+  x)
+
 (defn voronoi-points
   ([& {:keys [points] 
        :or {points 16}}]
@@ -137,8 +140,8 @@
           voronoi (clisk.generator.Voronoi2D. (int points))
           obj-map {v-sym voronoi}] 
       (vector-node
-          (code-node `(.nearestX (cast ~'clisk.generator.Voronoi2D ~v-sym) ~'x ~'y) 
+          (code-node `(.nearestX (cast-voronoi ~v-sym) ~'x ~'y) 
                      :objects obj-map)
-          (code-node `(.nearestY (cast ~'clisk.generator.Voronoi2D ~v-sym) ~'x ~'y) 
+          (code-node `(.nearestY (cast-voronoi ~v-sym) ~'x ~'y) 
                      :objects obj-map)))))
 
