@@ -130,32 +130,38 @@
       (warp [x y `(Math/sqrt (- 1.0 ~(:code (dot [x y] [x y]))))] function )
       background)))
 
-(defn ^clisk.generator.Voronoi2D cast-voronoi [x]
-  x)
 
 (def ^:const DEFAULT-VORONOI-POINTS 32)
 
 (defn voronoi-points
-  ([& {:keys [points] 
+  ([& {:keys [points voronoi] 
        :or {points DEFAULT-VORONOI-POINTS}}]
     (let [v-sym (gensym "voronoi")
-          voronoi (clisk.generator.Voronoi2D. (int points))
+          voronoi (or voronoi (clisk.generator.Voronoi2D. (int points)))
           obj-map {v-sym voronoi}] 
       (vector-node
-          (code-node `(.nearestX (cast-voronoi ~v-sym) ~'x ~'y) 
+          (code-node `(.nearestX (static-cast clisk.generator.Voronoi2D ~v-sym) ~'x ~'y) 
                      :objects obj-map)
-          (code-node `(.nearestY (cast-voronoi ~v-sym) ~'x ~'y) 
+          (code-node `(.nearestY (static-cast clisk.generator.Voronoi2D ~v-sym) ~'x ~'y) 
                      :objects obj-map)))))
 
 (defn voronoi-function
-  ([function & {:keys [points] 
+  ([function & {:keys [points voronoi] 
                 :or {points DEFAULT-VORONOI-POINTS}}]
     (let [v-sym (gensym "voronoi")
           f-sym (gensym "func")
-          voronoi (clisk.generator.Voronoi2D. (int points))
+          voronoi (or voronoi (clisk.generator.Voronoi2D. (int points)))
           obj-map {v-sym voronoi
                    f-sym (compile-scalar-node (component 0 function))}] 
        (code-node `(.firstSecondFunction (static-cast clisk.generator.Voronoi2D ~v-sym) 
                      ~'x ~'y ~f-sym) 
                      :objects obj-map))))
 
+(defn voronoi-blocks
+  "A patterns of angular blocks created from a voronoi map, in range [0..1]"
+  [& args]
+   (vmin 1.0 (v* 5.0 
+                       (apply 
+                         voronoi-function 
+                         `(Math/sqrt (- (* ~'y ~'y) (* ~'x ~'x)))
+                         args))))
