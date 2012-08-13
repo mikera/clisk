@@ -133,6 +133,10 @@
 
 (def ^:const DEFAULT-VORONOI-POINTS 32)
 
+(defn voronoi [& {:keys [points] 
+                  :or {points DEFAULT-VORONOI-POINTS}}]
+  (clisk.generator.Voronoi2D. (int points)))
+
 (defn voronoi-points
   ([& {:keys [points voronoi] 
        :or {points DEFAULT-VORONOI-POINTS}}]
