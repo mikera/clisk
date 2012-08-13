@@ -1,7 +1,7 @@
 # Clisk
 
 
-Clisk is a DSL library for procedural image generation that can be use from Clojure and Java.
+Clisk is a DSL library for procedural image generation that can be used from Clojure and Java.
 
 ## Example code and resulting image
 
