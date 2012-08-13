@@ -5,11 +5,12 @@ Clisk is a DSL library for procedural image generation that can be used from Clo
 
 ## Example code and resulting image
 
-      (show  (v+ [0.9 0.6 0.3] 
-                 (dot [0.2 0.2 0] 
-                      (gradient (seamless 1.0 plasma) ))))
+    (show (render-lit 
+            (seamless vplasma) 
+              (v+ (v* 0.2 (seamless 0.2 (rotate 0.1 plasma))) 
+                  (v* 0.6 vblocks))))
 
-![Golden rock](https://raw.github.com/wiki/mikera/clisk/images/GoldRock.png)
+![Voronoi rocks](https://raw.github.com/wiki/mikera/clisk/images/VoronoiRocks.png)
 
 For [more examples see the Wiki](https://github.com/mikera/clisk/wiki)
 
