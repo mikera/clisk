@@ -8,12 +8,25 @@
 (set! *warn-on-reflection* true)
 (set! *unchecked-math* true)
 
-(defrecord Node [])
 
 (declare node)
 (declare constant-node)
 (declare evaluate)
+(declare warp)
 (declare ZERO-NODE)
+
+;; ===========================
+;; Node record type
+
+(defrecord Node []
+  clojure.lang.IFn
+    (invoke [this]
+      this) 
+    (invoke [this x]
+      (warp x this))
+    (applyTo [this args]
+      (warp (first args) (.applyTo this (rest args)))))
+
 
 ;; ==============================
 ;; Image generation constants
@@ -238,6 +251,58 @@
     (sequential? a) (code-node a)
     :object (object-node a)
     :else (error "Unable to build an AST node from: " a)))
+
+(defn ^:private vectorize 
+	"Converts a value into a vector function form. If a is already a vector node, does nothing. If a is a function, apply it to the current position."
+  ([a]
+	  (let [a (node a)] 
+	    (cond
+		    (vector-node? a)
+		      a
+		    (scalar-node? a)
+		      (vector-node a)
+		    :else
+		      (error "Should not be possible!"))))
+  ([dims a]
+    (let [a (node a)
+          va (vectorize a)
+          adims (dimensions va)]
+      (cond
+        (= adims dims) va
+        (< dims adims) (node (vec (take dims (:nodes va))))
+        :else (node (vec (concat (:nodes va) (repeat (- dims adims) (if (scalar-node? a) a ZERO-NODE)))))))))
+
+
+(defn ^:private vlet* 
+  "let one or more values within a vector function" 
+  ([bindings form]
+    (let [form (node form)
+          binding-pairs (partition 2 bindings)
+          symbols (map first binding-pairs)
+          binding-nodes (map (comp node second) binding-pairs)]
+      ;; (if-not (every? scalar-node? binding-nodes) (error "All binding values must be scalar"))
+		  (if (seq bindings)
+		    (apply transform-components
+          (fn [form & binds]
+            `(let [~@(interleave symbols (map :code binds))]
+               ~(:code form)))
+          (cons form binding-nodes))
+      form))))
+
+(defn ^:private warp 
+  "Warps the position vector before calculating a vector function"
+  ([warp f]
+	  (let [warp (vectorize warp)
+	        f (node f)
+	        wdims (dimensions warp)
+	        fdims (dimensions f)
+	        vars (take wdims ['x 'y 'z 't])
+	        temps (take wdims ['x-temp 'y-temp 'z-temp 't-temp])
+	        bindings 
+	          (vec (concat
+                  (interleave temps (take wdims (:nodes warp))) ;; needed so that symbols x,y,z,t aren't overwritten too early
+                  (interleave vars temps)))]
+     (vlet* bindings f))))
 
 (def ZERO-NODE (node 0.0))
 

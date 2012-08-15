@@ -21,8 +21,10 @@
 
 ;; alias key private functions from clisk.node
 (def dimensions #'clisk.node/dimensions)
+(def vectorize #'clisk.node/vectorize)
 (def component #'clisk.node/component)
 (def evaluate #'clisk.node/evaluate)
+(def warp #'clisk.node/warp)
 
 (defn ensure-scalar [x]
   "Ensure x is a scalar value. If x is a vector, resturns the first component (index 0)."
@@ -33,26 +35,6 @@
 	    (scalar-node? x)
 	      x
 	    :else x)))
-
-(defn vectorize 
-	"Converts a value into a vector function form. If a is already a vector node, does nothing. If a is a function, apply it to the current position."
-  ([a]
-	  (let [a (node a)] 
-	    (cond
-		    (vector-node? a)
-		      a
-		    (scalar-node? a)
-		      (vector-node a)
-		    :else
-		      (error "Should not be possible!"))))
-  ([dims a]
-    (let [a (node a)
-          va (vectorize a)
-          adims (dimensions va)]
-      (cond
-        (= adims dims) va
-        (< dims adims) (node (vec (take dims (:nodes va))))
-        :else (node (vec (concat (:nodes va) (repeat (- dims adims) (if (scalar-node? a) a ZERO-NODE)))))))))
 
 (defn components [mask a]
   "Gets a subset of components from a, where the mask vector is > 0. Other components are zeroed"
@@ -158,21 +140,6 @@
 		          (apply function-node f (map #(component i %) vs))))
           (apply function-node f vs))))))
 
-(defn ^:private vlet* 
-  "let one or more values within a vector function" 
-  ([bindings form]
-    (let [form (node form)
-          binding-pairs (partition 2 bindings)
-          symbols (map first binding-pairs)
-          binding-nodes (map (comp node second) binding-pairs)]
-      ;; (if-not (every? scalar-node? binding-nodes) (error "All binding values must be scalar"))
-		  (if (seq bindings)
-		    (apply transform-components
-          (fn [form & binds]
-            `(let [~@(interleave symbols (map :code binds))]
-               ~(:code form)))
-          (cons form binding-nodes))
-      form))))
 
 (defmacro vlet 
   "let one or more values within a vector function" 
@@ -185,7 +152,7 @@
         bindings (interleave quoted-gensyms values)]
     (if-not (even? (count bindings)) (error "vlet requires an even number of binding forms"))
     `(let [~@(interleave symbols quoted-gensyms)]
-       (#'vlet* [~@bindings] ~form)))) 
+       (#'clisk.node/vlet* [~@bindings] ~form)))) 
 
 (defmacro let-vector 
   "let a vector value into each component of a function" 
@@ -198,7 +165,7 @@
                            (gensym (str "comp" i#))))
            vector-node# (node gensyms#)
            ~symbol vector-node#]
-       (#'vlet* 
+       (#'clisk.node/vlet* 
          (vec 
            (let []
              (interleave gensyms# components#))) 
@@ -370,20 +337,7 @@
 	  (let-vector [x a]
                (vdivide x (length x)))))
 
-(defn warp 
-  "Warps the position vector before calculating a vector function"
-  ([warp f]
-	  (let [warp (vectorize warp)
-	        f (node f)
-	        wdims (dimensions warp)
-	        fdims (dimensions f)
-	        vars (take wdims ['x 'y 'z 't])
-	        temps (take wdims ['x-temp 'y-temp 'z-temp 't-temp])
-	        bindings 
-	          (vec (concat
-                  (interleave temps (take wdims (:nodes warp))) ;; needed so that symbols x,y,z,t aren't overwritten too early
-                  (interleave vars temps)))]
-     (vlet* bindings f))))
+
 
 (defn compose 
   "Composes two or more vector functions"
