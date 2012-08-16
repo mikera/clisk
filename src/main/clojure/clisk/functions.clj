@@ -525,7 +525,7 @@
   ([v]
     (transform-node
       (fn [x y]
-        `(Math/atan2 ~(:code y) ~(:code x)))
+        `(+ Math/PI (Math/atan2 ~(:code y) ~(:code x))))
       (component 0 v)
       (component 1 v))) )
 
