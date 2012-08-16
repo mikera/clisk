@@ -38,6 +38,5 @@
   "Wraps an image around an origin in a radial fashion in the x-y plane"
   [src & {:keys [repeat] 
           :or {repeat 1.0}}]
-  (let []
-    (warp [(vfrac (v* repeat (vdivide theta TAU))) 
-           radius] src)))
+  (warp [(vfrac (v* repeat (vdivide theta TAU))) , radius] 
+        src))
