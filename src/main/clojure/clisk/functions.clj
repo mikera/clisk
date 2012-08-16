@@ -172,11 +172,11 @@
             `(let-vector [~@more] ~form)))))) 
 
 
-(defn vif [c a b]
+(defn vif [condition a b]
   "Conditional vector function. First scalar argument is used as conditional value, > 0.0  is true."
   (let [a (node a)
         b (node b)
-        c (component 0 c)
+        condition (component 0 condition)
         adims (dimensions a)
         bdims (dimensions b)
         dims (max adims bdims)]
@@ -187,7 +187,7 @@
            (if (> (evaluate c) 0.0 ) a b) 
            ;; variable case
            `(if (> ~(:code c) 0.0 ) ~(:code a) ~(:code b)) ))
-       c
+       condition
        a
        b)))
 

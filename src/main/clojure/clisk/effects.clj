@@ -41,10 +41,9 @@
   (warp [(vfrac (v* repeat (vdivide theta TAU))) , radius] 
         src))
 
-
 (defn swirl
   "Swirls a function around the origin with a given rate"
-  ([function]
-    (swirl 1.0 function))
-  ([rate function]
-    (rotate (v* rate (vsqrt length) ) function)))
+  ([src]
+    (swirl 1.0 src))
+  ([rate src]
+    (rotate (v* rate (vsqrt length) ) src)))
