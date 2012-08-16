@@ -173,3 +173,13 @@
                          `(Math/sqrt (- (* ~'y ~'y) (* ~'x ~'x)))
                          args))))
 
+(defn gridlines
+  [& {:keys [colour background width scale] 
+      :or {colour [1 1 1 1]
+           background [0 0 0 0]
+           width 0.0625
+           scale 1.0}}]
+  (vif
+    (v- width (vmin (vfrac (vdivide x scale)) (vfrac (vdivide y scale))))
+    colour
+    background))
