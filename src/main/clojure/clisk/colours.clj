@@ -130,4 +130,10 @@
     (v+ [(component 0 shift) 0 0]
         (hsl-from-rgb source)))) 
 
+(defn adjust-hsl [shift source]
+  (rgb-from-hsl 
+    (v+ shift
+        (hsl-from-rgb source)))) 
+
+
 

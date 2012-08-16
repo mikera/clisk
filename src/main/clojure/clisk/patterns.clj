@@ -85,6 +85,10 @@
   "4 dimensional plasma, in range [0..1]"
   (make-multi-fractal noise))
 
+(def splasma 
+  "4 dimensional plasma, in range [-1..1]"
+  (make-multi-fractal snoise))
+
 (def turbulence
   "Classic Perlin turbulence in one dimension"
   (make-multi-fractal (vabs snoise)))
@@ -96,6 +100,11 @@
 (def vplasma 
   "4 dimensional vector plasma in range [0..1]^4"
   (vector-offsets plasma))
+
+(def vsplasma 
+  "4 dimensional vector plasma in range [-1..1]^4"
+  (vector-offsets splasma))
+
 
 (defn turbulate
   "Adds random turbulence to a pattern according to a perlin noise offset"
@@ -169,3 +178,5 @@
                          voronoi-function 
                          `(Math/sqrt (- (* ~'y ~'y) (* ~'x ~'x)))
                          args))))
+
+(def vblocks voronoi-blocks)
