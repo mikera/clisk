@@ -12,6 +12,7 @@ public final class Voronoi2D {
 	
 	public Voronoi2D(int numPoints) {
 		if (numPoints<3) throw new clisk.CliskError("Voronoi map must have at least 3 features");
+		if (numPoints>1000) throw new clisk.CliskError("Voronoi map has maximum of 1000 features");
 
 		count=numPoints;
 		xs=new double[numPoints];
@@ -38,7 +39,7 @@ public final class Voronoi2D {
 		// indexes of best and next best
 		int i0=0;
 		int i1=1;
-		int i2=1;
+		int i2=2;
 		
 		// distances of best and next best
 		double dd0=dist2(x,y,xs[0],ys[0]);
