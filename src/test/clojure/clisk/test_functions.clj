@@ -52,6 +52,12 @@
     (is (= [2.0 6.0 0.0] (evaluate (v* [1.0 2.0 3.0] [2.0 3.0]))))
     (is (= 10.0 (evaluate (v* 2.0 5.0))))))
 
+(deftest test-average
+  (testing "Average"
+    (is (= [1.0] (evaluate (average [1.0]))))
+    (is (= 1.0 (evaluate (average 0.0 2.0))))))
+
+
 (deftest test-height
   (testing "Height comes from z component"
     (is (= 10.0 (evaluate (height [0 5 10 15]))))))
