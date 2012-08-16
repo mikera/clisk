@@ -62,7 +62,7 @@
     (is (= 1.0 (evaluate (component 0 1))))
     (is (= 1.0 (evaluate (component 10 1))))
     (is (= 0.0 (evaluate (component 10 [1]))))
-    (is (= [0.0 3.0 4.0] (evaluate (components [0 1 1] [2 3 4 5]))))))
+    (is (= [0.0 3.0 4.0] (evaluate (components [5 1 2] [2 3 4 5]))))))
 
 
 (deftest test-vlet

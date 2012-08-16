@@ -36,17 +36,14 @@
 	      x
 	    :else x)))
 
-(defn components [mask a]
-  "Gets a subset of components from a, where the mask vector is > 0. Other components are zeroed"
-  (let [a (vectorize a)]
+(defn components [index-vector a]
+  "Returns a subset of components from a, according to the provided indices"
+  (let [a (node a)]
     (apply vector-node 
-         (map 
-           (fn [m v]
-             (if (> m 0.0)
-               v
-               0.0)) 
-           mask
-           (:nodes a)))))
+         (vec (map 
+                (fn [i]
+                  (component i a))
+                index-vector)))))
 
 (defn ^:static red-from-argb 
   "Gets the red component value from an ARGB integer"
@@ -582,9 +579,9 @@
 (defn height-normal 
   "Calculates a vector normal to the surface defined by the z-value of a source vector or a scalar height value. The result is *not* normalised."
   ([heightmap]
-    (v- [0 0 1] (components [1 1 0] (gradient (z heightmap)))))
+    (v- [0 0 1] (components [0 1] (gradient (z heightmap)))))
   ([scale heightmap]
-    (v- [0 0 1] (components [1 1 0] (gradient (v* scale (z heightmap)))))))
+    (v- [0 0 1] (components [0 1] (gradient (v* scale (z heightmap)))))))
 
 
 (defn light-value 
