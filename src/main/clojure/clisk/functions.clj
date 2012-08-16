@@ -16,7 +16,7 @@
 
 (def ^:const COMPONENT_TO_DOUBLE (/ 1.0 255.0))
 
-(def pos 
+(def ^:const pos 
   "A special node that evaluates to the current position in space as a 4D vector."
   (code-node ['x 'y 'z 't]))
 
@@ -127,7 +127,7 @@
 ;; todo handle  zeros and ones efficiently
 (defn vectorize-op 
   "Make an arbitrary function work on clisk vectors in a component-wise manner"
-  ([f]
+  ([f & {:keys [zero]}]
 	  (fn [& vs]
 	    (let [vs (map node vs)
 	          dims (apply max (map dimensions vs))]
@@ -136,7 +136,9 @@
 		      (apply vector-node 
 	          (for [i (range dims)]
 		          (apply function-node f (map #(component i %) vs))))
-          (apply function-node f vs))))))
+          (if (and zero (some #(and (constant-node? %) (== zero (:code %))) vs))
+            ZERO-NODE
+            (apply function-node f vs)))))))
 
 
 (defmacro vlet 
@@ -249,7 +251,7 @@
 
 (def v* 
   "Multiplies two or more vectors"
-  (vectorize-op 'clojure.core/*))
+  (vectorize-op 'clojure.core/* :zero 0.0))
 
 (def v- 
   "Subtracts two or more vectors"
