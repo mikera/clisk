@@ -33,3 +33,11 @@
   "Breaks an image up into sharp irregular fragments defined by a Voronoi map" 
   [src & args]
   (offset (grain (apply voronoi-points args)) src))
+
+(defn radial 
+  "Wraps an image around an origin in a radial fashion in the x-y plane"
+  [src & {:keys [repeat] 
+          :or {repeat 1.0}}]
+  (let []
+    (warp [(vfrac (v* repeat (v+ 0.5 (vdivide theta TAU)))) 
+           radius] src)))
