@@ -4,6 +4,10 @@
 	<groupId>net.mikera</groupId>
 	<artifactId>clisk</artifactId>
 	<version>0.4.1-SNAPSHOT</version>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<build>
 		<plugins>
