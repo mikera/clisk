@@ -18,6 +18,7 @@
 (doseq [colour JAVA-COLOURS]
   (eval `(def ~colour (rgb (. Color ~colour)))))
 
+(def purple (rgb 0.5 0.0 0.5))
 
 (def sunset-map 
   (colour-map 
