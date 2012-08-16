@@ -12,6 +12,7 @@
 (set! *unchecked-math* true)
 
 (def ^:const TAU (* 2.0 Math/PI))
+(def ^:const PI (* 0.5 TAU))
 
 (def ^:const COMPONENT_TO_DOUBLE (/ 1.0 255.0))
 
