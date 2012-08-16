@@ -28,3 +28,8 @@
       (warp
         src 
         (v* inv-bands (vfloor (v* dec-bands pos)))))))
+
+(defn shatter 
+  "Breaks an image up into sharp irregular fragments defined by a Voronoi map" 
+  [src & args]
+  (offset (grain (apply voronoi-points args)) src))
