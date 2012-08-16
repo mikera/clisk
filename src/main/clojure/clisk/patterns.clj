@@ -179,8 +179,3 @@
                          `(Math/sqrt (- (* ~'y ~'y) (* ~'x ~'x)))
                          args))))
 
-;; vblocks pattern as used in Clojure Magic Blog
-(def vblocks 
-  (v* 5.0 
-      (voronoi-function 
-        `(Math/sqrt (- (* ~'y ~'y) (* ~'x ~'x))))))
