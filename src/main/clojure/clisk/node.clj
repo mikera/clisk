@@ -49,6 +49,12 @@
 (defn scalar-node? [x] 
   (and (node? x) (= :scalar (:type x))))
 
+(defn is-constant [value]
+  (fn [n]
+    (let [n (node n)]
+      (and (constant-node? n)
+           (= value (:code n)))))) 
+
 ;; standard position vector
 (def position-symbol-vector ['x 'y 'z 't])
 

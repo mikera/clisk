@@ -124,21 +124,28 @@
         dims
         (error "Unequal vector sizes: " (map count vectors))))))
 
-;; todo handle  zeros and ones efficiently
+;; note that vectorize-op optimises for zero and identity elements
 (defn vectorize-op 
   "Make an arbitrary function work on clisk vectors in a component-wise manner"
-  ([f & {:keys [zero]}]
+  ([f & {:keys [zero identity]}]
 	  (fn [& vs]
 	    (let [vs (map node vs)
 	          dims (apply max (map dimensions vs))]
-        (if 
+        (cond 
           (some vector-node? vs)
-		      (apply vector-node 
-	          (for [i (range dims)]
-		          (apply function-node f (map #(component i %) vs))))
-          (if (and zero (some #(and (constant-node? %) (== zero (:code %))) vs))
+			      (apply vector-node 
+		          (for [i (range dims)]
+			          (apply function-node f (map #(component i %) vs))))
+          (and zero (some (is-constant zero) vs))
             ZERO-NODE
-            (apply function-node f vs)))))))
+          identity
+            (let [vs (cons (first vs) 
+                           (filter (complement (is-constant identity)) (rest vs)))]
+              (if (== 1 (count vs))
+                (first vs)
+                (apply function-node f vs)))
+          :else
+            (apply function-node f vs))))))
 
 
 (defmacro vlet 
@@ -247,7 +254,7 @@
 
 (def v+ 
   "Adds two or more vectors"
-  (vectorize-op 'clojure.core/+))
+  (vectorize-op 'clojure.core/+ :identity 0.0))
 
 (def v* 
   "Multiplies two or more vectors"
@@ -255,15 +262,15 @@
 
 (def v- 
   "Subtracts two or more vectors"
-  (vectorize-op 'clojure.core/-))
+  (vectorize-op 'clojure.core/- :identity 0.0))
 
 (def vdivide 
   "Divides two or more vectors"
-  (vectorize-op 'clojure.core//))
+  (vectorize-op 'clojure.core// :identity 1.0))
 
 (def vpow 
   "Raises a vector to an exponent"
-  (vectorize-op 'Math/pow))
+  (vectorize-op 'Math/pow :identity 1.0))
 
 (def vmod
   "Returns the modulus of a vector by component."
