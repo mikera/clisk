@@ -35,6 +35,24 @@
       (v* 20.0 (voronoi-blocks :voronoi voronoi1))
       (warp (voronoi-points :voronoi voronoi1) grain)))
     1024 1024)
+  
+  :oily-colours
+  (show (offset (seamless (v* 2 vplasma)) 
+              (compose vnoise 
+                       (v* 10 (seamless 0.4 noise)))) 1024 1024)
+  
+  :polished-blue-stone
+  (show (offset (seamless (v* 2 vplasma)) 
+              (compose (v* [0.3 0.6 1.0] vnoise) 
+                       (v* 150 (seamless 0.4 (v* splasma noise))))) 1024 1024)
+  
+  :landscape-contours
+  (show (offset (seamless (v* 2 vplasma)) 
+              (compose (components [0 1] vnoise) 
+                       (v* 150 (seamless 0.4 noise)))) 1024 1024)
+  
+  :colourful-spots
+  (show (seamless 0.5 (compose vnoise spots)) 1024 1024)
     
 })
 

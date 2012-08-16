@@ -527,6 +527,11 @@
         high (vectorize high)]
     (vmax low (vmin high v))))
 
+(defn average [& vs]
+  "Returns the average of several arguments"
+  (let [n (count vs)]
+    (v* (/ 1.0 n) (apply v+ vs))) )
+
 ;; polar co-ordinate functions
 
 (defn theta 

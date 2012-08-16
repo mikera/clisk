@@ -2,7 +2,7 @@
   ^{:author "mikera"
     :doc "Library of colours, colour gradients and colour-handling functions."}
   clisk.colours
-  (:use [clisk node functions])
+  (:use [clisk node functions patterns])
   (:import java.awt.Color)
   (:import clisk.Maths)
   (:import java.lang.Math))
@@ -19,6 +19,7 @@
   (eval `(def ~colour (rgb (. Color ~colour)))))
 
 (def purple (rgb 0.5 0.0 0.5))
+(def brown (rgb 0.6 0.3 0.0))
 
 (def sunset-map 
   (colour-map 
@@ -28,6 +29,22 @@
      [0.7 [0.8 0.3 0.1]]
      [0.9 [1.0 0.6 0.0]]
      [1.0 [1.0 0.9 0.0]]]))
+
+(def colourful-map
+  (seamless 0.2 (compose vnoise (v* pos 20))))
+
+(def bright-colourful-map
+  (seamless 0.2 (compose vnoise (v* pos 20))))
+
+(def desert-map 
+  (colour-map 
+    [[0.0 [0.6 1.0 1.0]]
+     [0.3 [0.1 0.8 1.0]]
+     [0.5 [0.0 0.5 1.0]]
+     [0.5 [1.0 1.0 1.0]]
+     [0.6 [1.0 0.8 0.6]]
+     [0.8 [0.9 0.6 0.1]]
+     [1.0 [0.8 0.4 0.0]]]))
 
 (def landscape-map 
   (colour-map 

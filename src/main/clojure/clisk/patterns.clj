@@ -183,3 +183,11 @@
     (v- width (vmin (vfrac (vdivide x scale)) (vfrac (vdivide y scale))))
     colour
     background))
+
+(def spots 
+  "A spotted monochome pattern"
+  (sigmoid (scale 0.23 (v* 10 (v- snoise 0.3 )))))
+
+(def blotches 
+  "A blothchy monochome pattern"
+  (sigmoid (scale 0.23 (v* 10 (v- splasma 0.2 )))))
