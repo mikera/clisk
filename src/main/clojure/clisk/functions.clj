@@ -258,7 +258,7 @@
 
 (def v* 
   "Multiplies two or more vectors"
-  (vectorize-op 'clojure.core/* :zero 0.0))
+  (vectorize-op 'clojure.core/* :zero 0.0 :identity 1.0))
 
 (def v- 
   "Subtracts two or more vectors"
