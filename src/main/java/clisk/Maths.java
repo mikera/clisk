@@ -22,5 +22,14 @@ public class Maths {
 		if (result<0) result+=div;
 		return result;
 	}
+	
+	public static double square(double a) {
+		return a*a;
+	}
+	
+	public static double triangleWave(double a) {
+		a-=Math.floor(a);
+		return (a<0.5)?a*2:(2-a*2);
+	}
 
 }

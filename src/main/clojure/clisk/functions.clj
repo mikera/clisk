@@ -284,6 +284,10 @@
   "Sigmoid function on a scalar or vector in range [0..1]"
   (vectorize-op 'clisk.Maths/sigmoid))
 
+(def triangle-wave
+  "Triangular wave function in range [0..1]"
+  (vectorize-op 'clisk.Maths/triangleWave))
+
 (defn dot 
 	"Returns the dot product of two vectors"
   ([a b]
