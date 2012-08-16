@@ -39,5 +39,5 @@
   [src & {:keys [repeat] 
           :or {repeat 1.0}}]
   (let []
-    (warp [(vfrac (v* repeat (v+ 0.5 (vdivide theta TAU)))) 
+    (warp [(vfrac (v* repeat (vdivide theta TAU))) 
            radius] src)))
