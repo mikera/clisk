@@ -286,7 +286,7 @@
 
 (def triangle-wave
   "Triangular wave function in range [0..1]"
-  (vectorize-op 'clisk.Maths/triangleWave))
+  (vectorize-op 'clisk.Maths/t))
 
 (defn dot 
 	"Returns the dot product of two vectors"
