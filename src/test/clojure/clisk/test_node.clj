@@ -53,6 +53,7 @@
   (testing "Validating misc functions"
     (is (validate (height-normal (vsin pos))))
     (is (validate (render-lit 1 (vsin pos))))
+    (is (validate (dot x y)))
     (is (validate (normalize x))))
   (testing "Validating vectors"
     (doseq [n vector-node-types] 

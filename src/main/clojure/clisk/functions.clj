@@ -127,11 +127,13 @@
 ;; note that vectorize-op optimises for zero and identity elements
 (defn vectorize-op 
   "Make an arbitrary function work on clisk vectors in a component-wise manner"
-  ([f & {:keys [zero identity]}]
+  ([f & {:keys [zero identity unary-identity]}]
 	  (fn [& vs]
 	    (let [vs (map node vs)
 	          dims (apply max (map dimensions vs))]
         (cond 
+          (and unary-identity (= 1 (count vs)))
+            (first vs)
           (some vector-node? vs)
 			      (apply vector-node 
 		          (for [i (range dims)]
@@ -200,6 +202,7 @@
        a
        b)))
 
+
 (defn apply-to-components
   "Applies a function f to all components of a vector"
   ([f v]
@@ -254,11 +257,11 @@
 
 (def v+ 
   "Adds two or more vectors"
-  (vectorize-op 'clojure.core/+ :identity 0.0))
+  (vectorize-op 'clojure.core/+ :identity 0.0 :unary-identity true))
 
 (def v* 
   "Multiplies two or more vectors"
-  (vectorize-op 'clojure.core/* :zero 0.0 :identity 1.0))
+  (vectorize-op 'clojure.core/* :zero 0.0 :identity 1.0 :unary-identity true))
 
 (def v- 
   "Subtracts two or more vectors"
@@ -292,15 +295,8 @@
 	"Returns the dot product of two vectors"
   ([a b]
 	  (let [a (vectorize a)
-	        b (vectorize b)
-	        adims (check-dims a)
-	        bdims (check-dims b)
-	        dims (min adims bdims)]
-     (transform-node
-		   #(cons 'clojure.core/+
-		      (for [i (range dims)]
-		        `(clojure.core/* ~(:code (component i %1)) ~(:code (component i %2)))))
-       a b))))
+	        b (vectorize b)]
+     (apply v+ (map v* (:nodes a) (:nodes b))))))
 
 (defn cross3
   "Returns the cross product of 2 3D vectors"
@@ -385,6 +381,14 @@
              position-symbol-vector
              offset)
            f)))
+
+(defn matrix [rows]
+  (if (= 1 (count rows))
+    (dot (first rows) pos)
+    (vec-node
+      (map-indexed (fn [i row]
+                     (dot row pos))
+                   rows))))
 
 (def ^:private 
       offsets-for-vectors (vec(map node[[-120.34 +340.21 -13.67 +56.78]
