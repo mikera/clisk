@@ -382,13 +382,15 @@
              offset)
            f)))
 
-(defn matrix [rows]
-  (if (= 1 (count rows))
-    (dot (first rows) pos)
-    (vec-node
-      (map-indexed (fn [i row]
-                     (dot row pos))
-                   rows))))
+(defn matrix 
+  "Creates a matrix transformation"
+  ([rows]
+	  (if (= 1 (count rows))
+	    (dot (first rows) pos)
+	    (vec-node
+	      (map-indexed (fn [i row]
+	                     (dot row pos))
+	                   rows)))))
 
 (def ^:private 
       offsets-for-vectors (vec(map node[[-120.34 +340.21 -13.67 +56.78]
