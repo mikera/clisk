@@ -350,21 +350,24 @@
      image)))
 
 
+(defn node-info [node]
+  (expression-info-internal 
+     `(fn [~@(keys (:objects node))]
+         (let [~'x 1.0 
+               ~'y 1.0 
+               ~'z 1.0 
+               ~'t 1.0 ]
+          ~(:code node)))))
+
 (defn validate 
   "Validates the structure and behaviour of any node. Throws an error if any problem is deteted, returns the node otherwise."
   ([node]
 	  (cond
 	    (not (xor (:code node) (:codes node))) 
 	      (error "AST node must have :code or :codes")
-	    (and (scalar-node? node) 
-	         (not (:primitive? (expression-info-internal 
-	                             `(fn [~@(keys (:objects node))]
-                                   (let [~'x 1.0 
-                                      ~'y 1.0 
-                                      ~'z 1.0 
-                                      ~'t 1.0 ]
-	                                  ~(:code node)))))))
-	      (error "AST code must be of primitive type: " (:code node))
+	    (and (scalar-node? node)
+           (not (:primitive? (node-info node))))
+	      (error "AST code must be of primitive type: " (:code node) " was: [" (:type (node-info node)) "]")
 	    :else 
 	      (if (vector-node? node)
 	        (do 
