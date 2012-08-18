@@ -57,6 +57,11 @@
     (is (= [1.0] (evaluate (average [1.0]))))
     (is (= 1.0 (evaluate (average 0.0 2.0))))))
 
+(deftest test-vconcat
+  (testing "vconcat"
+    (is (= [1.0] (evaluate (vconcat [1.0] []))))
+    (is (= [1.0 2.0] (evaluate (vconcat 1.0 [] [2.0]))))))
+
 
 (deftest test-height
   (testing "Height comes from z component"

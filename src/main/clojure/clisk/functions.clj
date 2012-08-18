@@ -124,6 +124,11 @@
         dims
         (error "Unequal vector sizes: " (map count vectors))))))
 
+(defn vconcat 
+  "Concatenate a set of vectors into a longer vector. Treats scalars as 1D vectors." 
+  [& vectors]
+  (vec-node (mapcat (comp :nodes vectorize) vectors)))
+
 ;; note that vectorize-op optimises for zero and identity elements
 (defn vectorize-op 
   "Make an arbitrary function work on clisk vectors in a component-wise manner"
