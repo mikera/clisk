@@ -3,6 +3,7 @@ package clisk.generator;
 import java.util.Random;
 
 import clisk.IFunction;
+import clisk.Util;
 
 public final class Voronoi2D {
 	private final int count;
@@ -18,7 +19,10 @@ public final class Voronoi2D {
 		xs=new double[numPoints];
 		ys=new double[numPoints];
 		
+		// use a fixed seed to ensure reproducibility
 		Random r=new Random();
+		r.setSeed(0xCAFEBABE ^ Util.longHash(numPoints));
+		
 		for (int i=0; i< count; i++) {
 			xs[i]=r.nextDouble();
 			ys[i]=r.nextDouble();
