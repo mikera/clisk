@@ -3,6 +3,7 @@
   (:use clisk.node)
   (:use clisk.functions)
   (:use clisk.core)
+  (:use clisk.colours)
   (:use clisk.util)
   (:use clisk.patterns)
   (:use clisk.textures)
@@ -139,7 +140,9 @@
       (is (= [1.0 1.0 1.0 1.0] (evaluate (texture-map im) )))))
   (testing "Clojure image"
       (is (= [0.0 0.0 0.0 0.0] (evaluate clojure )))
-      (is (= [0.5 0.5 0.5 0.5] (evaluate (v+ 0.5 clojure) )))))
+      (is (= [0.5 0.5 0.5 0.5] (evaluate (v+ 0.5 clojure) ))))
+  (testing "Round trip image"
+      (is (= [1.0 0.0 0.0 1.0] (evaluate (texture-map (img red)) )))))
 
 (deftest test-error
   (testing "Clisk Error"
