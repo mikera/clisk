@@ -1,0 +1,11 @@
+This is a workaround for the issue that we are currently unable to deploy directly to clojars from Eclipse / m2eclipse
+
+1. Run Maven install
+2. Run "pageant" and open the relevant private key "mikera-clojars-ssh.ppk"
+3. Open command prompt
+4. cd to the repository directory e.g. "~.m2/repository/net/mikera/clisk/0.4.1"
+5. Run command as follows (including semicolon at end)
+
+pscp -scp *.pom *.jar clojars@clojars.org:
+
+This should deploy successfully to clojars via SCP.
