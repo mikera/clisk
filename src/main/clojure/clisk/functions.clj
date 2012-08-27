@@ -46,6 +46,13 @@
                   (component i a))
                 index-vector)))))
 
+(defn take-components [n a]
+  "Take the first n components from a vector function"
+  (let [a (node a)]
+    (vec-node
+      (for [i (range n)]
+        (component i a)))))
+
 (defn ^:static red-from-argb 
   "Gets the red component value from an ARGB integer"
   (^double [^long argb]
@@ -388,7 +395,7 @@
            f)))
 
 (defn matrix 
-  "Creates a matrix transformation"
+  "Creates a matrix multiplication function"
   ([rows]
 	  (if (= 1 (count rows))
 	    (dot (first rows) pos)
@@ -396,6 +403,24 @@
 	      (map-indexed (fn [i row]
 	                     (dot row pos))
 	                   rows)))))
+
+(defn matrix-transform 
+  "Performs a matrix transformation on the given source"
+  ([matrix-rows]
+    (fn [src]
+      (matrix-transform matrix-rows src)))
+  ([matrix-rows src]
+    (warp (matrix matrix-rows) src)))
+
+(defn affine-transform 
+  "Performs an affine transformation (implicitly appends a 1 as final row of the input vector)"
+  ([matrix-rows]
+    (fn [src]
+      (affine-transform matrix-rows src)))
+  ([matrix-rows src]
+    (let [dims (dec (apply max (map count matrix-rows)))]
+      (warp ((matrix matrix-rows) (vconcat (take-components dims pos) [1.0])) 
+            src))))
 
 (def ^:private 
       offsets-for-vectors (vec(map node[[-120.34 +340.21 -13.67 +56.78]
