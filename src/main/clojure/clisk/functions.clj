@@ -661,4 +661,4 @@
          update 
          :result (or result pos)
          :bailout-result (or bailout-result 0.0)
-         :max-iteration max-iterations))
+         :max-iterations max-iterations))
