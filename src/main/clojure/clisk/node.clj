@@ -3,6 +3,7 @@
     :doc "Functions for managing clisk AST nodes. Should not normally be needed by library users"}  
   clisk.node
   (:import clisk.Util)
+  (:import java.awt.image.BufferedImage)
   (:use clisk.util))
 
 (set! *warn-on-reflection* true)
@@ -10,6 +11,7 @@
 
 
 (declare node)
+(declare img)
 (declare constant-node)
 (declare evaluate)
 (declare warp)
@@ -245,6 +247,42 @@
                :objects objects
               })))
 
+(defmacro texture-bound [v offset width max]
+  `(let [tv# (double (+ (* (double ~v) ~(double width)) ~(double offset)) ) 
+         max# (int (dec ~max)) ]
+       (if (>= tv# max#) 
+         max# 
+         (if (<= tv# 0)
+           (int 0)
+           (int tv#)))))
+
+(defn ^:private texture-map
+  ([image]
+    (let [^BufferedImage image (cond
+                                 (instance? BufferedImage image) 
+                                   image
+                                 (string? image)
+                                   (clisk.util/load-image image)
+                                 :else
+                                   (clisk.node/img image))]
+      (texture-map image 0 0 (.getWidth image) (.getHeight image))))
+  ([^BufferedImage image x y w h]
+    (let [texture (object-node image)
+          tsym (first (keys (:objects texture)))
+          mw (.getWidth image)
+          mh (.getHeight image)]
+      (vec-node
+        (map
+          (fn [fsym]
+            (assoc 
+              (code-node
+                `(let [image# ^java.awt.image.BufferedImage ~tsym
+                       tx# (int (texture-bound ~'x ~x ~w ~mw))
+                       ty# (int (texture-bound ~'y ~y ~h ~mh))]
+                   (~fsym (.getRGB ^BufferedImage image# tx# ty#)) ) )
+              :objects (:objects texture)) )
+          [`red-from-argb `green-from-argb `blue-from-argb `alpha-from-argb])))))
+
 (defn node [a]
   "Creates a node from arbitrary input. Idempotent, can be used to force conversion to node."
   (cond 
@@ -255,6 +293,7 @@
     (symbol? a) (code-node a)
     (keyword? a) (error "Can't convert keyword to node: " a)
     (sequential? a) (code-node a)
+    (instance? java.awt.image.BufferedImage a) (texture-map a)
     :object (object-node a)
     :else (error "Unable to build an AST node from: " a)))
 

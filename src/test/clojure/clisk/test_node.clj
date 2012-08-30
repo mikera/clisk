@@ -2,7 +2,8 @@
   (:use clojure.test)
   (:use clisk.util)
   (:use clisk.node)
-  (:use clisk.functions))
+  (:use clisk.functions)
+  (:use clisk.textures))
 
 
 (deftest test-object
@@ -59,6 +60,11 @@
     (doseq [n vector-node-types] 
       (is (= [1.0 1.0] (evaluate n 1.0 1.0 1.0 1.0)))))) 
 
+
+(deftest test-image-texture
+  (testing "Image textire"
+    (is (= (evaluate (img clojure) 0.3 0.4 0.5)
+           (evaluate clojure 0.3 0.4 0.5)))))
 
 (deftest test-compile
   (testing "Compiling function"
