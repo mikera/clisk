@@ -90,15 +90,15 @@ public final class Voronoi2D {
 	
 	
 	
-	private int seekFirst(double x, double y) {
+	protected int seekFirst(double x, double y) {
 		return seek(x,y)&0x03FF;
 	}
 	
-	private int seekSecond(double x, double y) {
+	protected int seekSecond(double x, double y) {
 		return (seek(x,y)>>10)&0x03FF;
 	}
 	
-	private int seekThird(double x, double y) {
+	protected int seekThird(double x, double y) {
 		return (seek(x,y)>>10)&0x03FF;
 	}
 	
