@@ -368,7 +368,7 @@
   ([offset f]
     (warp (v+ 
              position-symbol-vector
-             offset)
+             (vectorize offset))
            f)))
 
 (defn matrix 
