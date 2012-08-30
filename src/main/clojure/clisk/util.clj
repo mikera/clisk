@@ -4,6 +4,10 @@
   (:import [clojure.lang RT Compiler Compiler$C])
   (:import java.awt.image.BufferedImage))
 
+
+(def ^:const COMPONENT_TO_DOUBLE (/ 1.0 255.0))
+
+
 (defmacro error
   "Throws a clisk error with the provided message(s)"
   ([& vals]
@@ -63,3 +67,23 @@
 
 (defn ^java.awt.image.BufferedImage new-image [w h]
   (Util/newImage (int w) (int h)))
+
+(defn ^:static red-from-argb 
+  "Gets the red component value from an ARGB integer"
+  (^double [^long argb]
+    (* COMPONENT_TO_DOUBLE (bit-and (int 0xFF) (bit-shift-right argb 16)))))
+
+(defn ^:static green-from-argb 
+  "Gets the green component value from an ARGB integer"
+  (^double [^long argb]
+    (* COMPONENT_TO_DOUBLE (bit-and (int 0xFF) (bit-shift-right argb 8)))))
+
+(defn ^:static blue-from-argb 
+  "Gets the blue component value from an ARGB integer"
+  (^double [^long argb]
+    (* COMPONENT_TO_DOUBLE (bit-and (int 0xFF) argb))))
+
+(defn ^:static alpha-from-argb 
+  "Gets the alpha component value from an ARGB integer"
+  (^double [^long argb]
+    (* COMPONENT_TO_DOUBLE (bit-and (int 0xFF) (bit-shift-right argb 24)))))
