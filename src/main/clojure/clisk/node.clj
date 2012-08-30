@@ -13,6 +13,8 @@
 (declare node)
 (declare img)
 (declare constant-node)
+(declare vector-node)
+(declare vec-node)
 (declare evaluate)
 (declare warp)
 (declare ZERO-NODE)
@@ -27,7 +29,9 @@
     (invoke [this x]
       (warp x this))
     (applyTo [this args]
-      (warp (first args) (.applyTo this (rest args)))))
+      (if-let [ss (seq args)]
+        (warp (first args) (.applyTo this (next ss)))
+        this)))
 
 
 ;; ==============================
@@ -81,6 +85,23 @@
 	  (if (vector-node? n)
 	    (nth (:nodes n) i ZERO-NODE)
 	    n))) 
+
+(defn ^:private components [index-vector a]
+  "Returns a subset of components from a, according to the provided indices"
+  (let [a (node a)]
+    (apply vector-node 
+         (vec (map 
+                (fn [i]
+                  (component i a))
+                index-vector)))))
+
+(defn ^:private  take-components [n a]
+  "Take the first n components from a vector function"
+  (let [a (node a)]
+    (vec-node
+      (for [i (range n)]
+        (component i a)))))
+
 
 ;; ========================================
 ;; Node constructors
@@ -336,16 +357,16 @@
 
 (defn ^:private warp 
   "Warps the position vector before calculating a vector function"
-  ([warp f]
-	  (let [warp (vectorize warp)
+  ([new-position f]
+	  (let [new-position (vectorize new-position)
 	        f (node f)
-	        wdims (dimensions warp)
+	        wdims (dimensions new-position)
 	        fdims (dimensions f)
 	        vars (take wdims ['x 'y 'z 't])
 	        temps (take wdims ['x-temp 'y-temp 'z-temp 't-temp])
 	        bindings 
 	          (vec (concat
-                  (interleave temps (take wdims (:nodes warp))) ;; needed so that symbols x,y,z,t aren't overwritten too early
+                  (interleave temps (take wdims (:nodes new-position))) ;; needed so that symbols x,y,z,t aren't overwritten too early
                   (interleave vars temps)))]
      (vlet* bindings f))))
 
@@ -400,16 +421,17 @@
 
 (defn validate 
   "Validates the structure and behaviour of any node. Throws an error if any problem is deteted, returns the node otherwise."
-  ([node]
-	  (cond
-	    (not (xor (:code node) (:codes node))) 
+  ([nd]
+	  (let [nd (node nd)]
+     (cond
+	    (not (xor (:code nd) (:codes nd))) 
 	      (error "AST node must have :code or :codes")
-	    (and (scalar-node? node)
-           (not (:primitive? (node-info node))))
-	      (error "AST code must be of primitive type: " (:code node) " was: [" (:type (node-info node)) "]")
-	    :else 
-	      (if (vector-node? node)
-	        (do 
-	          (doseq [n (:nodes node)] (validate n))
-	          node)
-	        node))))
+	    (and (scalar-node? nd)
+           (not (:primitive? (node-info nd))))
+	      (error "AST code must be of primitive type: " (:code nd) " was: [" (:type (node-info nd)) "]")
+	    (vector-node? nd)
+         (do 
+	          (doseq [n (:nodes nd)] (validate n))
+	          nd)
+      :else 
+	      nd))))

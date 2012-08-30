@@ -34,6 +34,8 @@
 (def dimensions #'clisk.node/dimensions)
 (def vectorize #'clisk.node/vectorize)
 (def component #'clisk.node/component)
+(def components #'clisk.node/components)
+(def take-components #'clisk.node/take-components)
 (def texture-map #'clisk.node/texture-map)
 (def evaluate #'clisk.node/evaluate)
 (def warp #'clisk.node/warp)
@@ -47,23 +49,6 @@
 	    (scalar-node? x)
 	      x
 	    :else x)))
-
-(defn components [index-vector a]
-  "Returns a subset of components from a, according to the provided indices"
-  (let [a (node a)]
-    (apply vector-node 
-         (vec (map 
-                (fn [i]
-                  (component i a))
-                index-vector)))))
-
-(defn take-components [n a]
-  "Take the first n components from a vector function"
-  (let [a (node a)]
-    (vec-node
-      (for [i (range n)]
-        (component i a)))))
-
 
 (defn x 
   "Extracts the x component of a position vector"
