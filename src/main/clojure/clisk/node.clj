@@ -361,13 +361,16 @@
 	  (let [new-position (vectorize new-position)
 	        f (node f)
 	        wdims (dimensions new-position)
+          zdims (- 4 wdims) 
 	        fdims (dimensions f)
 	        vars (take wdims ['x 'y 'z 't])
 	        temps (take wdims ['x-temp 'y-temp 'z-temp 't-temp])
+          zero-bindings (interleave (drop wdims ['x 'y 'z 't]) (repeat zdims 0.0)) 
 	        bindings 
 	          (vec (concat
                   (interleave temps (take wdims (:nodes new-position))) ;; needed so that symbols x,y,z,t aren't overwritten too early
-                  (interleave vars temps)))]
+                  (interleave vars temps)
+                  zero-bindings))]
      (vlet* bindings f))))
 
 (def ZERO-NODE (node 0.0))

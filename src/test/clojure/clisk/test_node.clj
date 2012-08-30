@@ -56,6 +56,7 @@
     (is (validate (height-normal (vsin pos))))
     (is (validate (render-lit 1 (vsin pos))))
     (is (validate (dot x y)))
+    (is (validate (grain x)))
     (is (validate (grain (vfloor x))))
     (is (validate (normalize x))))
   (testing "Validating vectors"
