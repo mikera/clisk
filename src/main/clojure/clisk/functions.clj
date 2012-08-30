@@ -5,7 +5,8 @@
   (:import clisk.Util)
   (:import java.lang.Math)
   (:import clisk.Maths)
-  (:use [clisk node util]))
+  (:use [clisk node util])
+  (:use [clojure.tools macro]))
 
 (set! *warn-on-reflection* true)
 (set! *unchecked-math* true)
@@ -13,9 +14,21 @@
 (def ^:const TAU (* 2.0 Math/PI))
 (def ^:const PI (* 0.5 TAU))
 
+(def ^:const POSITION-SYMBOLS
+  "A vector of position symbols."
+  ['x 'y 'z 't])
+
+(def ^:const C-SYMBOLS
+  "A vector of position symbols."
+  ['c0 'c1 'c2 'c3 'c4 'c5])
+
 (def ^:const pos 
   "A special node that evaluates to the current position in space as a 4D vector."
-  (code-node ['x 'y 'z 't]))
+  (code-node POSITION-SYMBOLS))
+
+(def ^:const c 
+  "A special node that evaluates to the c vector. Used as initial fractal position"
+  (code-node C-SYMBOLS))
 
 ;; alias key private functions from clisk.node
 (def dimensions #'clisk.node/dimensions)
@@ -604,3 +617,63 @@
       (v+ 
         0.2 
         (diffuse-light 0.8 [-1.0 -1.0 1.0] (height-normal (v* 0.1 height )))))))
+
+(defmacro limited-loop [limit [& bindings] form]
+  `(let [~'*recur-limit* (long ~limit)]
+     (double 
+       (loop [~@(concat bindings ['i 0])]
+         ~form))))
+
+(defmacro limited-recur [bailout-result & values]
+  `(if (< ~'i ~'*recur-limit*) 
+     (recur ~@values (inc ~'i))
+     ~bailout-result))
+
+(defn vloop [init rest & {:keys [max-iterations]
+                          :or {max-iterations 10}}]
+  "Creates a vector loop construct"
+  (let [init (vectorize init)
+        n (dimensions init)
+        rest (node rest)]
+    (apply transform-components
+      (fn [rest & inits]
+        `(limited-loop ~max-iterations 
+                       [~@(mapcat list (take n POSITION-SYMBOLS) (map :code inits))]
+           ~(:code rest)))
+      (cons
+        rest
+        (:nodes init)))))
+
+(defn vfor [init while update & {:keys [max-iterations result bailout-result]
+                                 :or {max-iterations 10}}]
+  "Creates a vector for-loop construct"
+  (let [init (vectorize init)
+        n (dimensions init)
+        update (take-components n update)
+        result (or result (node result))
+        bailout-result (or bailout-result result)]
+	  (#'clisk.node/vlet* (interleave (take n C-SYMBOLS) (:nodes init))
+      (vloop
+		    (take-components n c)
+		    (vif 
+		      while
+		      (apply transform-components
+	              (fn [bailout-result-comp & comps]
+	                `(limited-recur ~(:code bailout-result-comp) ~@(map :code comps)))
+	              bailout-result
+	              (:nodes update))
+		      result)
+		    :max-iterations max-iterations))))
+
+;; ==========================================================
+;; Fractal generation function
+
+(defn fractal [& {:keys [init while update result bailout-result max-iterations]
+                  :or {init pos}}]
+   (if-not update (error "fractal requires a :update clause"))
+   (vfor init 
+         (or while 1) 
+         update 
+         :result (or result pos)
+         :bailout-result (or bailout-result 0.0)
+         :max-iteration max-iterations))
