@@ -39,8 +39,7 @@
   :oily-colours
   (show (offset (seamless (v* 2 vplasma)) 
               (compose vnoise 
-                       (v* 10 (seamless 0.4 noise)))) 1024 1024)
-  
+                       [(v* 10 (seamless 0.4 noise)) y z t]))1024 1024)  
   :polished-blue-stone
   (show (offset (seamless (v* 2 vplasma)) 
               (compose (v* [0.3 0.6 1.0] vnoise) 
@@ -52,7 +51,7 @@
                        (v* 150 (seamless 0.4 noise)))) 1024 1024)
   
   :colourful-spots
-  (show (seamless 0.5 (compose vnoise spots)) 1024 1024)
+  (show (seamless 0.5 (compose vnoise [spots y z t])) 1024 1024)
     
 })
 
