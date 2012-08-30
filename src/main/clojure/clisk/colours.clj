@@ -36,6 +36,9 @@
 (def bright-colourful-map
   (seamless 0.2 (compose vnoise (v* pos 20))))
 
+;(def colour-bands
+;  (grain (vfloor x)))
+
 (def desert-map 
   (colour-map 
     [[0.0 [0.6 1.0 1.0]]
