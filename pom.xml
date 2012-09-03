@@ -9,16 +9,17 @@
 	</properties>
 
 	<scm>
-		<connection>scm:git:git@github.com:mikera/clisk.git</connection>
-		<url>https://github.com/mikera/clisk/tree/master/</url>
-		<developerConnection>scm:git:git@github.com:mikera/clisk.git</developerConnection>
-	</scm>
+		<connection>scm:git:git@github.com:mikera/${project.artifactId}.git</connection>
+		<url>scm:git:git@github.com:mikera/${project.artifactId}.git</url>
+		<developerConnection>scm:git:git@github.com:mikera/${project.artifactId}.git</developerConnection>
+  	</scm>
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
