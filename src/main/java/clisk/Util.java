@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,24 +23,24 @@ import clojure.lang.Compiler;
 
 public class Util {
 	
-	
-
+	/**
+	 * Create a new blank BufferedImage
+	 * @param w
+	 * @param h
+	 * @return
+	 */
 	public static BufferedImage newImage(int w, int h) {
 		BufferedImage result=new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
 		return result;
 	}
 	
 	public static BufferedImage scaleImage(BufferedImage img, int w, int h) {
-		int sw = img.getWidth();
-		int sh = img.getHeight();
 		BufferedImage result=new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g=(Graphics2D) result.getGraphics();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);		
 		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);		
-		Rectangle r = new Rectangle(0, 0, sw, sh);
-	    //g.setPaint(new TexturePaint(img, r));
-		//g.fill(new Rectangle (0,0,w ,h));
+
 		g.drawImage(img, 0, 0, w, h, null);
 		return result;
 	}
