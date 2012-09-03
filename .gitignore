@@ -9,3 +9,4 @@
 /.classpath
 /.settings
 /target
+/release.properties
