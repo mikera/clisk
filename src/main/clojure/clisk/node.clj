@@ -2,7 +2,7 @@
   ^{:author "mikera"
     :doc "Functions for managing clisk AST nodes. Should not normally be needed by library users"}  
   clisk.node
-  (:import clisk.Util)
+  (:import [clisk Util NodeMarker])
   (:import java.awt.image.BufferedImage)
   (:use clisk.util))
 
@@ -31,7 +31,8 @@
     (applyTo [this args]
       (if-let [ss (seq args)]
         (warp (first args) (.applyTo this (next ss)))
-        this)))
+        this))
+  clisk.NodeMarker)
 
 
 ;; ==============================
@@ -44,7 +45,7 @@
 ;; Node predicates
 
 (defn node? [x] 
-  (instance? Node x))
+  (instance? clisk.NodeMarker x))
 
 (defn constant-node? [x] 
   (and (node? x) (:constant x)))
