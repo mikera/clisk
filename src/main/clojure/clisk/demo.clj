@@ -7,7 +7,7 @@
 (set! *warn-on-reflection* true)
 (set! *unchecked-math* true)
 
-(defn demo []
+(defn demo-code []
   
   ;; coloured red/green ramps using frac
   (show (scale 0.1 vfrac))

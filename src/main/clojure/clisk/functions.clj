@@ -557,9 +557,8 @@
     (seamless 1.0 v4))
   ([scale v4]
     (let [v4 (node v4)
-          scale-factor (/ 1.0 (double scale) TAU)
+          scale-factor (double (/ 1.0 scale TAU))
           dims (dimensions v4)]
-      ;;(if (< dims 4) (error "vseamless requires 4D input texture, found " dims))
       (warp
         [`(* (Math/cos (* ~'x TAU)) ~scale-factor) 
          `(* (Math/sin (* ~'x TAU)) ~scale-factor) 
