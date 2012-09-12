@@ -74,6 +74,8 @@ public class Util {
 	@SuppressWarnings("serial")
 	public static JFrame frame(final BufferedImage image) {
 		final JFrame f=new JFrame("Clisk Image");
+
+		f.setFocusableWindowState(false);
 		
 		JMenuBar menuBar=new JMenuBar();
 		JMenu menu=new JMenu("File");

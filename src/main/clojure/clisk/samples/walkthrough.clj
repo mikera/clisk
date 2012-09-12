@@ -1,5 +1,5 @@
 (ns clisk.samples.walkthrough
-  "A quick walkthrough of clisk's code functionaliyy"
+  "A quick walkthrough of clisk's code functionality"
   (:use [clisk core node functions patterns colours textures util]))
 
 ;; =========================================
@@ -11,14 +11,22 @@
 ;; colours in RGB  
 (show [1 0 0])
 
-;; named colours
-(show pink)
 
 ;; scalars get interpreted as greyscale
 (show 0.5)
+(show [0.5 0.5 0.5])
+
+;; named colours
+(show pink)
 
 ;; adding in a variable
 (show [x 0 0])
+(show [0 y 0])
+
+;; addition
+(show (v+ 
+        [x 0 0] 
+        [0 y 0])) 
 (show [x y 0])
 
 ;; multiplication
@@ -50,8 +58,29 @@
         [0.2 0.2]
         (checker black (scale 0.25 (checker red yellow)))))
 
+;; variable offset
 (show (offset 
         [(v* 0.3 y) 0]
         (checker black (scale 0.25 (checker red yellow)))))
-)
 
+(def sin-wave (v* 0.1 (vsin (v* 15 y))))
+
+(show (offset 
+        [sin-wave]
+        (checker black (scale 0.25 (checker red yellow)))))
+
+;; HSL
+(show (rgb-from-hsl [x y 0.5]))
+
+;; texture map
+(show cannon)
+
+;; now to make some noise
+(show (scale 0.2 noise))
+
+;; noise with red, green and blue
+(show (scale 0.2 vnoise))
+
+
+
+)

@@ -9,6 +9,11 @@
 (set! *warn-on-reflection* true)
 (set! *unchecked-math* true)
 
+;; ==============================
+;; Image generation constants
+
+(def ^:const DEFAULT-IMAGE-WIDTH 512)
+(def ^:const DEFAULT-IMAGE-HEIGHT 512)
 
 (declare node)
 (declare img)
@@ -33,13 +38,6 @@
         (warp (first args) (.applyTo this (next ss)))
         this))
   clisk.NodeMarker)
-
-
-;; ==============================
-;; Image generation constants
-
-(def ^:const DEFAULT-IMAGE-WIDTH 256)
-(def ^:const DEFAULT-IMAGE-HEIGHT 256)
 
 ;; ==============================
 ;; Node predicates
