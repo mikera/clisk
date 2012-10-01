@@ -89,4 +89,18 @@
   
   ;; turbulent hue values
   (show (scale 0.4 (rgb-from-hsl [(v+ (v* 1 turbulence) 0.6 ) 1.0 0.75])))
+  
+  ;; crystallize filter
+  (let [filt (com.jhlabs.image.CrystallizeFilter.)]
+    (. filt setFadeEdges true)
+    (. filt setScale 32)
+    (. filt setRandomness 1.0)
+    (show (image-filter filt grain)))
+  
+  ;; blur filter
+  (let [filt (com.jhlabs.image.BoxBlurFilter.)]
+    (. filt setRadius 8)
+    (show (image-filter filt cannon)))
+
+
 )
