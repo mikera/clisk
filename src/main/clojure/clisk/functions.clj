@@ -4,6 +4,7 @@
   clisk.functions
   (:import clisk.Util)
   (:import java.lang.Math)
+  (:import [java.awt.image BufferedImage BufferedImageOp] )
   (:import clisk.Maths)
   (:use [clisk node util])
   (:use [clojure.tools macro]))
@@ -480,6 +481,18 @@
 		          (vif (v- v mv)
 	              upper
 	              lower)))))))
+
+(defn image-filter 
+  "Applies a BufferedImageOp filter to a source image or function"
+  [filter source 
+   & {:keys [width height size]
+      :or {width (or size clisk.node/DEFAULT-IMAGE-WIDTH)
+           height (or size clisk.node/DEFAULT-IMAGE-HEIGHT)}}]
+  (let [^java.awt.image.BufferedImageOp filter (if (symbol? filter) (eval `(new ~filter)) filter)
+        ^java.awt.image.BufferedImage source-img (if (instance? java.awt.image.BufferedImage source) source (img source width height)) 
+        dest-img (.createCompatibleDestImage filter source-img (.getColorModel source-img))]
+    (.filter filter source-img dest-img)
+    (texture-map dest-img)))
 
 (def scalar-hash-function
   "Hash function producing a scalar value in the range [0..1) for every 

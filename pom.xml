@@ -23,5 +23,10 @@
 			<artifactId>tools.macro</artifactId>
 			<version>0.1.1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.jhlabs</groupId>
+			<artifactId>filters</artifactId>
+			<version>2.0.235</version>
+		</dependency>
 	</dependencies>
 </project>
