@@ -47,3 +47,17 @@
     (swirl 1.0 src))
   ([rate src]
     (rotate (v* rate (vsqrt length) ) src)))
+
+(defn add-glow 
+  "Adds a glow effect to any image with an alpha channel"
+  [image-with-alpha 
+   & {:keys [glow-radius glow-colour glow-background blur-image-size] 
+      :or {glow-radius 0.2 
+           glow-colour yellow
+           glow-background [0.0 0.0 0.0 0.0]
+           blur-image-size 256}}]
+  (let [alpha-channel (alpha image-with-alpha)
+        blur-filter (doto (com.jhlabs.image.GaussianFilter.) 
+                          (.setRadius (int (* glow-radius blur-image-size))))
+        glow-effect (lerp (image-filter blur-filter alpha-channel) glow-background glow-colour)]
+    (lerp alpha-channel glow-effect image-with-alpha)))
