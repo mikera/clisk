@@ -72,9 +72,9 @@
     (component 3 v)))
 
 (defn alpha 
-  "Extracts the aplha component of a colour vector"
+  "Extracts the alpha component of a colour vector. Assumes 1.0 if not present."
   ([v]
-    (component 3 v)))
+    (if (> (dimensions v) 3) (component 3 v) 1.0)))
 
 (defn rgb
   "Creates an RGB colour vector"
