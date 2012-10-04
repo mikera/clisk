@@ -59,5 +59,6 @@
   (let [alpha-channel (alpha image-with-alpha)
         blur-filter (doto (com.jhlabs.image.GaussianFilter.) 
                           (.setRadius (int (* glow-radius blur-image-size))))
-        glow-effect (lerp (image-filter blur-filter alpha-channel) glow-background glow-colour)]
+        blur (image-filter blur-filter alpha-channel :size blur-image-size)
+        glow-effect (lerp blur glow-background glow-colour)]
     (lerp alpha-channel glow-effect image-with-alpha)))
