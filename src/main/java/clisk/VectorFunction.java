@@ -3,6 +3,7 @@ package clisk;
 import java.util.List;
 
 import mikera.vectorz.AVector;
+import mikera.vectorz.Vector3;
 
 public class VectorFunction extends mikera.vectorz.functions.VectorFunction {
 	private final int inputDimensions;
@@ -26,6 +27,18 @@ public class VectorFunction extends mikera.vectorz.functions.VectorFunction {
 			double v=functions[i].calc(source);
 			dest.set(i,v);
 		}
+	}
+	
+	public void transform(AVector source, Vector3 dest) {
+		dest.x=functions[0].calc(source);
+		dest.y=functions[1].calc(source);
+		dest.z=functions[2].calc(source);
+	}
+	
+	public void transform(Vector3 source, Vector3 dest) {
+		dest.x=functions[0].calc(source);
+		dest.y=functions[1].calc(source);
+		dest.z=functions[2].calc(source);
 	}
 
 	@Override
