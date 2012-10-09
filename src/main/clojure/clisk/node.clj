@@ -303,6 +303,13 @@
               :objects (:objects texture)) )
           [`red-from-argb `green-from-argb `blue-from-argb `alpha-from-argb])))))
 
+(defn vector-function-node 
+  "Creates a vector node from a VectorFunction"
+  [^mikera.transformz.ATransform vf]
+  (let [input-dims (.inputDimensions vf)
+        output-dims (.outputDimensions vf)]
+    (error "Not yet implemented")))
+
 (defn node [a]
   "Creates a node from arbitrary input. Idempotent, can be used to force conversion to node."
   (cond 
@@ -314,6 +321,7 @@
     (keyword? a) (error "Can't convert keyword to node: " a)
     (sequential? a) (code-node a)
     (instance? java.awt.image.BufferedImage a) (texture-map a)
+    (instance? mikera.transformz.ATransform a) (vector-function-node a)
     :object (object-node a)
     :else (error "Unable to build an AST node from: " a)))
 

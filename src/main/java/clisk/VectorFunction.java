@@ -9,6 +9,7 @@ public class VectorFunction extends mikera.vectorz.functions.VectorFunction {
 	private final int inputDimensions;
 	private final int outputDimensions;
 	private final Function[] functions;
+
 	
 	private VectorFunction(int inputs, int outputs, Function[] functions) {
 		this.inputDimensions=inputs;
@@ -19,6 +20,10 @@ public class VectorFunction extends mikera.vectorz.functions.VectorFunction {
 	public VectorFunction create(int inputDims, List<Function> functions) {
 		Function[] funcs=functions.toArray(new Function[functions.size()]);
 		return new VectorFunction(inputDims,funcs.length,funcs);
+	}
+	
+	public Function getFunction(int i) {
+		return functions[i];
 	}
 	
 	@Override
