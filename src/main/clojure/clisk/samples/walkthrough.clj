@@ -2,11 +2,12 @@
   "A quick walkthrough of clisk's code functionality"
   (:use [clisk core node functions patterns colours textures util]))
 
+(fn [] 
+
 ;; =========================================
 ;; Usage:
 ;;   Run each of the individual "show" lines in the walkthough
 
-(comment 
   
 ;; colours in RGB  
 (show [1 0 0])
