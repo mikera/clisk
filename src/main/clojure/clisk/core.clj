@@ -4,6 +4,7 @@
   clisk.core
   (:import clisk.Util)
   (:import java.awt.image.BufferedImage)
+  (:import [mikera.gui Frames])
   (:require [clojure test])
   (:use [clisk node functions util]))
 
@@ -30,6 +31,15 @@
 (defn scale-image [img w h]
   "Scales an image to a given width and height"
   (Util/scaleImage img (int w) (int h)))
+
+(defn show-comp 
+  "Shows a component in a new frame"
+  ([com 
+    & {:keys [^String title]
+       :as options
+       :or {title nil}}]
+  (let [com (component com)]
+    (Frames/display com title))))
 
 (defn show 
   "Creates an shows an image from the given vector function"

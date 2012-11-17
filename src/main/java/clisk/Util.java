@@ -75,6 +75,7 @@ public class Util {
 	public static JFrame frame(final BufferedImage image) {
 		final JFrame f=new JFrame("Clisk Image");
 
+		f.setAutoRequestFocus(false);
 		// f.setFocusableWindowState(false);
 		
 		JMenuBar menuBar=new JMenuBar();
@@ -123,7 +124,10 @@ public class Util {
 	 */
 	public static JFrame show(final BufferedImage image) {
 		JFrame f=frame(image);
+		
+		f.setFocusable(false);
 		f.setVisible(true);
+		f.setFocusable(true);
 		f.pack();		
 		return f;
 	}	
