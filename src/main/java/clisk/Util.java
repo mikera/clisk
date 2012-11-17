@@ -75,7 +75,6 @@ public class Util {
 	public static JFrame frame(final BufferedImage image) {
 		final JFrame f=new JFrame("Clisk Image");
 
-		f.setAutoRequestFocus(false);
 		// f.setFocusableWindowState(false);
 		
 		JMenuBar menuBar=new JMenuBar();
