@@ -1,89 +1,53 @@
-(ns clisk.core
+(ns 
+  ^{:author "mikera"
+    :doc "Core clisk image generation functions"}
+  clisk.core
   (:import clisk.Util)
   (:import java.awt.image.BufferedImage)
-  (:use clisk.functions))
+  (:import [mikera.gui Frames])
+  (:require [clojure test])
+  (:use [clisk node functions util]))
 
 (set! *warn-on-reflection* true)
-
 (set! *unchecked-math* true)
 
-(def DEFAULT-IMAGE-WIDTH 256)
-
-(def DEFAULT-IMAGE-HEIGHT 256)
-
 (def ^:dynamic *anti-alias* 2)
- 
-(defn ^clisk.IFunction compile-fn [code]
-  "Compiles clisk function code into an object that extends clisk.Function and clojure.lang.IFn"
-  (eval
-    `(reify clisk.IFunction
-       (calc 
-         [~'this ~'x ~'y ~'z ~'t]
-           (double ~code))
-       (calc
-         [~'this ~'x ~'y ~'z]
-           (.calc ~'this ~'x ~'y ~'z 0.0))
-       (calc
-         [~'this ~'x ~'y]
-           (.calc ~'this ~'x ~'y 0.0))
-       (calc
-         [~'this ~'x]
-           (.calc ~'this ~'x 0.0))
-       (calc
-         [~'this]
-           (.calc ~'this 0.0)))))
 
 (defn sample 
-  ([code pos]
+  "Samples the value of a node at a given position"
+  ([node] (sample node [0.0 0.0]))
+  ([node pos]
     (let [pos (vectorize pos)
-          code (vectorize code)
-          fns (vec (map compile-fn code))
-          [x y z t] (map #(component % pos) (range 4))]
+          node (vectorize node)
+          fns (vec (map compile-fn (:nodes node)))
+          [x y z t] (map #(evaluate (component % pos)) (range 4))]
       (vec 
         (map #(.calc ^clisk.IFunction % (double x) (double y) (double z) (double t))
              fns)))))
 
-(defn img
-  "Creates a BufferedImage from the given vector function."
-  ([vector-function]
-    (img vector-function DEFAULT-IMAGE-WIDTH DEFAULT-IMAGE-HEIGHT))
-  ([vector-function w h]
-    (img vector-function w h 1.0 (/ (double h) (double w))))
-  ([vector-function w h dx dy]
-    (let [vector-function (vectorize vector-function)
-          image (Util/newImage (int w) (int h))
-          fr (compile-fn (component 0 vector-function))
-          fg (compile-fn (component 1 vector-function))
-          fb (compile-fn (component 2 vector-function))
-          w (int w)
-          h (int h)
-          dx (double dx)
-          dy (double dy)
-          dw (double w)
-          dh (double h)]
-	    (doall (pmap 
-        #(let [iy (int %)]
-		      (dotimes [ix w]
-		        (let [iy (int iy)
-	                x (/ (* dx (+ 0.5 ix)) dw)
-	                y (/ (* dy (+ 0.5 iy)) dh)
-	                r (.calc fr x y 0.0 0.0)
-	                g (.calc fg x y 0.0 0.0)
-	                b (.calc fb x y 0.0 0.0)
-	                argb (Util/toARGB r g b)]
-	           (.setRGB image ix iy argb))))
-        (range h)))
-     image)))
+
+(defn tst [] (clojure.test/run-all-tests))
 
 (defn scale-image [img w h]
+  "Scales an image to a given width and height"
   (Util/scaleImage img (int w) (int h)))
+
+(defn show-comp 
+  "Shows a component in a new frame"
+  ([com 
+    & {:keys [^String title]
+       :as options
+       :or {title nil}}]
+  (let [com (component com)]
+    (Frames/display com title))))
 
 (defn show 
   "Creates an shows an image from the given vector function"
   ([vector-function]
     (show vector-function DEFAULT-IMAGE-WIDTH DEFAULT-IMAGE-HEIGHT))
   ([vector-function w h]
-    (let [scale *anti-alias*
+    (let [vector-function (validate (node vector-function))
+          scale *anti-alias*
           fw (* w scale)
           fh (* h scale)
           img (img vector-function fw fh)

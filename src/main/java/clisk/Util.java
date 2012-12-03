@@ -1,16 +1,19 @@
 package clisk;
 
 import java.awt.Dimension;
+
+import java.awt.FileDialog;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.TexturePaint;
-import java.awt.geom.AffineTransform;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -21,24 +24,24 @@ import clojure.lang.Compiler;
 
 public class Util {
 	
-	
-
+	/**
+	 * Create a new blank BufferedImage
+	 * @param w
+	 * @param h
+	 * @return
+	 */
 	public static BufferedImage newImage(int w, int h) {
 		BufferedImage result=new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
 		return result;
 	}
 	
 	public static BufferedImage scaleImage(BufferedImage img, int w, int h) {
-		int sw = img.getWidth();
-		int sh = img.getHeight();
 		BufferedImage result=new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g=(Graphics2D) result.getGraphics();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);		
 		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);		
-		Rectangle r = new Rectangle(0, 0, sw, sh);
-	    //g.setPaint(new TexturePaint(img, r));
-		//g.fill(new Rectangle (0,0,w ,h));
+
 		g.drawImage(img, 0, 0, w, h, null);
 		return result;
 	}
@@ -70,14 +73,35 @@ public class Util {
 	} 
 	
 	@SuppressWarnings("serial")
-	public static JFrame frame(final Image image) {
-		JFrame f=new JFrame("Clisk Image");
+	public static JFrame frame(final BufferedImage image) {
+		final JFrame f=new JFrame("Clisk Image");
+
+		// f.setFocusableWindowState(false);
 		
 		JMenuBar menuBar=new JMenuBar();
 		JMenu menu=new JMenu("File");
 		menuBar.add(menu);
-		JMenuItem jmi=new JMenuItem("Save As...");	
+		final JMenuItem jmi=new JMenuItem("Save As...");	
 		menu.add(jmi);
+		jmi.addActionListener(new ActionListener () {
+ 			@Override
+			public void actionPerformed(ActionEvent arg0) {
+ 				FileDialog fileDialog = new FileDialog(f, "Save Image As...", FileDialog.SAVE);
+ 				fileDialog.setFile("*.png");
+ 				
+				fileDialog.setVisible(true);			
+				String fileName = fileDialog.getFile();
+				if (fileName !=null) {
+					File outputFile=new File(fileDialog.getDirectory(), fileName);
+			        try {
+						ImageIO.write(image, "png", outputFile);
+						System.out.println("Saving: "+ outputFile.getAbsolutePath());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
 		
 		JComponent c=new JComponent() {
 			public void paint(Graphics g) {
@@ -85,10 +109,11 @@ public class Util {
 			}
 		};
 		c.setMinimumSize(new Dimension(image.getWidth(null),image.getHeight(null)));
-		f.setMinimumSize(new Dimension(image.getWidth(null)+100,image.getHeight(null)+50));
+		f.setMinimumSize(new Dimension(image.getWidth(null)+20,image.getHeight(null)+100));
 		f.add(c);
 		f.setJMenuBar(menuBar);
 		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		f.pack();
 		return f;
 	}	
 	
@@ -97,9 +122,12 @@ public class Util {
 	 * @param image
 	 * @return
 	 */
-	public static JFrame show(final Image image) {
+	public static JFrame show(final BufferedImage image) {
 		JFrame f=frame(image);
+		
+		f.setFocusable(false);
 		f.setVisible(true);
+		f.setFocusable(true);
 		f.pack();		
 		return f;
 	}	
@@ -164,5 +192,34 @@ public class Util {
 
 	public static Object execute(String script) {
 		return Compiler.load(new StringReader(script));
+	}
+	
+	private static double componentFromPQT(double p, double q, double h) {
+		 h=Maths.mod(h, 1.0);
+         if (h < 1.0/6.0) return p + (q - p) * 6.0 * h;
+         if (h < 0.5) return q;
+         if (h < 2.0/3.0) return p + (q - p) * (2.0/3.0 - h) * 6.0;
+         return p;
+	}
+	
+	public static double redFromHSL(double h, double s, double l) {
+		if (s==0.0) return l;
+	    double q = (l < 0.5) ? (l * (1 + s)) : (l + s - l * s);
+        double p = (2 * l) - q;
+        return componentFromPQT(p, q, h + 1.0/3.0);
+	}
+	
+	public static double greenFromHSL(double h, double s, double l) {
+		if (s==0.0) return l;
+	    double q = (l < 0.5) ? (l * (1 + s)) : (l + s - l * s);
+        double p = (2 * l) - q;
+        return componentFromPQT(p, q, h);
+	}
+	
+	public static double blueFromHSL(double h, double s, double l) {
+		if (s==0.0) return l;
+	    double q = (l < 0.5) ? (l * (1 + s)) : (l + s - l * s);
+        double p = (2 * l) - q;
+        return componentFromPQT(p, q, h - 1.0/3.0);
 	}
 }

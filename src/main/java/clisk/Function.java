@@ -1,5 +1,11 @@
 package clisk;
 
+import mikera.vectorz.AVector;
+import mikera.vectorz.APrimitiveVector;
+import mikera.vectorz.Vector1;
+import mikera.vectorz.Vector2;
+import mikera.vectorz.Vector3;
+import mikera.vectorz.Vector4;
 import clojure.lang.ISeq;
 
 public class Function implements IFunction, clojure.lang.IFn {
@@ -17,6 +23,40 @@ public class Function implements IFunction, clojure.lang.IFn {
 
 	public double calc(double x, double y, double z) {
 		return calc(x,y,z,0.0);
+	}
+	
+	public double calc(AVector v) {
+		if (v instanceof APrimitiveVector) {
+			switch (v.length()) {
+				case 1: return calc((Vector1)v);
+				case 2: return calc((Vector2)v);
+				case 3: return calc((Vector3)v);
+				case 4: return calc((Vector4)v);
+			}
+		}
+		switch (v.length()) {
+			case 1: return calc(v.get(0));
+			case 2: return calc(v.get(0),v.get(1));
+			case 3: return calc(v.get(0),v.get(2),v.get(3));
+			case 4: return calc(v.get(0),v.get(2),v.get(3),v.get(4));
+			default: throw new CliskError("Cannot calculate function on source vector with dimensionality "+v.length());
+		}
+	}
+	
+	public double calc(Vector1 v) {
+		return calc(v.x);
+	}
+
+	public double calc(Vector2 v) {
+		return calc(v.x,v.y);
+	}
+	
+	public double calc(Vector3 v) {
+		return calc(v.x,v.y,v.z);
+	}
+	
+	public double calc(Vector4 v) {
+		return calc(v.x,v.y,v.z,v.t);
 	}
 	
 	public double calc(double x, double y, double z, double t) {
