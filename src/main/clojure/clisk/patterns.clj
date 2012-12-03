@@ -4,7 +4,7 @@
   clisk.patterns
   
   "Patterns and pattern generators"
-  (:use [clisk util node functions])
+  (:use [clisk core util node functions])
   (:import java.awt.image.BufferedImage)
   (:import clisk.noise.Perlin)
   (:import clisk.noise.Simplex)
