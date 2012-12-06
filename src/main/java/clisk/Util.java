@@ -195,7 +195,7 @@ public class Util {
 	}
 	
 	private static double componentFromPQT(double p, double q, double h) {
-		 h=Maths.mod(h, 1.0);
+		 h=mikera.util.Maths.mod(h, 1.0);
          if (h < 1.0/6.0) return p + (q - p) * 6.0 * h;
          if (h < 0.5) return q;
          if (h < 2.0/3.0) return p + (q - p) * (2.0/3.0 - h) * 6.0;

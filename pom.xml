@@ -48,5 +48,10 @@
 			<artifactId>mikera-gui</artifactId>
 			<version>0.0.3</version>
 		</dependency>
+		<dependency>
+			<groupId>net.mikera</groupId>
+			<artifactId>mathz</artifactId>
+			<version>0.0.3</version>
+		</dependency>
 	</dependencies>
 </project>
