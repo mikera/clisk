@@ -1,6 +1,13 @@
 # Clisk
 
-Clisk is a DSL-based library for procedural image generation that can be used from Clojure and Java.
+Clisk is a Clojure based DSL/library for procedural image generation.
+
+Here is the typical use case:
+
+ - The input is a description of a procedure / formula for generating an image
+ - The output is a image rendered at a resolution of your choice
+
+Clisk is intended to be used from Clojure in a REPL environment, but can also with a little effort be used from Java.
 
 [![Build Status](https://secure.travis-ci.org/mikera/clisk.png)](http://travis-ci.org/mikera/clisk)
 
