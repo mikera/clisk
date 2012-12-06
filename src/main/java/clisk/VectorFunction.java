@@ -5,6 +5,12 @@ import java.util.List;
 import mikera.vectorz.AVector;
 import mikera.vectorz.Vector3;
 
+/**
+ * Class representing a Vector function transform constructed from clisk functions.
+ * 
+ * @author Mike
+ *
+ */
 public class VectorFunction extends mikera.vectorz.functions.VectorFunction {
 	private final int inputDimensions;
 	private final int outputDimensions;

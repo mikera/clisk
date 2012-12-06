@@ -2,6 +2,14 @@ package clisk;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * Class representing a BufferedImage texture as a function-like object
+ * 
+ * Returns int pixel values for efficiency.
+ * 
+ * @author Mike
+ *
+ */
 public class TextureFunction {
 	private final BufferedImage texture;
 	private final double xoff;
@@ -25,6 +33,7 @@ public class TextureFunction {
 	public int calc(double x, double y) {
 		return texture.getRGB((int)(x*w+xoff),(int)(y*h+yoff));
 	}
+	
 	
 	public int calc(double x, double y, double z, double t) {
 		return calc(x,y);
