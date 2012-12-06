@@ -5,7 +5,7 @@
   (:import clisk.Util)
   (:import java.lang.Math)
   (:import [java.awt.image BufferedImage BufferedImageOp] )
-  (:import clisk.Maths)
+  (:import mikera.util.Maths)
   (:use [clisk node util])
   (:use [clojure.tools macro]))
 
@@ -267,7 +267,7 @@
 
 (def vmod
   "Returns the modulus of a vector by component."
-  (vectorize-op 'clisk.Maths/mod))
+  (vectorize-op 'mikera.util.Maths/mod))
 
 (def vsqrt
   "Takes the square root of a value"
@@ -275,11 +275,11 @@
 
 (def sigmoid
   "Sigmoid function on a scalar or vector in range [0..1]"
-  (vectorize-op 'clisk.Maths/sigmoid))
+  (vectorize-op 'mikera.util.Maths/sigmoid))
 
 (def triangle-wave
   "Triangular wave function in range [0..1]"
-  (vectorize-op 'clisk.Maths/t))
+  (vectorize-op 'mikera.util.Maths/t))
 
 (defn dot 
 	"Returns the dot product of two vectors"

@@ -4,7 +4,7 @@
   clisk.colours
   (:use [clisk node functions patterns])
   (:import java.awt.Color)
-  (:import clisk.Maths)
+  (:import mikera.util.Maths)
   (:import java.lang.Math))
 
 (set! *warn-on-reflection* true)
