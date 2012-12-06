@@ -21,9 +21,9 @@ public class Generator {
 		Object result = Util.execute(script);
 		if (result instanceof BufferedImage) {
 			return (BufferedImage)result;
-		} else {
-			return (BufferedImage)imageGenerator.invoke(result,width,height);
 		}
+		
+		return (BufferedImage)imageGenerator.invoke(result,width,height);
 	}
 	
 	/**
