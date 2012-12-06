@@ -68,9 +68,9 @@
 
 (deftest test-vlet
   (testing "vlet double"
-    (is (== 1.0 (evaluate (component 0 (vlet ['a 1.0] 'a))))))
+    (is (== 1.0 (evaluate (component 0 (vlet [a 1.0] a))))))
    (testing "vlet double"
-    (is (== 3.0 (evaluate (component 0 (vlet ['a 1.0 'b 2.0] `(+ ~'a ~'b))))))))
+    (is (== 3.0 (evaluate (component 0 (vlet [a 1.0 b 2.0] (v+ a b))))))))
 
 (deftest test-vif
   (testing "vif scalar conditions"
@@ -86,14 +86,14 @@
     (is (= 10.0 (evaluate (v* 2.0 5.0))))
     
 (deftest test-vlerp
-  (testing "Vlerp 3 args"
-    (is (= [1.0 1.0] (evaluate (vlerp [1.0 1.0] [2.0 2.0] 0 ))))
-    (is (= [1.0 1.0] (evaluate (vlerp [1.0 1.0] [2.0 2.0] -1 ))))
-    (is (= [1.5 1.5] (evaluate (vlerp [1.0 1.0] [2.0 2.0] 0.5 ))))
-    (is (= [2.0 2.0] (evaluate (vlerp [1.0 1.0] [2.0 2.0] 1 ))))
-    (is (= [2.0 2.0] (evaluate (vlerp [1.0 1.0] [2.0 2.0] 2 )))))
-  (testing "vlerp scalars"
-    (is (= 2.5 (evaluate (vlerp 2 3 0.5 ))))))
+  (testing "lerp 3 args"
+    (is (= [1.0 1.0] (evaluate (lerp 0 [1.0 1.0] [2.0 2.0]))))
+    (is (= [1.0 1.0] (evaluate (lerp -1 [1.0 1.0] [2.0 2.0]))))
+    (is (= [1.5 1.5] (evaluate (lerp 0.5 [1.0 1.0] [2.0 2.0]))))
+    (is (= [2.0 2.0] (evaluate (lerp 1 [1.0 1.0] [2.0 2.0]))))
+    (is (= [2.0 2.0] (evaluate (lerp 2 [1.0 1.0] [2.0 2.0])))))
+  (testing "lerp scalars"
+    (is (= 2.5 (evaluate (lerp 0.5 2 3))))))
 
 (deftest test-average
   (testing "Average"
