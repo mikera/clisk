@@ -73,8 +73,9 @@ public class Util {
 	} 
 	
 	@SuppressWarnings("serial")
-	public static JFrame frame(final BufferedImage image) {
+	public static JFrame cliskFrame(final BufferedImage image) {
 		final JFrame f=new JFrame("Clisk Image");
+		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		// f.setFocusableWindowState(false);
 		
@@ -123,7 +124,7 @@ public class Util {
 	 * @return
 	 */
 	public static JFrame show(final BufferedImage image) {
-		JFrame f=frame(image);
+		JFrame f=cliskFrame(image);
 		
 		f.setFocusable(false);
 		f.setVisible(true);
@@ -221,5 +222,11 @@ public class Util {
 	    double q = (l < 0.5) ? (l * (1 + s)) : (l + s - l * s);
         double p = (2 * l) - q;
         return componentFromPQT(p, q, h - 1.0/3.0);
+	}
+	
+	public static void main(String[] args) {
+		BufferedImage b=Generator.generate("[x y]");
+		show(b);
+		Util.execute("(shutdown-agents)");
 	}
 }
