@@ -21,6 +21,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import mikera.gui.Frames;
+import mikera.gui.ImageUtils;
+import mikera.util.Maths;
 
 import clojure.lang.Compiler;
 
@@ -34,41 +36,34 @@ public class Util {
 	 * @return
 	 */
 	public static BufferedImage newImage(int w, int h) {
-		BufferedImage result=new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
-		return result;
+		return ImageUtils.newImage(w, h);
 	}
 	
 	public static BufferedImage scaleImage(BufferedImage img, int w, int h) {
-		BufferedImage result=new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g=(Graphics2D) result.getGraphics();
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);		
-		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);		
-
-		g.drawImage(img, 0, 0, w, h, null);
-		return result;
+		return ImageUtils.scaleImage(img, w, h);
 	}
 	
-	public static int clamp (int v) {
-		if (v<0) return 0;
-		if (v>255) return 255;
-		return v;
+	/**
+	 * Clamp an integer to byte range
+	 */
+	public static int clampToByte (int v) {
+		return Maths.bound(v, 0, 255);
 	}
 	
 	public static int toARGB(double r, double g, double b) {
 		return getARGBQuick(
-				clamp((int)(r*256)),
-				clamp((int)(g*256)),
-				clamp((int)(b*256)),
+				clampToByte((int)(r*256)),
+				clampToByte((int)(g*256)),
+				clampToByte((int)(b*256)),
 				255);
 	}
 	
 	public static int toARGB(double r, double g, double b, double a) {
 		return getARGBQuick(
-				clamp((int)(r*256)),
-				clamp((int)(g*256)),
-				clamp((int)(b*256)),
-				clamp((int)(a*256)));
+				clampToByte((int)(r*256)),
+				clampToByte((int)(g*256)),
+				clampToByte((int)(b*256)),
+				clampToByte((int)(a*256)));
 	}
 	
 	public static int getARGBQuick(int r, int g, int b, int a) {
