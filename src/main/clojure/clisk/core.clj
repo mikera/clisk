@@ -43,12 +43,14 @@
     (Frames/display com title))))
 
 (defn show 
-  "Creates an shows an image from the given vector function"
-  ([vector-function]
-    (show vector-function DEFAULT-IMAGE-WIDTH DEFAULT-IMAGE-HEIGHT))
-  ([vector-function w h]
+  "Creates and shows an image from the given vector function"
+  ([vector-function
+    & {:keys [width height size anti-alias] 
+       :or {size DEFAULT-IMAGE-SIZE}}]
     (let [vector-function (validate (node vector-function))
-          scale *anti-alias*
+          scale (or anti-alias *anti-alias*)
+          w (int (or width size))
+          h (int (or height size))
           fw (* w scale)
           fh (* h scale)
           img (img vector-function fw fh)

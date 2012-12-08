@@ -486,8 +486,8 @@
   "Applies a BufferedImageOp filter to a source image or function"
   [filter source 
    & {:keys [width height size]
-      :or {width (or size clisk.node/DEFAULT-IMAGE-WIDTH)
-           height (or size clisk.node/DEFAULT-IMAGE-HEIGHT)}}]
+      :or {width (or size clisk.node/DEFAULT-IMAGE-SIZE)
+           height (or size clisk.node/DEFAULT-IMAGE-SIZE)}}]
   (let [^java.awt.image.BufferedImageOp filter (if (symbol? filter) (eval `(new ~filter)) filter)
         ^java.awt.image.BufferedImage source-img (if (instance? java.awt.image.BufferedImage source) source (img source width height)) 
         dest-img (.createCompatibleDestImage filter source-img (.getColorModel source-img))]

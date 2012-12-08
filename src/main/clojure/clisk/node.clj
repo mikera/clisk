@@ -12,8 +12,7 @@
 ;; ==============================
 ;; Image generation constants
 
-(def ^:const DEFAULT-IMAGE-WIDTH 256)
-(def ^:const DEFAULT-IMAGE-HEIGHT 256)
+(def ^:const DEFAULT-IMAGE-SIZE 256)
 
 (declare node)
 (declare img)
@@ -390,7 +389,7 @@
 (defn img
   "Creates a BufferedImage from the given vector function."
   ([node]
-    (img node DEFAULT-IMAGE-WIDTH DEFAULT-IMAGE-HEIGHT))
+    (img node DEFAULT-IMAGE-SIZE DEFAULT-IMAGE-SIZE))
   ([node w h]
     (img node w h 1.0 (/ (double h) (double w))))
   ([node w h dx dy]
