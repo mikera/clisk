@@ -12,6 +12,9 @@ public class Generator {
 
 	private static IFn imageGenerator=(IFn) Compiler.load(new StringReader("(use '"+NAMESPACE+") clisk.node/img"));
 
+	/**
+	 * Generates a Clisk image from a script
+	 */
 	public static BufferedImage generate(String script) {
 		return generate(script,256,256);
 	}
