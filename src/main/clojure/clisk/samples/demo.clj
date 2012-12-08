@@ -1,7 +1,7 @@
 (ns 
   ^{:author "mikera"
     :doc "Demonstration images."}  
-   clisk.demo
+   clisk.samples.demo
   (:use [clisk core node functions patterns colours textures util effects]))
 
 (set! *warn-on-reflection* true)
