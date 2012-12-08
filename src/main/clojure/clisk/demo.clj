@@ -27,7 +27,7 @@
     (scale 0.2 
            (offset
              (v* 7 vnoise) 
-             (checker [1 0 0] [1 1 0]))) 512 512)
+             (checker [1 0 0] [1 1 0]))) :size 512)
   
   ;; grain-based cube colours
   (show (scale 0.1 (warp vfloor grain)))
@@ -70,7 +70,7 @@
               [1 0 0]))
   
   ;; texture mapping example
-  (show (texture-map (clisk.util/load-image "Clojure_300x300.png")) 300 300 )
+  (show (texture-map (clisk.util/load-image "Clojure_300x300.png")) :size 300 :width 600 )
 		
   ;; tiled clojure pattern
   (show (scale 0.1 (tile clojure)))
