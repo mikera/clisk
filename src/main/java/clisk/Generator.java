@@ -1,17 +1,20 @@
 package clisk;
 
-import clojure.lang.IFn;
-import clojure.lang.Compiler;
+import clojure.lang.RT;
+import clojure.lang.Symbol;
+import clojure.lang.Var;
 
 import java.awt.image.BufferedImage;
-import java.io.StringReader;
 
 
 public class Generator {
-	private static final String NAMESPACE="clisk.samples.demo";
-
-	private static IFn imageGenerator=(IFn) Compiler.load(new StringReader("(use '"+NAMESPACE+") clisk.node/img"));
-
+	private static final Var REQUIRE=RT.var("clojure.core", "require");
+	static {
+		REQUIRE.invoke(Symbol.intern("clisk.node"));
+		REQUIRE.invoke(Symbol.intern("clisk.samples.demo"));
+	}
+	private static final Var IMG=RT.var("clisk.node", "img");
+	
 	/**
 	 * Generates a Clisk image from a script
 	 */
@@ -20,13 +23,13 @@ public class Generator {
 	}
 	
 	public static BufferedImage generate(String script, int width, int height) {
-		script = "(in-ns '"+NAMESPACE+") "+script;
+		script = "(in-ns 'clisk.smaples.demo) "+script;
 		Object result = Util.execute(script);
 		if (result instanceof BufferedImage) {
 			return (BufferedImage)result;
 		}
 		
-		return (BufferedImage)imageGenerator.invoke(result,width,height);
+		return (BufferedImage)IMG.invoke(result,width,height);
 	}
 	
 	/**
