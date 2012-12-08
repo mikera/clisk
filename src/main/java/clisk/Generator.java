@@ -8,7 +8,7 @@ import java.io.StringReader;
 
 
 public class Generator {
-	private static final String NAMESPACE="clisk.demo";
+	private static final String NAMESPACE="clisk.samples.demo";
 
 	private static IFn imageGenerator=(IFn) Compiler.load(new StringReader("(use '"+NAMESPACE+") clisk.node/img"));
 
