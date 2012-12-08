@@ -5,6 +5,7 @@
   (:import clisk.Util)
   (:import java.awt.image.BufferedImage)
   (:import [mikera.gui Frames])
+  (:import [javax.swing JComponent])
   (:require [clojure test])
   (:use [clisk node functions util]))
 
@@ -38,7 +39,7 @@
     & {:keys [^String title]
        :as options
        :or {title nil}}]
-  (let [com (component com)]
+  (let [^JComponent  com (component com)]
     (Frames/display com title))))
 
 (defn show 
