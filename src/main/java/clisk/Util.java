@@ -23,6 +23,7 @@ import javax.swing.JMenuItem;
 import clojure.lang.Compiler;
 
 public class Util {
+	// TODO: refactor to use methods from mikera-gui library
 	
 	/**
 	 * Create a new blank BufferedImage

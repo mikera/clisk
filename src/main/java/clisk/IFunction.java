@@ -1,5 +1,8 @@
 package clisk;
 
+/**
+ * Interface for a multi-dimensional function that returns a single double value.
+ */
 public interface IFunction {
 	public double calc();
 	
