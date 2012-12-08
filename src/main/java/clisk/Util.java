@@ -20,6 +20,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import mikera.gui.Frames;
+
 import clojure.lang.Compiler;
 
 public class Util {
@@ -119,19 +121,8 @@ public class Util {
 		return f;
 	}	
 	
-	/**
-	 * Shows an image in a new clisk JFrame
-	 * @param image
-	 * @return
-	 */
 	public static JFrame show(final BufferedImage image) {
-		JFrame f=cliskFrame(image);
-		
-		f.setFocusable(false);
-		f.setVisible(true);
-		f.setFocusable(true);
-		f.pack();		
-		return f;
+		return Frames.displayImage(image, "Clisk Image");
 	}	
 	
 	/**
