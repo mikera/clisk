@@ -42,8 +42,8 @@
   (let [^JComponent  com (component com)]
     (Frames/display com title))))
 
-(defn function 
-  "Defines a vector function"
+(defn vector-function 
+  "Defines a vector function, operating on vectorz vectors"
   (^clisk.VectorFunction [a 
                 & {:keys [input-dimensions]}]
     (let [a (vectorize a)

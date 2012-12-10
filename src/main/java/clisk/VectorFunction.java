@@ -2,6 +2,8 @@ package clisk;
 
 import java.util.List;
 
+import clojure.lang.ISeq;
+
 import mikera.vectorz.AVector;
 import mikera.vectorz.Vector3;
 
@@ -11,7 +13,7 @@ import mikera.vectorz.Vector3;
  * @author Mike
  *
  */
-public class VectorFunction extends mikera.vectorz.functions.VectorFunction {
+public class VectorFunction extends mikera.vectorz.functions.VectorFunction implements clojure.lang.IFn {
 	private final int inputDimensions;
 	private final int outputDimensions;
 	private final IFunction[] functions;
@@ -68,5 +70,173 @@ public class VectorFunction extends mikera.vectorz.functions.VectorFunction {
 	@Override
 	public int outputDimensions() {
 		return outputDimensions;
+	}
+
+	@Override
+	public Object call() throws Exception {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void run() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1) {
+		return transform((AVector)arg1);
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6, Object arg7) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6, Object arg7, Object arg8) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
+			Object arg10) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
+			Object arg10, Object arg11) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
+			Object arg10, Object arg11, Object arg12) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
+			Object arg10, Object arg11, Object arg12, Object arg13) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
+			Object arg10, Object arg11, Object arg12, Object arg13, Object arg14) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
+			Object arg10, Object arg11, Object arg12, Object arg13,
+			Object arg14, Object arg15) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
+			Object arg10, Object arg11, Object arg12, Object arg13,
+			Object arg14, Object arg15, Object arg16) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
+			Object arg10, Object arg11, Object arg12, Object arg13,
+			Object arg14, Object arg15, Object arg16, Object arg17) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
+			Object arg10, Object arg11, Object arg12, Object arg13,
+			Object arg14, Object arg15, Object arg16, Object arg17, Object arg18) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
+			Object arg10, Object arg11, Object arg12, Object arg13,
+			Object arg14, Object arg15, Object arg16, Object arg17,
+			Object arg18, Object arg19) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
+			Object arg10, Object arg11, Object arg12, Object arg13,
+			Object arg14, Object arg15, Object arg16, Object arg17,
+			Object arg18, Object arg19, Object arg20) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
+			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
+			Object arg10, Object arg11, Object arg12, Object arg13,
+			Object arg14, Object arg15, Object arg16, Object arg17,
+			Object arg18, Object arg19, Object arg20, Object... args) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object applyTo(ISeq arglist) {
+		if (arglist==null) throw new UnsupportedOperationException();
+		Object o=arglist.first();
+		ISeq next=arglist.next();
+		if (next!=null) throw new UnsupportedOperationException();
+		return invoke(o);
 	}
 }
