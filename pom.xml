@@ -52,5 +52,11 @@
 			<artifactId>mathz</artifactId>
 			<version>0.0.4</version>
 		</dependency>
+		<dependency>
+			<groupId>net.mikera</groupId>
+			<artifactId>cljunit</artifactId>
+			<version>0.1.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
