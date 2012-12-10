@@ -2,7 +2,9 @@ package clisk;
 
 import java.util.List;
 
+import clojure.lang.ArityException;
 import clojure.lang.ISeq;
+import clojure.lang.RT;
 
 import mikera.vectorz.AVector;
 import mikera.vectorz.Vector3;
@@ -74,17 +76,17 @@ public class VectorFunction extends mikera.vectorz.functions.VectorFunction impl
 
 	@Override
 	public Object call() throws Exception {
-		throw new UnsupportedOperationException();
+		throw new ArityException(0,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
 	public void run() {
-		throw new UnsupportedOperationException();
+		throw new ArityException(0,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
 	public Object invoke() {
-		throw new UnsupportedOperationException();
+		throw new ArityException(0,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
@@ -94,82 +96,82 @@ public class VectorFunction extends mikera.vectorz.functions.VectorFunction impl
 
 	@Override
 	public Object invoke(Object arg1, Object arg2) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(2,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
 	public Object invoke(Object arg1, Object arg2, Object arg3) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(3,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
 	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(4,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
 	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
 			Object arg5) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(5,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
 	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
 			Object arg5, Object arg6) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(6,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
 	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
 			Object arg5, Object arg6, Object arg7) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(7,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
 	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
 			Object arg5, Object arg6, Object arg7, Object arg8) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(8,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
 	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
 			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(9,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
 	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
 			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
 			Object arg10) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(10,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
 	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
 			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
 			Object arg10, Object arg11) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(11,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
 	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
 			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
 			Object arg10, Object arg11, Object arg12) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(12,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
 	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
 			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
 			Object arg10, Object arg11, Object arg12, Object arg13) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(13,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
 	public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4,
 			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
 			Object arg10, Object arg11, Object arg12, Object arg13, Object arg14) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(14,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
@@ -177,7 +179,7 @@ public class VectorFunction extends mikera.vectorz.functions.VectorFunction impl
 			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
 			Object arg10, Object arg11, Object arg12, Object arg13,
 			Object arg14, Object arg15) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(15,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
@@ -185,7 +187,7 @@ public class VectorFunction extends mikera.vectorz.functions.VectorFunction impl
 			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
 			Object arg10, Object arg11, Object arg12, Object arg13,
 			Object arg14, Object arg15, Object arg16) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(16,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
@@ -193,7 +195,7 @@ public class VectorFunction extends mikera.vectorz.functions.VectorFunction impl
 			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
 			Object arg10, Object arg11, Object arg12, Object arg13,
 			Object arg14, Object arg15, Object arg16, Object arg17) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(17,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
@@ -201,7 +203,7 @@ public class VectorFunction extends mikera.vectorz.functions.VectorFunction impl
 			Object arg5, Object arg6, Object arg7, Object arg8, Object arg9,
 			Object arg10, Object arg11, Object arg12, Object arg13,
 			Object arg14, Object arg15, Object arg16, Object arg17, Object arg18) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(18,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
@@ -210,7 +212,7 @@ public class VectorFunction extends mikera.vectorz.functions.VectorFunction impl
 			Object arg10, Object arg11, Object arg12, Object arg13,
 			Object arg14, Object arg15, Object arg16, Object arg17,
 			Object arg18, Object arg19) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(19,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
@@ -219,7 +221,7 @@ public class VectorFunction extends mikera.vectorz.functions.VectorFunction impl
 			Object arg10, Object arg11, Object arg12, Object arg13,
 			Object arg14, Object arg15, Object arg16, Object arg17,
 			Object arg18, Object arg19, Object arg20) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(20,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
@@ -228,15 +230,15 @@ public class VectorFunction extends mikera.vectorz.functions.VectorFunction impl
 			Object arg10, Object arg11, Object arg12, Object arg13,
 			Object arg14, Object arg15, Object arg16, Object arg17,
 			Object arg18, Object arg19, Object arg20, Object... args) {
-		throw new UnsupportedOperationException();
+		throw new ArityException(20+args.length,"VectorFunctsion requires exactly one argument");
 	}
 
 	@Override
 	public Object applyTo(ISeq arglist) {
-		if (arglist==null) throw new UnsupportedOperationException();
+		if (arglist==null) throw new ArityException(0,"VectorFunctsion requires exactly one argument");
 		Object o=arglist.first();
 		ISeq next=arglist.next();
-		if (next!=null) throw new UnsupportedOperationException();
+		if (next!=null) throw new ArityException(RT.count(arglist),"VectorFunctsion requires exactly one argument");
 		return invoke(o);
 	}
 }
