@@ -42,6 +42,15 @@
   (let [^JComponent  com (component com)]
     (Frames/display com title))))
 
+(defn function 
+  "Defines a vector function"
+  (^clisk.VectorFunction [a 
+                & {:keys [input-dimensions]}]
+    (let [a (vectorize a)
+          input-dimensions (int (or input-dimensions 4))
+          ^java.util.List funcs (vec (map compile-fn (:nodes a)))]
+      (clisk.VectorFunction/create input-dimensions funcs))))
+
 (defn show 
   "Creates and shows an image from the given vector function"
   ([vector-function
