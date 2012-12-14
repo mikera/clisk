@@ -2,6 +2,7 @@
   ^{:author "mikera"
     :doc "Functions for managing clisk AST nodes. Should not normally be needed by library users"}  
   clisk.node
+  (:require [mikera.vectorz.core :as vec])
   (:import [clisk Util NodeMarker])
   (:import java.awt.image.BufferedImage)
   (:use clisk.util))
@@ -315,6 +316,7 @@
     (node? a) a
     (number? a) (constant-node a)
     (vector? a) (vec-node a)
+    (vec/vec? a) (vec-node (seq a))
     (fn? a) (node (a position-symbol-vector))
     (symbol? a) (code-node a)
     (keyword? a) (error "Can't convert keyword to node: " a)

@@ -1,4 +1,5 @@
 (ns clisk.test-node
+  (:require [mikera.vectorz.core :as vec])
   (:use clojure.test)
   (:use clisk.util)
   (:use clisk.node)
@@ -63,6 +64,11 @@
   (testing "Validating vectors"
     (doseq [n vector-node-types] 
       (is (= [1.0 1.0] (evaluate n 1.0 1.0 1.0 1.0)))))) 
+
+(deftest test-vectorz-to-node
+  (testing "vectors as nodes"
+    (is (= [0.0 1.0] (evaluate (vec/vec2 [0 1]))))
+    (is (= [0.0 1.0 3.0] (evaluate (v+ (vec/vec3 [0 1 2]) [0 0 1]))))))
 
 
 (deftest test-image-texture
