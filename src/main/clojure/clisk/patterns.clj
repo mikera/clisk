@@ -118,6 +118,17 @@
          a
          b)))
 
+(defn checker-3D 
+  "Checker pattern in (x,y,z) space, with 2*2*2 grid in [0..1,0..1,0..1] range"
+  ([a b]
+    (vif '(clojure.core/* 
+            (clojure.core/- (clisk.functions/frac x) 0.5)
+            (clojure.core/* 
+              (clojure.core/- (clisk.functions/frac y) 0.5)
+              (clojure.core/- (clisk.functions/frac z) 0.5)))
+         a
+         b)))
+
 (defn globe
   "Creates a globe, returning the value of the function called 
    on the surface of a unit sphere. 
