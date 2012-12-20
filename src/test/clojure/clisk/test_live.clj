@@ -5,7 +5,5 @@
 (deftest test-stuff
   (testing "functions"
     (is (= 1.0 (evaluate (v- 2 1)))))
-;;  (testing "colours"
-;;    (is (validate (node colour-cubes))))
-  
-  )
+  (testing "colours"
+    (is (validate (node colour-cubes)))))
