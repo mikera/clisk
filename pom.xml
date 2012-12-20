@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>cljunit</artifactId>
-			<version>0.1.3</version>
+			<version>0.1.4</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
