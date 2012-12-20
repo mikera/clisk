@@ -3,7 +3,16 @@
     :doc "Namespace with all includes ready for live coding."}    
   clisk.live
 ;;  (:refer-clojure :exclude [* + - /])
-  (:use [clisk core node functions patterns colours textures util effects]))
+  (:require [mikera.cljutils.namespace :as n]))
+
+(n/pull-all clisk.core)
+(n/pull-all clisk.node)
+(n/pull-all clisk.functions)
+(n/pull-all clisk.patterns)
+(n/pull-all clisk.colours)
+(n/pull-all clisk.textures)
+(n/pull-all clisk.util)
+(n/pull-all clisk.effects)
 
 ;; do we really want to override these???
 ;;(def * v*)
