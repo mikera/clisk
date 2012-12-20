@@ -2,10 +2,15 @@
 
 Clisk is a Clojure based DSL/library for procedural image generation.
 
-Here is the typical use case:
+You can use it for:
 
- - The input is a description of a procedure / formula for generating an image
- - The output is a image rendered at a resolution of your choice
+ - Creating 2D material textures for games
+ - Building fractal images / artwork
+ - Generating 3D or 4D textures for raytracing (e.g. in Enlight: https://github.com/mikera/enlight)
+ - Creating patterns (e.g. randomly generated maps)
+
+The core operation of Clisk is taking an image description using the Clisk DSL as input and
+creating a bitmap images as output. You can create images of arbitrary size as long as they fit in memory.
 
 Clisk is intended to be used from Clojure in a REPL environment, but can also with a little effort be used from Java.
 
@@ -35,8 +40,7 @@ The best way to get started with clisk is to [install it from Clojars](https://c
 
 Once you have Clisk specified as a dependency, you should be able to get going with the key functionality as follows:
 
-    (ns my-namespace
-      (:use [clisk core functions patterns colours]))
+    (use 'clisk.live)
      
     (show (checker red white))
 
