@@ -29,6 +29,11 @@
         src 
         (v* inv-bands (vfloor (v* dec-bands pos)))))))
 
+(defn pixelize
+  "Pixelizes an image with pixels of given size"
+  [size src]
+  (scale size (warp vfloor (scale (/ 1.0 (double size)) src))))
+
 (defn shatter 
   "Breaks an image up into sharp irregular fragments defined by a Voronoi map" 
   [src & args]
