@@ -361,8 +361,9 @@
   "Scales a function by a given factor."
   ([factor f] 
 	  (let [factor (node factor)
+          fpos (if (scalar-node? factor) pos (take-components (dimensions factor) pos))
 	        f (node f)]
-	    (warp (vdivide position-symbol-vector factor) f))))
+	    (warp (vdivide fpos factor) f))))
 
 (defn offset 
   "Offsets a function by a specified amount"
