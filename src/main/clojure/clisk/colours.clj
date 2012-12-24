@@ -168,6 +168,7 @@
         hue-variation (double (or hue-variation 1.0))
         lightness-variation (double (or lightness-variation 1.0))
         saturation-variation (double (or saturation-variation 1.0))
+        rand (node (vec (for [i (range 4)]  (* 10.0 (Math/random)))))
         frequency (or frequency 1.0)
         hue-frequency (double (or hue-frequency frequency))
         lightness-frequency (double (or lightness-frequency frequency))
@@ -177,4 +178,4 @@
         (scale 
           [(/ 1.0 hue-frequency) (/ 1.0 saturation-frequency) (/ 1.0 lightness-frequency)]
           (v+ (hsl-from-rgb base-colour)
-              (v* vsnoise [hue-variation saturation-variation lightness-variation])))))))
+              (v* (offset rand vsnoise) [hue-variation saturation-variation lightness-variation])))))))
