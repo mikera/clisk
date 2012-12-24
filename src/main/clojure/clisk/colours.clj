@@ -155,3 +155,26 @@
   (rgb-from-hsl 
     (v+ shift
         (hsl-from-rgb source)))) 
+
+;;=================================================
+;; Colour gradient generation
+
+(defn generate-colour-map
+  [& {:keys [hue-variation lightness-variation saturation-variation
+             frequency
+             hue-frequency lightness-frequency saturation-frequency
+             base-colour]}]
+  (let [base-colour (node (or base-colour [(Math/random) (Math/random) (Math/random)]))
+        hue-variation (double (or hue-variation 1.0))
+        lightness-variation (double (or lightness-variation 1.0))
+        saturation-variation (double (or saturation-variation 1.0))
+        frequency (or frequency 1.0)
+        hue-frequency (double (or hue-frequency frequency))
+        lightness-frequency (double (or lightness-frequency frequency))
+        saturation-frequency (double (or saturation-frequency frequency))]
+    (rgb-from-hsl
+      (seamless 
+        (scale 
+          [(/ 1.0 hue-frequency) (/ 1.0 saturation-frequency) (/ 1.0 lightness-frequency)]
+          (v+ (hsl-from-rgb base-colour)
+              (v* vsnoise [hue-variation saturation-variation lightness-variation])))))))
