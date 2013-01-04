@@ -8,6 +8,7 @@ import clojure.lang.RT;
 
 import mikera.vectorz.AVector;
 import mikera.vectorz.Vector3;
+import mikera.vectorz.Vectorz;
 
 /**
  * Class representing a Vector function transform constructed from clisk functions.
@@ -101,7 +102,7 @@ public class VectorFunction extends mikera.vectorz.functions.VectorFunction impl
 
 	@Override
 	public Object invoke(Object arg1) {
-		return transform((AVector)arg1);
+		return transform(Vectorz.toVector(arg1));
 	}
 
 	@Override
