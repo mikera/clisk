@@ -14,5 +14,5 @@
     (is (= (unchecked-int 0xFFFFFFFF) (Util/toARGB 1.0 1.0 1.0)))))
 
 (deftest test-vector-function
-  (testing "vf"
+  (testing "vector-function"
     (is (= (v/of 1 2) ((vector-function [1 2]) [0 0 0 0])))))
