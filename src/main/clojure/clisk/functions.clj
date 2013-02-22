@@ -275,7 +275,7 @@
 
 (def sigmoid
   "Sigmoid function on a scalar or vector in range [0..1]"
-  (vectorize-op 'mikera.util.Maths/sigmoid))
+  (vectorize-op 'mikera.util.Maths/logistic))
 
 (def triangle-wave
   "Triangular wave function in range [0..1]"
