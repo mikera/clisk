@@ -40,7 +40,7 @@
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>vectorz-clj</artifactId>
-			<version>0.6.0</version>
+			<version>0.7.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.mikera</groupId>
@@ -71,7 +71,7 @@
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>vectorz</artifactId>
-			<version>0.10.0</version>
+			<version>0.10.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
