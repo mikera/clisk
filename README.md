@@ -54,5 +54,11 @@ Once you have Clisk specified as a dependency, you should be able to get going w
 * Easily extensible with your own image generation functions
 * Ability to render surfaces with shading based on 3D heightmaps
 
-
 ![Plasma Globe](https://raw.github.com/wiki/mikera/clisk/images/PlasmaGlobe.png)
+
+
+### License
+
+Clisk is open source, licensed under the GNU Lesser General Public License (LGPL)
+
+ - http://www.gnu.org/licenses/lgpl.html
