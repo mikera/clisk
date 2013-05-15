@@ -4,9 +4,7 @@
   (:import [clojure.lang RT Compiler Compiler$C])
   (:import java.awt.image.BufferedImage))
 
-
 (def ^:const COMPONENT_TO_DOUBLE (/ 1.0 255.0))
-
 
 (defmacro error
   "Throws a clisk error with the provided message(s)"
