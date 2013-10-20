@@ -1,7 +1,7 @@
 package clisk;
 
 import mikera.vectorz.AVector;
-import mikera.vectorz.APrimitiveVector;
+import mikera.vectorz.impl.APrimitiveVector;
 import mikera.vectorz.Vector1;
 import mikera.vectorz.Vector2;
 import mikera.vectorz.Vector3;
@@ -26,7 +26,7 @@ public class Function implements IFunction, clojure.lang.IFn {
 	}
 	
 	public double calc(AVector v) {
-		if (v instanceof APrimitiveVector) {
+		if (v  instanceof APrimitiveVector) {
 			switch (v.length()) {
 				case 1: return calc((Vector1)v);
 				case 2: return calc((Vector2)v);
