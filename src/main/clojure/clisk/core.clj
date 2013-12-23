@@ -71,24 +71,6 @@
   "Creates and shows an image from the given vector function"
   ([vector-function
     & {:keys [width height size anti-alias] 
-       :or {size DEFAULT-IMAGE-SIZE}}]
-    (let [vector-function (validate (node vector-function))
-          scale (or anti-alias *anti-alias*)
-          w (int (or width size))
-          h (int (or height size))
-          fw (* w scale)
-          fh (* h scale)
-          img (img vector-function fw fh)
-          img (loop [scale scale fw fw fh fh img img]
-                (if  (> scale 1)
-                  (let [factor (min 2.0 scale)
-                        nw (/ fw factor)
-                        nh (/ fh factor)]   
-	                  (recur
-	                    (/ scale factor)
-	                    nw
-                      nh
-	                    (scale-image img nw nh)))
-                  img))]
-
-      (Util/show ^BufferedImage img))))
+       :or {size DEFAULT-IMAGE-SIZE}
+       :as keys}]
+    (Util/show ^BufferedImage (apply img vector-function keys))))
