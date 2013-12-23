@@ -6,6 +6,7 @@
   (:import [java.awt.image BufferedImage])
   (:import [mikera.gui Frames])
   (:import [javax.swing JComponent])
+  (:use [mikera.cljutils core])
   (:require [clojure test])
   (:require [mikera.image.core :as imagez])
   (:use [clisk node functions util]))
@@ -73,4 +74,4 @@
     & {:keys [width height size anti-alias] 
        :or {size DEFAULT-IMAGE-SIZE}
        :as keys}]
-    (Util/show ^BufferedImage (apply img vector-function keys))))
+    (Util/show ^BufferedImage (apply image vector-function (mapcat identity keys)))))
