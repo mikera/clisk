@@ -9,11 +9,20 @@
   (show (seamless 0.5 (v* [1 0.8 0 0] (compose vnoise [spots y z t]))) :size 512)
   
   ;; 3. String Theory
-  (show (seamless 0.2 (v* 10 (scale 3 vnoise) (v- 0.1 (vmax 0 (vabs (v- plasma 0.5)))))) :size 512)
+  (show (v- 1.0 (seamless 0.2 (v* 6 (scale 3 vnoise) (v- 0.1 (vmax 0 (vabs (v- plasma 0.5))))))) :size 512)
   
   ;; 4. Pastels
   (show (seamless 1.0 (offset (v* 4 vplasma) (v+ (offset 10 vnoise) 0.3))) :size 512)
   
+  ;; 5. Cottonwool
+  (show (seamless 0.25 (compose plasma vsnoise)) :size 512)
+  
+  ;; 6. colour burn
+  (show (seamless 0.4 (v- vnoise (v* 6 (v- 0.1 (vmax 0 (vabs (v- plasma 0.5))))))) :size 512)
+
+  
+   (show (seamless 0.6 (v* vplasma (v- 1.0 (v* 20 (scale 3 vnoise) (v- 0.1 (vmax 0 (vabs (v- plasma 0.5)))))))) :size 512)
+
   
   (show (let [voronoi1 (voronoi :points 100)] 
     (v* 20.0 (voronoi-blocks :voronoi voronoi1)))
