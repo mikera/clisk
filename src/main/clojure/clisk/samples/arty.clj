@@ -20,6 +20,11 @@
   ;; 6. colour burn
   (show (seamless 0.4 (v- vnoise (v* 6 (v- 0.1 (vmax 0 (vabs (v- plasma 0.5))))))) :size 512)
 
+  ;; 7. Zebra
+  (show (seamless 1.0 (compose (scale 0.01 (checker 0 1)) plasma)) :size 512)
+  
+  
+  
   
    (show (seamless 0.6 (v* vplasma (v- 1.0 (v* 20 (scale 3 vnoise) (v- 0.1 (vmax 0 (vabs (v- plasma 0.5)))))))) :size 512)
 
