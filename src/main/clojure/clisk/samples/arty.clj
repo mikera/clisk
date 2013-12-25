@@ -23,8 +23,15 @@
   ;; 7. Zebra
   (show (seamless 1.0 (compose (scale 0.01 (checker 0 1)) plasma)) :size 512)
   
+  ;; 8. Checker RGB
+  (show (scale 0.10 (v+ (rotate 0.1 (checker 0 red))
+                       (rotate 0.2 (checker 0 green))
+                       (rotate 0.3 (checker 0 blue)))) :size 512)
   
-  
+  (show (scale 0.13 (compose vplasma 
+                    (v+ (rotate (* PI 0.00000) (v* (vfrac x) red ))
+                        (rotate (* PI 0.33333) (v* (vfrac x) green))
+                        (rotate (* PI 0.66666) (v* (vfrac x) blue))))) :size 512)
   
    (show (seamless 0.6 (v* vplasma (v- 1.0 (v* 20 (scale 3 vnoise) (v- 0.1 (vmax 0 (vabs (v- plasma 0.5)))))))) :size 512)
 
