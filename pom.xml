@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>clisk</artifactId>
-	<version>0.8.0</version>
+	<version>0.9.0</version>
 	<name>Clisk</name>
 	<description>The Clojure Image Synthesis Kit</description>
 
@@ -22,7 +22,7 @@
 		<connection>scm:git:git@github.com:mikera/${project.artifactId}.git</connection>
 		<url>scm:git:git@github.com:mikera/${project.artifactId}.git</url>
 		<developerConnection>scm:git:git@github.com:mikera/${project.artifactId}.git</developerConnection>
-		<tag>clisk-0.8.0</tag>
+		<tag>clisk-0.9.0</tag>
 	</scm>
 
 	<repositories>
@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>vectorz-clj</artifactId>
-			<version>0.15.0</version>
+			<version>0.18.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.mikera</groupId>
@@ -57,7 +57,7 @@
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>mathz</artifactId>
-			<version>0.2.0</version>
+			<version>0.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.mikera</groupId>
@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>clojure-utils</artifactId>
-			<version>0.4.0</version>
+			<version>0.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.clojure</groupId>
@@ -78,12 +78,12 @@
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>vectorz</artifactId>
-			<version>0.22.0</version>
+			<version>0.26.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>imagez</artifactId>
-			<version>0.1.0</version>
+			<version>0.3.0</version>
 		</dependency>
 	</dependencies>
 </project>

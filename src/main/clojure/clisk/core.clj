@@ -3,10 +3,12 @@
     :doc "Core clisk image generation functions"}
   clisk.core
   (:import clisk.Util)
-  (:import java.awt.image.BufferedImage)
+  (:import [java.awt.image BufferedImage])
   (:import [mikera.gui Frames])
   (:import [javax.swing JComponent])
+  (:use [mikera.cljutils core])
   (:require [clojure test])
+  (:require [mikera.image.core :as imagez])
   (:use [clisk node functions util]))
 
 (set! *warn-on-reflection* true)
@@ -29,9 +31,10 @@
 
 (defn tst [] (clojure.test/run-all-tests))
 
-(defn scale-image [img w h]
+(defn scale-image 
   "Scales an image to a given width and height"
-  (Util/scaleImage img (int w) (int h)))
+  (^BufferedImage [^BufferedImage img w h]
+    (imagez/scale-image img w h)))
 
 (defn show-comp 
   "Shows a component in a new frame"
@@ -51,8 +54,8 @@
           ^java.util.List funcs (vec (map compile-fn (:nodes a)))]
       (clisk.VectorFunction/create input-dimensions funcs))))
 
-(defn show 
-  "Creates and shows an image from the given vector function"
+(defn image
+  "Creates a bufferedimage from the given clisk data"
   ([vector-function
     & {:keys [width height size anti-alias] 
        :or {size DEFAULT-IMAGE-SIZE}}]
@@ -62,17 +65,13 @@
           h (int (or height size))
           fw (* w scale)
           fh (* h scale)
-          img (img vector-function fw fh)
-          img (loop [scale scale fw fw fh fh img img]
-                (if  (> scale 1)
-                  (let [factor (min 2.0 scale)
-                        nw (/ fw factor)
-                        nh (/ fh factor)]   
-	                  (recur
-	                    (/ scale factor)
-	                    nw
-                      nh
-	                    (scale-image img nw nh)))
-                  img))]
+          img (img vector-function fw fh)]
+      (scale-image img w h))))
 
-      (Util/show ^BufferedImage img))))
+(defn show 
+  "Creates and shows an image from the given vector function"
+  ([vector-function
+    & {:keys [width height size anti-alias] 
+       :or {size DEFAULT-IMAGE-SIZE}
+       :as keys}]
+    (Util/show ^BufferedImage (apply image vector-function (mapcat identity keys)))))
