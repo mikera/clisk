@@ -1,5 +1,11 @@
 package clisk.noise;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import mikera.util.Random;
+
 /**
  * Adapted by Mike Anderson from SunFlow renderer source code (Christopher Kulla)
  * 
@@ -29,7 +35,7 @@ public final class Perlin {
 			{ 0, -1, -1, -1 }, { 0, -1, -1, 1 }, { 0, -1, 1, -1 },
 			{ 0, -1, 1, 1 }, { 0, 1, -1, -1 }, { 0, 1, -1, 1 },
 			{ 0, 1, 1, -1 }, { 0, 1, 1, 1 } };
-	private static final int[] p = { 151, 160, 137, 91, 90, 15, 131, 13, 201,
+	private static final int[] pInitial = { 151, 160, 137, 91, 90, 15, 131, 13, 201,
 			95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69, 142, 8, 99, 37,
 			240, 21, 10, 23, 190, 6, 148, 247, 120, 234, 75, 0, 26, 197, 62,
 			94, 252, 219, 203, 117, 35, 11, 32, 57, 177, 33, 88, 237, 149, 56,
@@ -65,6 +71,7 @@ public final class Perlin {
 			214, 31, 181, 199, 106, 157, 184, 84, 204, 176, 115, 121, 50, 45,
 			127, 4, 150, 254, 138, 236, 205, 93, 222, 114, 67, 29, 24, 72, 243,
 			141, 128, 195, 78, 66, 215, 61, 156, 180 };
+	private static int[] p = Arrays.copyOf(pInitial, pInitial.length);
 
 	public static final double snoise(double x) {
 		int xf = (int) Math.floor(x);
@@ -346,7 +353,26 @@ public final class Perlin {
 				+ snoise(x, y_h, z_d, t_p) * (w_xXy) * (zXt) + snoise(x_w, y,
 				z_d, t_p) * (xXh_y) * (zXt)) / (w * h * d * t));
 	}
+        
+	public static final void seed(long seed) {
+		Random r = new Random(seed);
+		// Copy original p values into a list to shuffle
+		List<Integer> sp = new ArrayList<Integer>(pInitial.length);
+		for (int i = 0; i < pInitial.length; i++) {
+			sp.add(pInitial[i]);
+		}
+		// Shuffle it using the given seed
+		Collections.shuffle(sp, r);
+		// Copy the values into p. Preserve pInitial so that we can always
+		// shuffle it the same way with the same seed and get the same result
+		for (int i = 0; i < p.length; i++) {
+			p[i] = sp.get(i);
+		}
+	}
 
+	public static final void seed() {
+		seed((new Random()).nextLong());
+	}
 
 	private static final double fade(double t) {
 		return t * t * t * (t * (t * 6 - 15) + 10);
