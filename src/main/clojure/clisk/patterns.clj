@@ -11,6 +11,19 @@
   (:import clisk.generator.Voronoi2D)
 )
 
+(defn seed-perlin-noise!
+  "Modify the perlin noise seed."
+  ([]
+  (clisk.noise.Perlin/seed))
+  ([s]
+  (clisk.noise.Perlin/seed s)))
+
+(defn seed-simplex-noise!
+  "Modify the simplex noise seed."
+  ([]
+  (clisk.noise.Simplex/seed))
+  ([s]
+  (clisk.noise.Simplex/seed s)))
 
 (def perlin-noise 
   "Standard 4-dimensional scalar perlin noise in range [0..1]"
