@@ -63,13 +63,13 @@
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>cljunit</artifactId>
-			<version>0.3.0</version>
+			<version>0.3.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>clojure-utils</artifactId>
-			<version>0.6.0</version>
+			<version>0.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.clojure</groupId>
@@ -79,12 +79,12 @@
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>vectorz</artifactId>
-			<version>0.36.0</version>
+			<version>0.38.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>imagez</artifactId>
-			<version>0.3.1</version>
+			<version>0.4.1</version>
 		</dependency>
 	</dependencies>
 </project>
