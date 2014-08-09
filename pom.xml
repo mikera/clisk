@@ -48,7 +48,7 @@
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>vectorz-clj</artifactId>
-			<version>0.23.0</version>
+			<version>0.24.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.mikera</groupId>
@@ -75,11 +75,6 @@
 			<groupId>org.clojure</groupId>
 			<artifactId>clojure</artifactId>
 			<version>1.6.0</version>
-		</dependency>
-		<dependency>
-			<groupId>net.mikera</groupId>
-			<artifactId>vectorz</artifactId>
-			<version>0.38.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.mikera</groupId>
