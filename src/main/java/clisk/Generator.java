@@ -17,6 +17,8 @@ public class Generator {
 	
 	/**
 	 * Generates a Clisk image from a script
+	 * 
+	 * @param script A String containing the clisk source script
 	 */
 	public static BufferedImage generate(String script) {
 		return generate(script,256,256);
@@ -34,7 +36,8 @@ public class Generator {
 	
 	/**
 	 * Testing main function
-	 * @param args
+	 * 
+	 * @param args The startup arguments
 	 */
 	public static void main(String[] args) {
 		Util.show(generate("vplasma"));
