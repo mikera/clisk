@@ -10,11 +10,11 @@
 
   
 ;; colours in RGB  
-(show [1 0 0])
+(show [1 0 1])
 
 
 ;; scalars get interpreted as greyscale
-(show 0.5)
+(show 0.2)
 (show [0.5 0.5 0.5])
 
 ;; named colours
@@ -64,10 +64,10 @@
         [(v* 0.3 y) 0]
         (checker black (scale 0.25 (checker red yellow)))))
 
-(def sin-wave (v* 0.1 (vsin (v* 15 y))))
+(def sin-wave (v* 0.1 (vsin (v* 15 x))))
 
 (show (offset 
-        [sin-wave]
+        [0 sin-wave]
         (checker black (scale 0.25 (checker red yellow)))))
 
 ;; HSL
@@ -77,34 +77,41 @@
 (show cannon)
 
 ;; hue adjustment
-(show (adjust-hsl [x 0 0] cannon))
+(show (v- 1.0 (adjust-hsl [y 0 0] cannon)))
+
+(show (v- 1.0 cannon))
 
 ;; now to make some noise
-(show (scale 0.2 noise))
+(show (v+
+        (v* 0.5 green (scale 0.1 noise))
+        (v* 0.9 red (scale 0.1 noise))
+        (v* 0.8 orange (scale 0.1 noise))
+        (v* 0.7 pink (scale 0.5 noise))
+        (v* 0.6 blue (scale 0.2 noise))))
 
-;; noise with red, green and blue
-(show (scale 0.2 vnoise))
+;; noise with red and blue
+(show (scale 0.5 vnoise [0 0 1]))
 
-(show (v* (scale 0.2 vnoise) cannon))
+(show (v* [6 15 10] (scale 0.1 vnoise) cannon))
 
 ;; plasma - sum of noise at different scales
-(show plasma)
+(show (v* [0 0 5] vplasma cannon))
 
 ;; noise as an offset
 (show (offset
-        (v* 0.5 plasma)
-        (cannon vfrac)))
+        (v* 10 plasma)
+        (checker blue red)))
 
 ;; plasma-based fractal landscape
   (show 
-	  (scale 0.4 
+	  (scale 0.3 
       (let [z (v+ (v* 2.5 plasma) -0.75)
             colour (landscape-map z)
             height (v* 3.0 (vmax 0.5 z))]
 	       (render-lit colour height ))))
 
 ;; plasma based colours
-(show (seamless 0.5 (vplasma vplasma)))
+(show (seamless 0.3 (vplasma vsnoise)))
 
 ;; mandelbrot set
  (show (viewport [-2 -1.5] [1 1.5]
@@ -115,3 +122,5 @@
             :bailout-result black
             :max-iterations 1000)))
 )
+
+(show phone)
