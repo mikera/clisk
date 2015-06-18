@@ -14,6 +14,8 @@ creating a bitmap images as output. You can create images of arbitrary size as l
 
 Clisk is intended to be used from Clojure in a REPL environment, but can also with a little effort be used from Java.
 
+[![Clojars Project](http://clojars.org/net.mikera/clisk/latest-version.svg)](http://clojars.org/net.mikera/clisk)
+
 [![Build Status](https://secure.travis-ci.org/mikera/clisk.png)](http://travis-ci.org/mikera/clisk)
 
 ## Example code and resulting image
