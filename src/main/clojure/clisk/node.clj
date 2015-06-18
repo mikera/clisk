@@ -405,19 +405,19 @@
           dx (double dx)
           dy (double dy)
           dw (double w)
-          dh (double h)]
-	    (doall (pmap 
-        #(let [iy (int %)]
-		      (dotimes [ix w]
-		        (let [iy (int iy)
-	                x (/ (* dx (+ 0.5 ix)) dw)
-	                y (/ (* dy (+ 0.5 iy)) dh)
-	                r (.calc fr x y 0.0 0.0)
-	                g (.calc fg x y 0.0 0.0)
-	                b (.calc fb x y 0.0 0.0)
-	                argb (Util/toARGB r g b)]
-	           (.setRGB image ix iy argb))))
-        (range h)))
+          dh (double h)
+          gen-row! (fn [rownum] 
+                     (let [iy (int rownum)]
+                       (dotimes [ix w]
+                         (let [iy (int iy)
+                               x (/ (* dx (+ 0.5 ix)) dw)
+                               y (/ (* dy (+ 0.5 iy)) dh)
+                               r (.calc fr x y 0.0 0.0)
+                               g (.calc fg x y 0.0 0.0)
+                               b (.calc fb x y 0.0 0.0)
+                               argb (Util/toARGB r g b)]
+                           (.setRGB image ix iy argb)))))]
+	    (doall (pmap gen-row!(range h)))
      image)))
 
 
