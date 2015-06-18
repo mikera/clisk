@@ -48,7 +48,7 @@
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>vectorz-clj</artifactId>
-			<version>0.28.0</version>
+			<version>0.30.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.mikera</groupId>
@@ -69,17 +69,17 @@
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>clojure-utils</artifactId>
-			<version>0.6.1</version>
+			<version>0.6.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.clojure</groupId>
 			<artifactId>clojure</artifactId>
-			<version>1.7.0-alpha5</version>
+			<version>1.7.0-RC2</version>
 		</dependency>
 		<dependency>
 			<groupId>net.mikera</groupId>
 			<artifactId>imagez</artifactId>
-			<version>0.5.0</version>
+			<version>0.6.0</version>
 		</dependency>
 	</dependencies>
 	<url>https://github.com/mikera/clisk</url>

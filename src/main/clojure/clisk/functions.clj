@@ -486,7 +486,7 @@
 (defn image-filter 
   "Applies a BufferedImageOp filter to a source image or function"
   [filter source 
-   & {:keys [width height size]
+   & {:keys [size width height]
       :or {width (or size clisk.node/DEFAULT-IMAGE-SIZE)
            height (or size clisk.node/DEFAULT-IMAGE-SIZE)}}]
   (let [^java.awt.image.BufferedImageOp filter (if (symbol? filter) (eval `(new ~filter)) filter)
