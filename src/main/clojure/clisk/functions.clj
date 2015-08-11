@@ -121,7 +121,9 @@
   ([f & {:keys [zero identity unary-identity]}]
 	  (fn [& vs]
 	    (let [vs (map node vs)
-	          dims (apply max (map dimensions vs))]
+            ds (map dimensions vs)
+            _ (when (empty? ds) (error "No dimensions in vectors: " (vec vs)))
+	          dims (apply max ds)]
         (cond 
           (and unary-identity (= 1 (count vs)))
             (first vs)

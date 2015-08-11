@@ -63,6 +63,7 @@
                      lacunarity 2.0
                      gain 0.5
                      scale 0.5}}]
+    (when (< octaves 1) (error "make-multi-fractal requires octaves to be greater than or equal to one"))
     (apply v+
       (for [octave (range 0 octaves)]        
         (warp 
