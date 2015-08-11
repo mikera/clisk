@@ -5,6 +5,7 @@
   (:import clisk.Util)
   (:import java.lang.Math)
   (:import [java.awt.image BufferedImage BufferedImageOp] )
+  (:require [mikera.image.core :as imagez])
   (:import mikera.util.Maths)
   (:use [clisk node util])
   (:use [clojure.tools macro]))
@@ -484,13 +485,18 @@
 	              lower)))))))
 
 (defn image-filter 
-  "Applies a BufferedImageOp filter to a source image or function"
+  "Applies a BufferedImageOp filter to a source image or function. 
+
+   If size, width of height is specified, renders function at the specified resolution."
   [filter source 
-   & {:keys [size width height]
-      :or {width (or size clisk.node/DEFAULT-IMAGE-SIZE)
-           height (or size clisk.node/DEFAULT-IMAGE-SIZE)}}]
-  (let [^java.awt.image.BufferedImageOp filter (if (symbol? filter) (eval `(new ~filter)) filter)
-        ^java.awt.image.BufferedImage source-img (if (instance? java.awt.image.BufferedImage source) source (img source width height)) 
+   & {:keys [size width height]}]
+  (let [buffered-source? (instance? java.awt.image.BufferedImage source) 
+        width (long (or width size clisk.node/DEFAULT-IMAGE-SIZE))
+        height (long (or height size clisk.node/DEFAULT-IMAGE-SIZE))
+        ^java.awt.image.BufferedImageOp filter (if (symbol? filter) (eval `(new ~filter)) filter)      
+        ^java.awt.image.BufferedImage source-img (if buffered-source?
+                                                   source
+                                                   (img source width height)) 
         dest-img (.createCompatibleDestImage filter source-img (.getColorModel source-img))]
     (.filter filter source-img dest-img)
     (texture-map dest-img)))

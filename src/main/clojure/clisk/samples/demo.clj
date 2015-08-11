@@ -102,5 +102,4 @@
     (. filt setRadius 8)
     (show (image-filter filt cannon)))
 
-
 )
