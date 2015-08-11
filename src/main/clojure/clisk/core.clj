@@ -51,7 +51,7 @@
                 & {:keys [input-dimensions]}]
     (let [a (vectorize a)
           input-dimensions (int (or input-dimensions 4))
-          ^java.util.List funcs (vec (map compile-fn (:nodes a)))]
+          ^java.util.List funcs (mapv compile-fn (:nodes a))]
       (clisk.VectorFunction/create input-dimensions funcs))))
 
 (defn image
