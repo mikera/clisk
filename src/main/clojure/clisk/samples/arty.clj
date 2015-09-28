@@ -33,7 +33,7 @@
                         (rotate (* PI 0.33333) (v* (vfrac x) green))
                         (rotate (* PI 0.66666) (v* (vfrac x) blue))))) :size 512)
   
-   (show (seamless 0.6 (v* vplasma (v- 1.0 (v* 20 (scale 3 vnoise) (v- 0.1 (vmax 0 (vabs (v- plasma 0.5)))))))) :size 512)
+  (show (seamless 0.6 (v* vplasma (v- 1.0 (v* 20 (scale 3 vnoise) (v- 0.1 (vmax 0 (vabs (v- plasma 0.5)))))))) :size 512)
 
   
   (show (let [voronoi1 (voronoi :points 100)] 
