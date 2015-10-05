@@ -8,6 +8,7 @@ You can use it for:
  - Building fractal images / artwork
  - Generating 3D or 4D textures for raytracing (e.g. in Enlight: https://github.com/mikera/enlight)
  - Creating patterns (e.g. randomly generated maps)
+ - Creating autostereograms (see the examples)
 
 The core operation of Clisk is taking an image description using the Clisk DSL as input and
 creating a bitmap images as output. You can create images of arbitrary size as long as they fit in memory.
@@ -33,6 +34,10 @@ Clisk is intended to be used from Clojure in a REPL environment, but can also wi
                 (v* 0.6 vblocks))))
 
 ![Voronoi rocks](https://raw.github.com/wiki/mikera/clisk/images/VoronoiRocks.png)
+
+Demos and mini-tutorials can be found by examining the code samples here:
+
+ - [Clisk example files](https://github.com/mikera/clisk/tree/develop/src/test/clojure/clisk/samples)
 
 For [more examples see the Wiki](https://github.com/mikera/clisk/wiki)
 
