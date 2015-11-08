@@ -81,6 +81,12 @@
 			<artifactId>imagez</artifactId>
 			<version>0.8.0</version>
 		</dependency>
+		<dependency>
+			<groupId>net.mikera</groupId>
+			<artifactId>telegenic</artifactId>
+			<version>0.0.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<url>https://github.com/mikera/clisk</url>
 </project>
