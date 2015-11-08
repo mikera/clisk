@@ -69,9 +69,11 @@
       (scale-image img w h))))
 
 (defn show 
-  "Creates and shows an image from the given vector function"
-  ([vector-function
+  "Creates and shows an image from the given image vector function"
+  ([image-or-function
     & {:keys [width height size anti-alias] 
        :or {size DEFAULT-IMAGE-SIZE}
        :as keys}]
-    (Util/show ^BufferedImage (apply image vector-function (mapcat identity keys)))))
+    (if (instance? BufferedImage image-or-function)
+      (Util/show ^BufferedImage image-or-function)
+      (Util/show ^BufferedImage (apply image image-or-function (mapcat identity keys))))))
