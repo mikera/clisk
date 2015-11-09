@@ -47,4 +47,18 @@
           im))
       (range 400))
     {:filename "out.mp4"})
+  
+  ;; colourful glow effects
+  ;; this one also has a [x y] drift to add some variety
+  (telegenic/encode
+       (map 
+         (fn [i]
+           (let [im (image (offset [(* i 0.005) (* i 0.005) (* i 0.01)]   
+                                   (clisk.live/vabs (clisk.live/gradient (clisk.live/green-from-hsl (clisk.live/hue-from-rgb clisk.live/vsnoise)))))
+                           :width 854 :height 480)]
+             (show im)
+             im))
+         (range 400))
+       {:filename "out.mp4"})
+  
   )
