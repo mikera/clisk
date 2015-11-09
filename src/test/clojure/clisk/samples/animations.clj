@@ -7,6 +7,7 @@
   ;; we do this to avoid failure in testing if jcodec-javase is not present
   (require '[telegenic.core :as telegenic])
   
+  ;; Clojure procedural animation #1
   ;; black and white swirly patterns
   (telegenic/encode
     (map 
@@ -20,7 +21,7 @@
     {:filename "out.mp4"})
   
   
-  ;; colourful swirly patterns
+  ;; colourful swirly patterns - variant of above
   ;; several hours to render!
   ;; 151104_023134_N.clj
   (telegenic/encode
@@ -34,6 +35,7 @@
       (range 600))
     {:filename "out.mp4"})
    
+  ;; Clojure procedural animation #2
   ;; cloudy skyscape
   ;; several hours to render!
   ;; 150829_223119_C.clj
@@ -48,6 +50,7 @@
       (range 400))
     {:filename "out.mp4"})
   
+  ;; Clojure procedural animation #3
   ;; colourful glow effects
   ;; this one also has a [x y] drift to add some variety
   (telegenic/encode
