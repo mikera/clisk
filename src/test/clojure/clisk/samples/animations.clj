@@ -1,4 +1,5 @@
 (ns clisk.samples.animations
+  "Examples of using Clisk with the Telegenic library to create procedural animations"
   (:use [clisk live])
   (:import [clisk Util]))
 
@@ -20,6 +21,7 @@
   
   
   ;; colourful swirly patterns
+  ;; several hours to render!
   ;; 151104_023134_N.clj
   (telegenic/encode
     (map 
@@ -33,6 +35,7 @@
     {:filename "out.mp4"})
    
   ;; cloudy skyscape
+  ;; several hours to render!
   ;; 150829_223119_C.clj
   (telegenic/encode
     (map 
