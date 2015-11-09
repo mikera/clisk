@@ -7,7 +7,7 @@
   ;; we do this to avoid failure in testing if jcodec-javase is not present
   (require '[telegenic.core :as telegenic])
   
-  ;; Clojure procedural animation #1
+  ;; Clojure procedural animation #1 - https://www.youtube.com/watch?v=XKV209VfkTk
   ;; black and white swirly patterns
   (telegenic/encode
     (map 
@@ -35,7 +35,7 @@
       (range 600))
     {:filename "out.mp4"})
    
-  ;; Clojure procedural animation #2
+  ;; Clojure procedural animation #2 - https://www.youtube.com/watch?v=94CtmzAUIBI
   ;; cloudy skyscape
   ;; several hours to render!
   ;; 150829_223119_C.clj
@@ -50,7 +50,7 @@
       (range 400))
     {:filename "out.mp4"})
   
-  ;; Clojure procedural animation #3
+  ;; Clojure procedural animation #3 - https://www.youtube.com/watch?v=rPEZzUWlDEQ
   ;; colourful glow effects
   ;; this one also has a [x y] drift to add some variety
   (telegenic/encode
@@ -58,6 +58,19 @@
          (fn [i]
            (let [im (image (offset [(* i 0.005) (* i 0.005) (* i 0.01)]   
                                    (clisk.live/vabs (clisk.live/gradient (clisk.live/green-from-hsl (clisk.live/hue-from-rgb clisk.live/vsnoise)))))
+                           :width 854 :height 480)]
+             (show im)
+             im))
+         (range 400))
+       {:filename "out.mp4"})
+  
+  ;; Clojure procedural animation #4
+  ;; Rainbows with checkered discontinuities
+  (telegenic/encode
+       (map 
+         (fn [i]
+           (let [im (image (offset [(* i 0.005) (* i 0.005) (* i 0.01)]   
+                                   (clisk.live/vfrac (clisk.live/vcos (clisk.live/gradient (clisk.live/green-from-hsl (clisk.live/hue-from-rgb clisk.live/vsnoise) )))))
                            :width 854 :height 480)]
              (show im)
              im))
