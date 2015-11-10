@@ -106,6 +106,9 @@
 ;; plasma based colours
 (show (seamless 0.5 (vplasma vplasma)))
 
+;; Cindy's pattern
+(show (seamless 0.3 (vplasma vsnoise)))
+
 ;; mandelbrot set
  (show (viewport [-2 -1.5] [1 1.5]
           (fractal 
