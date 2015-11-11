@@ -1,7 +1,8 @@
 (ns clisk.samples.animations
   "Examples of using Clisk with the Telegenic library to create procedurally generated animations"
   (:use [clisk live])
-  (:import [clisk Util]))
+  (:import [clisk Util])
+  (:require [telegenic.core :as telegenic]))
 
 (def DEFAULT-OPTIONS
   {:filename "out.mp4" 
@@ -28,10 +29,7 @@
 ;;
 ;; Designed to be run at the REPL
 (comment
-  ;; we do this to avoid failure in testing if jcodec-javase is not present
-  (require '[telegenic.core :as telegenic])
-  
-  
+
   ;; Simple example - scrolling in x axis
   (render-animation [i 50]
     (offset [(* i 0.04) 0]     ;; use an offset in x-axis to scroll the image over time  
