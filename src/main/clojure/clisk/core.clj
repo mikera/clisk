@@ -73,7 +73,8 @@
   ([image-or-function
     & {:keys [width height size anti-alias] 
        :or {size DEFAULT-IMAGE-SIZE}
-       :as keys}]
-    (if (instance? BufferedImage image-or-function)
-      (Util/show ^BufferedImage image-or-function)
-      (Util/show ^BufferedImage (apply image image-or-function (mapcat identity keys))))))
+       :as ks}]
+    (let [^BufferedImage buf-img (if (instance? BufferedImage image-or-function)
+                                   image-or-function
+                                   (apply image image-or-function (mapcat identity ks)))]
+      (Util/show buf-img))))
