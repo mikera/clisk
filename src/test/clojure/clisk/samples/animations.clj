@@ -1,5 +1,5 @@
 (ns clisk.samples.animations
-  "Examples of using Clisk with the Telegenic library to create procedural animations"
+  "Examples of using Clisk with the Telegenic library to create procedurally generated animations"
   (:use [clisk live])
   (:import [clisk Util]))
 
@@ -23,6 +23,10 @@
              (show im#)                        ;; show the latest frame
              im#))))))                         ;; return the frame for the encoder
 
+;; =======================================================================================================
+;; SAMPLE ANIMATIONS
+;;
+;; Designed to be run at the REPL
 (comment
   ;; we do this to avoid failure in testing if jcodec-javase is not present
   (require '[telegenic.core :as telegenic])
