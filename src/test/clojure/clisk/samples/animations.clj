@@ -77,4 +77,17 @@
          (range 400))
        {:filename "out.mp4"})
   
+  ;; Clojure procedural animation #5
+  ;; Dedicated to Cindy
+  (telegenic/encode
+       (map 
+         (fn [i]
+           (let [im (image (offset [0 0 (* i 0.003)]   
+                                   (scale 0.3 (vplasma vsnoise)))
+                           :width 854 :height 480)]
+             (show im)
+             im))
+         (range 400))
+       {:filename "out.mp4"})
+  
   )
