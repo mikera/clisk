@@ -56,8 +56,8 @@
 
 (defn image
   "Creates a bufferedimage from the given clisk data"
-  ([vector-function
-    & {:keys [width height size anti-alias] 
+  (^BufferedImage [vector-function
+                   & {:keys [width height size anti-alias] 
        :or {size DEFAULT-IMAGE-SIZE}}]
     (let [vector-function (validate (node vector-function))
           scale (or anti-alias *anti-alias*)
