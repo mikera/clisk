@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
  * @author Mike
  *
  */
-public class TextureFunction {
+public class TextureFunction implements IRenderFunction {
 	private final BufferedImage texture;
 	private final double xoff;
 	private final double yoff;
@@ -34,9 +34,25 @@ public class TextureFunction {
 		return texture.getRGB((int)(x*w+xoff),(int)(y*h+yoff));
 	}
 	
+	@Override
+	public int calc(double x, double y, double z) {
+		return calc(x,y);
+	}
 	
 	public int calc(double x, double y, double z, double t) {
 		return calc(x,y);
 	}
+
+	@Override
+	public int calc() {
+		throw new IllegalArgumentException("Insufficient args for TextureFunction: 0");
+	}
+
+	@Override
+	public int calc(double x) {
+		throw new IllegalArgumentException("Insufficient args for TextureFunction: 1");
+	}
+
+
 	
 }
