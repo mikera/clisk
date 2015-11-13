@@ -12,7 +12,7 @@
   (:use [clisk node functions util]))
 
 (set! *warn-on-reflection* true)
-(set! *unchecked-math* true)
+(set! *unchecked-math* :warn-on-boxed)
 
 (def ^:dynamic *anti-alias* 2)
 
@@ -60,7 +60,7 @@
                    & {:keys [width height size anti-alias] 
        :or {size DEFAULT-IMAGE-SIZE}}]
     (let [vector-function (validate (node vector-function))
-          scale (or anti-alias *anti-alias*)
+          scale (double (or anti-alias *anti-alias*))
           w (int (or width size))
           h (int (or height size))
           fw (* w scale)
