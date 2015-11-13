@@ -20,7 +20,7 @@
        (telegenic/encode                       ;; call the telegenic encoder
          (for [~key (range ~frame-count)]      ;; loop over all frames, lazily
            (let [im# (apply image ~src opts#)] ;; create the frame
-             (println im#)
+             ;; (println im#)
              (show im#)                        ;; show the latest frame
              im#))))))                         ;; return the frame for the encoder
 
@@ -93,5 +93,14 @@
     (offset [0 0 (* i 0.003)]   
       (scale 0.3 (vplasma vsnoise)))
     {})
+  
+  
+  ;; Clojure procedural animation #6
+  ;; TweeGeeMee eviolved: 151112_193202_D.clj
+  ;; https://gist.github.com/rogerallen/90bb215917b20fc3b38b#file-1_archive-edn-L3689-L3691
+  (render-animation [i 20]
+    (offset [0 0 (* i 0.003)]   
+      (clisk.live/vsqrt (clisk.live/vdivide (clisk.live/hsl-from-rgb (clisk.live/gradient (clisk.live/vsin (clisk.live/v* (clisk.live/lightness-from-rgb (clisk.live/dot [-0.7247 -0.5677] (clisk.live/v+ [-2.4375 -1.7593 -1.0106] [0.7885 -1.7012 1.7523 0.2914]))) (clisk.live/vdivide (clisk.live/saturation-from-rgb (clisk.live/lerp (clisk.live/adjust-hsl (clisk.live/adjust-hsl clisk.live/vsnoise [0.795 2.244 -0.63]) [-1.9613 -1.3866 -0.0114 1.3613]) (clisk.live/y (clisk.live/v* (clisk.live/square (clisk.live/z (clisk.live/x clisk.live/spots))) 1.2235)) [-2.6455 1.3693 -1.6896])) (clisk.live/lightness-from-rgb (clisk.live/vround (clisk.live/square (clisk.live/z (clisk.live/x 2.6875)))))))))) (clisk.live/rgb-from-hsl (clisk.live/blue-from-hsl 0.9575)))))
+    {:width 256 :height 256})
   
   )
