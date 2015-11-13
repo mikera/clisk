@@ -61,7 +61,9 @@
            glow-colour yellow
            glow-background [0.0 0.0 0.0 0.0]
            blur-image-size 256}}]
-  (let [alpha-channel (alpha image-with-alpha)
+  (let [glow-radius (double glow-radius)
+        blur-image-size (long blur-image-size)
+        alpha-channel (alpha image-with-alpha)
         blur-filter (doto (com.jhlabs.image.GaussianFilter.) 
                           (.setRadius (int (* glow-radius blur-image-size))))
         blur (image-filter blur-filter alpha-channel :size blur-image-size)
