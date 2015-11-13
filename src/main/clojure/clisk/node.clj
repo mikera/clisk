@@ -5,6 +5,7 @@
   (:require [mikera.vectorz.core :as vec])
   (:import [clisk Util NodeMarker])
   (:import java.awt.image.BufferedImage)
+  (:import clisk.IRenderFunction)
   (:use clisk.util))
 
 (set! *warn-on-reflection* true)
@@ -388,6 +389,19 @@
   "Compiles clisk scalar node into an object that extends clisk.Function and clojure.lang.IFn"
   (clisk.node/compile-scalar-node node))
 
+(defn ^clisk.IRenderFunction compile-render-fn [node]
+  "Compiles clisk node into an object that implements clisk.IRenderFunction"
+  (let [fr (compile-fn (component 0 node))
+        fg (compile-fn (component 1 node))
+        fb (compile-fn (component 2 node))]
+    (reify clisk.IRenderFunction
+      (^int calc [this ^double x ^double y]
+        (let [r (.calc fr x y 0.0 0.0)
+              g (.calc fg x y 0.0 0.0)
+              b (.calc fb x y 0.0 0.0)
+              argb (Util/toARGB r g b)]
+          (int argb))))))
+
 (defn img
   "Creates a BufferedImage from the given vector function."
   ([node]
@@ -397,9 +411,7 @@
   ([node w h dx dy]
     (let [node (clisk.node/node node)
           image (clisk.Util/newImage (int w) (int h))
-          fr (compile-fn (component 0 node))
-          fg (compile-fn (component 1 node))
-          fb (compile-fn (component 2 node))
+          rf (compile-render-fn node)
           w (int w)
           h (int h)
           dx (double dx)
@@ -412,10 +424,7 @@
                          (let [iy (int iy)
                                x (/ (* dx (+ 0.5 ix)) dw)
                                y (/ (* dy (+ 0.5 iy)) dh)
-                               r (.calc fr x y 0.0 0.0)
-                               g (.calc fg x y 0.0 0.0)
-                               b (.calc fb x y 0.0 0.0)
-                               argb (Util/toARGB r g b)]
+                               argb (.calc rf x y)]
                            (.setRGB image ix iy argb)))))]
 	    (doall (pmap gen-row!(range h)))
      image)))
