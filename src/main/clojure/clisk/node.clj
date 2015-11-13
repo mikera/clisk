@@ -403,12 +403,12 @@
           (int argb))))))
 
 (defn img
-  "Creates a BufferedImage from the given vector function."
-  ([node]
+  "Creates a BufferedImage from the given node."
+  (^BufferedImage [node]
     (img node DEFAULT-IMAGE-SIZE DEFAULT-IMAGE-SIZE))
-  ([node w h]
+  (^BufferedImage [node w h]
     (img node w h 1.0 (/ (double h) (double w))))
-  ([node w h dx dy]
+  (^BufferedImage [node w h dx dy]
     (let [node (clisk.node/node node)
           image (clisk.Util/newImage (int w) (int h))
           rf (compile-render-fn node)
