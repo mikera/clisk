@@ -9,7 +9,7 @@
   (:use clisk.util))
 
 (set! *warn-on-reflection* true)
-(set! *unchecked-math* true)
+(set! *unchecked-math* :warn-on-boxed)
 
 ;; ==============================
 ;; Image generation constants
@@ -70,7 +70,7 @@
 
 (defn ^:private dimensions 
   "Returns the number of dimensions in a vector node, or 1 if scalar"
-  ([a]
+  (^long [a]
 	  (let [a (node a)]
 	    (cond
 	      (scalar-node? a)
@@ -341,6 +341,7 @@
   ([dims a]
     (let [a (node a)
           va (vectorize a)
+          dims (long dims)
           adims (dimensions va)]
       (cond
         (= adims dims) va

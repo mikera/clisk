@@ -5,7 +5,7 @@
   (:use [clisk node util functions colours patterns textures]))
 
 (set! *warn-on-reflection* true)
-(set! *unchecked-math* true)
+(set! *unchecked-math* :warn-on-boxed)
 
 (defn psychedelic 
   "Psychedelic colour effect"

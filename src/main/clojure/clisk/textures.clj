@@ -2,7 +2,8 @@
   (:use [clisk core functions patterns colours util node]))
 
 (set! *warn-on-reflection* true)
-(set! *unchecked-math* true)
+(set! *unchecked-math* :warn-on-boxed)
+
 
 
 (def agate

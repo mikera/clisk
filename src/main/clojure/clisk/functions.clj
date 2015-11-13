@@ -11,7 +11,7 @@
   (:use [clojure.tools macro]))
 
 (set! *warn-on-reflection* true)
-(set! *unchecked-math* true)
+(set! *unchecked-math* :warn-on-boxed)
 
 (def ^:const TAU (* 2.0 Math/PI))
 (def ^:const PI (* 0.5 TAU))
@@ -33,7 +33,7 @@
   (code-node C-SYMBOLS))
 
 ;; alias key private functions from clisk.node
-(def dimensions #'clisk.node/dimensions)
+(def ^{:rettag long} dimensions #'clisk.node/dimensions)
 (def vectorize #'clisk.node/vectorize)
 (def component #'clisk.node/component)
 (def components #'clisk.node/components)
@@ -75,7 +75,7 @@
 (defn alpha 
   "Extracts the alpha component of a colour vector. Assumes 1.0 if not present."
   ([v]
-    (if (> (dimensions v) 3) (component 3 v) 1.0)))
+    (if (> (long (dimensions v)) 3) (component 3 v) 1.0)))
 
 (defn rgb
   "Creates an RGB colour vector"
@@ -181,14 +181,14 @@
   (let [a (node a)
         b (node b)
         condition (component 0 condition)
-        adims (dimensions a)
-        bdims (dimensions b)
+        adims (long (dimensions a))
+        bdims (long (dimensions b))
         dims (max adims bdims)]
     (transform-components
        (fn [c a b]
          (if (:constant c)
            ;; constant case - use appropriate branch directly
-           (if (> (evaluate c) 0.0 ) a b) 
+           (if (> (double (evaluate c)) 0.0 ) a b) 
            ;; variable case
            `(if (> ~(:code c) 0.0 ) ~(:code a) ~(:code b)) ))
        condition
@@ -400,7 +400,7 @@
     (fn [src]
       (affine-transform matrix-rows src)))
   ([matrix-rows src]
-    (let [dims (dec (apply max (map count matrix-rows)))]
+    (let [dims (dec (long (apply max (map count matrix-rows))))]
       (warp ((matrix matrix-rows) (vconcat (take-components dims pos) [1.0])) 
             src))))
 
@@ -567,11 +567,15 @@
   ([a b function]
     (let [[x1 y1] a
           [x2 y2] b
-          w (double (- x2 x1))
-          h (double (- y2 y1))]
+          x1 (double x1)
+          y1 (double y1)
+          x2 (double x2)
+          y2 (double y2)
+          w (- x2 x1)
+          h (- y2 y1)]
       (scale 
         [(/ 1.0 w) (/ 1.0 h) 1.0 1.0] 
-        (offset [(double x1) (double y1)] function)))))
+        (offset [x1 y1] function)))))
 
 (defn seamless 
   "Creates a seamless 2D tileable version of a 4D texture in the [0 0] to [1 1] region. The scale argument detrmines the amount of the source texture to be used per repeat."
@@ -579,7 +583,7 @@
     (seamless 1.0 v4))
   ([scale v4]
     (let [v4 (node v4)
-          scale-factor (double (/ 1.0 scale TAU))
+          scale-factor (double (/ 1.0 (double scale) TAU))
           dims (dimensions v4)]
       (warp
         [`(* (Math/cos (* ~'x TAU)) ~scale-factor) 

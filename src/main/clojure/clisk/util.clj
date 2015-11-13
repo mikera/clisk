@@ -1,8 +1,11 @@
 (ns clisk.util
   (:import javax.imageio.ImageIO)
   (:import clisk.Util)
-  (:import [clojure.lang RT Compiler Compiler$C])
+  (:import [clojure.lang RT Compiler Compiler$C Compiler$Expr])
   (:import java.awt.image.BufferedImage))
+
+;; (set! *warn-on-reflection* true) ;; TODO: tricky to kill, using Clojure compiler internals
+(set! *unchecked-math* :warn-on-boxed)
 
 (def ^:const COMPONENT_TO_DOUBLE (/ 1.0 255.0))
 
@@ -26,8 +29,8 @@
 
 (defn expression-info-internal
   [expr]
-  (let [fn-ast (Compiler/analyze Compiler$C/EXPRESSION expr)
-        expr-ast (.body (first (.methods fn-ast)))]
+  (let [fn-ast ^clojure.lang.Compiler$FnExpr (Compiler/analyze Compiler$C/EXPRESSION expr)
+        expr-ast (.body ^clojure.lang.Compiler$ObjMethod (first (.methods fn-ast)))]
     (when (.hasJavaClass expr-ast)
       {:class (.getJavaClass expr-ast)
        :primitive? (.isPrimitive (.getJavaClass expr-ast))})))

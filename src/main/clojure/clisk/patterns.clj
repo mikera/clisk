@@ -10,6 +10,9 @@
   (:import clisk.noise.Simplex)
   (:import clisk.generator.Voronoi2D)
 )
+(set! *warn-on-reflection* true)
+(set! *unchecked-math* :warn-on-boxed)
+
 
 (defn seed-perlin-noise!
   "Modify the perlin noise seed."
@@ -63,12 +66,17 @@
                      lacunarity 2.0
                      gain 0.5
                      scale 0.5}}]
-    (when (< octaves 1) (error "make-multi-fractal requires octaves to be greater than or equal to one"))
-    (apply v+
-      (for [octave (range 0 octaves)]        
-        (warp 
-          (v* pos (Math/pow lacunarity octave))
-          (v* (* scale (Math/pow gain octave)) function))))))
+    (let [octaves (long octaves)
+          lacunarity (double lacunarity)
+          gain (double gain)
+          scale (double scale)]
+      (when (< octaves 1) (error "make-multi-fractal requires octaves to be greater than or equal to one"))
+      (apply v+
+        (for [octave (range 0 octaves)]        
+          (let [octave (double octave)]
+            (warp 
+             (v* pos (Math/pow lacunarity octave))
+             (v* (* scale (Math/pow gain octave)) function))))))))
 
 
 
