@@ -16,3 +16,9 @@
 (deftest test-vector-function
   (testing "vector-function"
     (is (= (v/of 1 2) ((vector-function [1 2]) [0 0 0 0])))))
+
+(deftest test-sampler  
+  (testing "sampler of [x y z]"
+    (let [samp (sampler [x y z])]
+      (is (= [1.0 2.0 3.0] (samp [1 2 3])))
+      (is (= [1.0 2.0 0.0] (samp [1 2]))))))

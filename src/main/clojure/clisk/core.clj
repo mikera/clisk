@@ -24,10 +24,21 @@
           node (vectorize node)
           fns (vec (map compile-fn (:nodes node)))
           [x y z t] (map #(evaluate (component % pos)) (range 4))]
-      (vec 
-        (map #(.calc ^clisk.IFunction % (double x) (double y) (double z) (double t))
-             fns)))))
+      (mapv #(.calc ^clisk.IFunction % (double x) (double y) (double z) (double t))
+           fns))))
 
+(defn sampler 
+  "Creates a sampler function for a given node, which is a fn from position to sample value"
+  ([node] 
+    (let [node (vectorize node)
+          fns (mapv compile-fn (:nodes node))]
+      (fn [[x y z t]]
+        (let [x (double (or x 0.0))
+              y (double (or y 0.0))
+              z (double (or z 0.0))
+              t (double (or t 0.0))]
+          (mapv #(.calc ^clisk.IFunction % x y z t)
+            fns))))))
 
 (defn tst [] (clojure.test/run-all-tests))
 
