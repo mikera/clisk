@@ -96,7 +96,7 @@
   
   
   ;; Clojure procedural animation #6
-  ;; TweeGeeMee eviolved: 151112_193202_D.clj
+  ;; TweeGeeMee evolved: 151112_193202_D.clj
   ;; https://gist.github.com/rogerallen/90bb215917b20fc3b38b#file-1_archive-edn-L3689-L3691
   (render-animation [i 20]
     (offset [0 0 (* i 0.003)]   
@@ -105,10 +105,20 @@
   
   
   ;; Clojure procedural animation #7
-  ;; TweeGeeMee eviolved: 151214_143140_N.clj
+  ;; TweeGeeMee evolved: 151214_143140_N.clj
   (render-animation [i 20]
     (offset [0 0 (* i 0.003)]   
       (clisk.live/vabs (clisk.live/vcos (clisk.live/v* (clisk.live/vabs (clisk.live/scale (clisk.live/vround [2.1838 -1.5047 -1.3361 0.6155]) (clisk.live/x (clisk.live/hue-from-rgb (clisk.live/adjust-hsl clisk.live/noise (clisk.live/vfrac clisk.live/vsnoise)))))) [2.0727 1.3225 -0.9395]))))
     {:width 256 :height 256})  
+
+  ;; Clojure procedural animation #8
+  ;; TweeGeeMee evolved: 151215_223145_C.clj
+  (render-animation [i 20]
+    (offset [0 0 (* i 0.003)]   
+      (clisk.live/vabs (clisk.live/hue-from-rgb (clisk.live/adjust-hsl clisk.live/noise (clisk.live/gradient (clisk.live/adjust-hsl (clisk.live/vround [2.1838 -1.5047 -1.3361 0.6155]) clisk.live/vsnoise))))))
+    {:width 256 :height 256})  
+
+  
+  
   
   )
