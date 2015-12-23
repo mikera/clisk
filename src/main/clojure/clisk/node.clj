@@ -20,10 +20,18 @@
 (declare img)
 (declare constant-node)
 (declare vector-node)
+(declare scalar-node?)
 (declare vec-node)
 (declare evaluate)
 (declare warp)
 (declare ZERO-NODE)
+
+;; ===========================
+;; Code generation protocol
+
+(defprotocol PCodeGen
+  (gen-code [node syms inner-code]
+            "Returns a map containing :syms and :code"))
 
 ;; ===========================
 ;; Node record type
@@ -38,7 +46,25 @@
       (if-let [ss (seq args)]
         (warp (first args) (.applyTo this (next ss)))
         this))
-  clisk.NodeMarker)
+  clisk.NodeMarker
+  
+  PCodeGen
+    (gen-code [node syms inner-code]
+      (let [scalarnode? (scalar-node? node)
+            sym-maps (cond 
+                       (symbol? syms) [['x syms]]
+                       :else (map vector ['x 'y 'z 't] syms))
+            vmap (apply concat (filter (fn [[a b]] (not= a b)) sym-maps) ) ;; remove identity mappings
+            ]
+        (if scalarnode?
+          {:syms 'v
+           :code `(let [~@vmap ~'v ~(:code node)] ~inner-code)}
+          (let [codes (:codes node)
+                ccount (count codes)
+                gsyms (vec (take ccount ['x 'y 'z 't]))
+                gcode (mapcat vector gsyms codes)]
+            {:syms gsyms
+             :code `(let [~@vmap ~@gcode] ~inner-code)})))))
 
 ;; ==============================
 ;; Node predicates
@@ -141,11 +167,11 @@
 	           :constant true}))))
 
 (defn generate-scalar-code [n]
+  (when-not (scalar-node? n) (error "Trying to compile non-scalar node"))
   (let [n (node n)
         obj-map (:objects n)
         syms (keys obj-map)
-        code (:code n)]
-    (if-not (scalar-node? n) (error "Trying to compile non-scalar node"))
+        code (:code (gen-code n ['x 'y 'z 't] 'v))]
     `(fn [~@syms]
 	       (let []
 		       (reify clisk.IFunction
@@ -186,26 +212,23 @@
     (let [n (node n)]
       (if (scalar-node? n)
         (.calc (compile-scalar-node n) (double x) (double y) (double z) (double t))
-        (vec
-          (map
-            #(.calc (compile-scalar-node %) (double x) (double y) (double z) (double t))
-            (:nodes n)))))))
+        (mapv
+          #(.calc (compile-scalar-node %) (double x) (double y) (double z) (double t))
+          (:nodes n))))))
 
 
 (defn vec-node 
-  "Creates a node from a sequence of scalar nodes"
+  "Creates a node from a sequence of scalars"
   ([xs]
 	  (let [nodes (map node xs)]
-	    (cond
-	      (not (every? #(= :scalar (:type %)) nodes))
-	        (error "vec-node requires scalar values as input")
-	      :else
-	        (new-node 
-	          {:type :vector
-	           :nodes (vec nodes)
-	           :codes (vec (map :code nodes))
-	           :objects (apply merge (map :objects nodes))
-	           :constant (every? constant-node? nodes)})))))
+      (when-not (every? #(= :scalar (:type %)) nodes)
+        (error "vec-node requires scalar values as input"))
+      (new-node 
+	      {:type :vector
+	       :nodes (vec nodes)
+	       :codes (vec (map :code nodes))
+	       :objects (apply merge (map :objects nodes))
+	       :constant (every? constant-node? nodes)}))))
 
 (defn vector-node [& xs] 
   (vec-node xs))
