@@ -33,10 +33,10 @@
   (gen-code [node syms inner-code]
             "Returns a map containing :syms and :code"))
 
-;; ===========================
-;; Node record type
+;; =======================================
+;; Node record type implementing pure code
 
-(defrecord Node []
+(defrecord CodeNode []
   clojure.lang.IFn
     (invoke [this]
       this) 
@@ -136,12 +136,12 @@
 (defn value-node [v]
   (if 
     (sequential? v)
-    (Node. nil
+    (CodeNode. nil
          {:type :vector 
           :nodes (vec (map node v))
           :codes (vec (map double v))
           :constant true})
-	  (Node. nil
+	  (CodeNode. nil
 	         {:type :scalar 
 	          :code (double v)
 	          :constant true})))
@@ -151,7 +151,7 @@
 (defn new-node 
   "Create a new AST node with the given properties"
   ([props]
-	  (let [n (Node. nil props)]
+	  (let [n (CodeNode. nil props)]
 		  (if (and (:constant props) (not (number? (:code props))))
         (value-node (evaluate n))
 		    n))))
@@ -161,7 +161,7 @@
   "Creates a node with an embedded Java object"
   ([v]
 	  (let [sym (gensym "obj")]
-	    (Node. nil
+	    (CodeNode. nil
 	          {:type :scalar
 	           :code sym
 	           :objects {sym v}
