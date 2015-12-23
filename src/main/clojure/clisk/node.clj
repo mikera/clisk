@@ -61,10 +61,11 @@
            :code `(let [~@vmap ~'v ~(:code node)] ~inner-code)}
           (let [codes (:codes node)
                 ccount (count codes)
-                gsyms (vec (take ccount ['x 'y 'z 't]))
-                gcode (mapcat vector gsyms codes)]
+                gsyms (vec (take ccount (map gensym '[x y z t])))
+                gcode (mapcat vector gsyms codes)
+                alias-map (mapcat vector '[x y z t] gsyms)]
             {:syms gsyms
-             :code `(let [~@vmap ~@gcode] ~inner-code)})))))
+             :code `(let [~@vmap ~@gcode ~@alias-map] ~inner-code)})))))
 
 ;; ==============================
 ;; Node predicates
@@ -316,7 +317,7 @@
           mw (.getWidth image)
           mh (.getHeight image)]
       (vec-node
-        (map
+        (mapv
           (fn [fsym]
             (assoc 
               (code-node
@@ -415,16 +416,17 @@
 
 (defn ^clisk.IRenderFunction compile-render-fn [node]
   "Compiles clisk node into an object that implements clisk.IRenderFunction"
-  (let [fr (compile-fn (component 0 node))
-        fg (compile-fn (component 1 node))
-        fb (compile-fn (component 2 node))]
-    (reify clisk.IRenderFunction
-      (^int calc [this ^double x ^double y]
-        (let [r (.calc fr x y 0.0 0.0)
-              g (.calc fg x y 0.0 0.0)
-              b (.calc fb x y 0.0 0.0)
-              argb (Util/toARGB r g b)]
-          (int argb))))))
+  (let [node (vectorize 4 node) ;; we want 4 channel output
+        obj-map (:objects node)
+        osyms (keys obj-map)
+        code (:code (gen-code node '[x y z t] `(Util/toARGB ~'x ~'y ~'z)))]
+    (apply (eval
+           `(fn [~@osyms]
+              (reify clisk.IRenderFunction
+                (^int calc [this ^double x ^double y]
+                  (let [~'z 0.0 ~'t 0.0] 
+                    ~code)))))
+           (vals obj-map))))
 
 (defn img
   "Creates a BufferedImage from the given node."

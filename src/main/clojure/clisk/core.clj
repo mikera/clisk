@@ -67,16 +67,16 @@
 
 (defn image
   "Creates a bufferedimage from the given clisk data"
-  (^BufferedImage [vector-function
+  (^BufferedImage [cliskfn
                    & {:keys [width height size anti-alias] 
        :or {size DEFAULT-IMAGE-SIZE}}]
-    (let [vector-function (validate (node vector-function))
+    (let [cliskfn (validate (node cliskfn))
           scale (double (or anti-alias *anti-alias*))
           w (int (or width size))
           h (int (or height size))
           fw (* w scale)
           fh (* h scale)
-          img (img vector-function fw fh)]
+          img (img cliskfn fw fh)]
       (scale-image img w h))))
 
 (defn show 
