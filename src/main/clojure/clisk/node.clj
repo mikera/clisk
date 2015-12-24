@@ -134,19 +134,20 @@
 ;; ========================================
 ;; Node constructors
 
-(defn value-node [v]
-  (if 
-    (sequential? v)
-    (CodeNode. nil
-         {:type :vector 
-          :nodes (vec (map node v))
-          :codes (vec (map double v))
-          :constant true})
-	  (CodeNode. nil
-	         {:type :scalar 
-	          :code (double v)
-	          :constant true})))
-
+(defn value-node 
+  "Create a node that represents a constant value"
+  ([v]
+    (if 
+      (sequential? v)
+      (CodeNode. nil
+           {:type :vector 
+            :nodes (vec (map node v))
+            :codes (vec (map double v))
+            :constant true})
+	    (CodeNode. nil
+	           {:type :scalar 
+	            :code (double v)
+	            :constant true}))))
 
 
 (defn new-node 
