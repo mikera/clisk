@@ -21,4 +21,11 @@
   (testing "sampler of [x y z]"
     (let [samp (sampler [x y z])]
       (is (= [1.0 2.0 3.0] (samp [1 2 3])))
-      (is (= [1.0 2.0 0.0] (samp [1 2]))))))
+      (is (= [1.0 2.0 0.0] (samp [1 2])))))
+  (testing "scalar sampler"
+    (let [samp (sampler y)]
+      (is (== 3.0 (samp [2 3 4 5])))
+      (is (== 0.0 (samp [2])))))
+  (testing "extended sampler"
+    (let [samp (sampler [x y z t '(+ x z) ])]
+      (is (= [2.0 3.0 4.0 5.0 6.0] (samp [2 3 4 5]))))))
