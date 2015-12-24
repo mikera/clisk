@@ -27,7 +27,7 @@
 (declare ZERO-NODE)
 
 ;; ===========================
-;; Code generation protocol
+;; Node protocols 
 
 (defprotocol PCodeGen
   (gen-code [node syms inner-code]
@@ -219,10 +219,10 @@
 
 
 (defn vec-node 
-  "Creates a node from a sequence of scalars"
+  "Creates a node from a sequence of scalars. The new node returns each scalar value as a separate compoenent."
   ([xs]
 	  (let [nodes (map node xs)]
-      (when-not (every? #(= :scalar (:type %)) nodes)
+      (when-not (every? scalar-node? nodes)
         (error "vec-node requires scalar values as input"))
       (new-node 
 	      {:type :vector
