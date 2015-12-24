@@ -30,19 +30,19 @@
 
 (def perlin-noise 
   "Standard 4-dimensional scalar perlin noise in range [0..1]"
-  '(clisk.noise.Perlin/noise x y z t))
+  (node '(clisk.noise.Perlin/noise x y z t)))
 
 (def perlin-snoise
   "4-dimensional scalar perlin noise standardised with mean zero, range [-1..1]"
-  '(clisk.noise.Perlin/snoise x y z t))
+  (node '(clisk.noise.Perlin/snoise x y z t)))
 
 (def simplex-noise 
   "Standard 4-dimensional scalar perlin noise in range [0..1]"
-  '(clisk.noise.Simplex/noise x y z t))
+  (node '(clisk.noise.Simplex/noise x y z t)))
 
 (def simplex-snoise
   "4-dimensional scalar simplex noise standardised with mean zero, range [-1..1]"
-  '(clisk.noise.Simplex/snoise x y z t))
+  (node '(clisk.noise.Simplex/snoise x y z t)))
 
 (defn tile
   "Tiles a pattern in the range [0..1,0..1]"
