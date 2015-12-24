@@ -25,6 +25,7 @@
 (declare evaluate)
 (declare warp)
 (declare ZERO-NODE)
+(declare node-info)
 
 ;; ===========================
 ;; Node protocols 
@@ -32,6 +33,14 @@
 (defprotocol PCodeGen
   (gen-code [node syms inner-code]
             "Returns a map containing :syms and :code"))
+
+(defprotocol PNodeShape
+  (node-shape [node]
+    "Returns the length of the node outputr vector, or nil if scalar"))
+
+(defprotocol PValidate
+  (validate [node]
+    "Returns truthy if node is valid, throws an exception otherwise"))
 
 ;; =======================================
 ;; Node record type implementing pure code
@@ -49,6 +58,24 @@
   
   clisk.NodeMarker
   
+  PNodeShape
+    (node-shape [node]
+      (if (= :scalar (:type node))
+        nil
+        (count (:codes node))))
+    
+  PValidate
+    (validate  [nd]
+      (let [nd (node nd)]
+        (cond
+          (not (xor (:code nd) (:codes nd))) 
+            (error "AST node must have :code or :codes")
+          (and (scalar-node? nd)
+               (not (:primitive? (node-info nd))))
+            (error "AST code must be of primitive type: " (:code nd) " was: [" (:type (node-info nd)) "]")
+          :else 
+	          nd)))
+  
   PCodeGen
     (gen-code [node syms inner-code]
       (let [scalarnode? (scalar-node? node)
@@ -58,8 +85,8 @@
             vmap (apply concat (filter (fn [[a b]] (not= a b)) sym-maps) ) ;; remove identity mappings
             ]
         (if scalarnode?
-          {:syms 'v
-           :code `(let [~@vmap ~'v ~(:code node)] ~inner-code)}
+          {:syms 'x
+           :code `(let [~@vmap ~'x ~(:code node)] ~inner-code)}
           (let [codes (:codes node)
                 ccount (count codes)
                 gsyms (vec (take ccount (map gensym '[x y z t])))
@@ -67,6 +94,47 @@
                 alias-map (mapcat vector '[x y z t] gsyms)]
             {:syms gsyms
              :code `(let [~@vmap ~@gcode ~@alias-map] ~inner-code)})))))
+
+;; =======================================
+;; Node record type implementing a vector of scalar nodes
+
+(defrecord VectorNode [nodes]
+  clojure.lang.IFn
+    (invoke [this]
+      this) 
+    (invoke [this x]
+      (warp x this))
+    (applyTo [this args]
+      (if-let [ss (seq args)]
+        (warp (first args) (.applyTo this (next ss)))
+        this))
+  
+  clisk.NodeMarker
+  
+  PNodeShape
+    (node-shape [node]
+      (count nodes))
+    
+  PValidate
+    (validate  [nd]
+      (doseq [nn nodes]
+        (validate nn)) 
+      nd)
+  
+  PCodeGen
+    (gen-code [node syms inner-code]
+      (let [sym-maps (cond 
+                       (symbol? syms) [['x syms]]
+                       :else (map vector ['x 'y 'z 't] syms))
+            vmap (apply concat (filter (fn [[a b]] (not= a b)) sym-maps) ) ;; remove identity mappings
+            ]
+        (let [codes (mapv (fn [n] (gen-code n syms 'x)) nodes)
+              ccount (count codes)
+              gsyms (vec (take ccount (map gensym '[x y z t])))
+              gcode (mapcat vector gsyms codes)
+              alias-map (mapcat vector '[x y z t] gsyms)]
+            {:syms gsyms
+             :code `(let [~@vmap ~@gcode ~@alias-map] ~inner-code)}))))
 
 ;; ==============================
 ;; Node predicates
@@ -78,10 +146,10 @@
   (and (node? x) (:constant x)))
 
 (defn vector-node? [x] 
-  (and (node? x) (= :vector (:type x))))
+  (boolean (node-shape x)))
 
 (defn scalar-node? [x] 
-  (and (node? x) (= :scalar (:type x))))
+  (nil? (node-shape x)))
 
 (defn is-constant [value]
   (fn [n]
@@ -174,7 +242,7 @@
   (let [n (node n)
         obj-map (:objects n)
         syms (keys obj-map)
-        code (:code (gen-code n ['x 'y 'z 't] 'v))]
+        code (:code (gen-code n ['x 'y 'z 't] 'x))]
     `(fn [~@syms]
 	       (let []
 		       (reify clisk.IFunction
@@ -465,21 +533,4 @@
                ~'y 1.0 
                ~'z 1.0 
                ~'t 1.0 ]
-          ~(:code node)))))
-
-(defn validate 
-  "Validates the structure and behaviour of any node. Throws an error if any problem is deteted, returns the node otherwise."
-  ([nd]
-	  (let [nd (node nd)]
-     (cond
-	    (not (xor (:code nd) (:codes nd))) 
-	      (error "AST node must have :code or :codes")
-	    (and (scalar-node? nd)
-           (not (:primitive? (node-info nd))))
-	      (error "AST code must be of primitive type: " (:code nd) " was: [" (:type (node-info nd)) "]")
-	    (vector-node? nd)
-         (do 
-	          (doseq [n (:nodes nd)] (validate n))
-	          nd)
-      :else 
-	      nd))))
+          ~(:code (gen-code node '[x y z t] 'x))))))
