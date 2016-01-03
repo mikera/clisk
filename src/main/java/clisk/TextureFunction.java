@@ -30,6 +30,7 @@ public class TextureFunction implements IRenderFunction {
 		this.h=height;
 	}
 	
+	@Override
 	public int calc(double x, double y) {
 		return texture.getRGB((int)(x*w+xoff),(int)(y*h+yoff));
 	}
@@ -39,6 +40,7 @@ public class TextureFunction implements IRenderFunction {
 		return calc(x,y);
 	}
 	
+	@Override
 	public int calc(double x, double y, double z, double t) {
 		return calc(x,y);
 	}

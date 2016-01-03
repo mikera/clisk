@@ -9,18 +9,22 @@ import mikera.vectorz.Vector4;
 import clojure.lang.ISeq;
 
 public class Function implements IFunction, clojure.lang.IFn {
+	@Override
 	public double calc() {
 		return calc(0.0);
 	}
 	
+	@Override
 	public double calc(double x) {
 		return calc(x,0.0);
 	}
 	
+	@Override
 	public double calc(double x, double y) {
 		return calc(x,y,0.0);
 	}
 
+	@Override
 	public double calc(double x, double y, double z) {
 		return calc(x,y,z,0.0);
 	}
@@ -59,6 +63,7 @@ public class Function implements IFunction, clojure.lang.IFn {
 		return calc(v.x,v.y,v.z,v.t);
 	}
 	
+	@Override
 	public double calc(double x, double y, double z, double t) {
 		throw new Error("Function not implemented!");
 	}
