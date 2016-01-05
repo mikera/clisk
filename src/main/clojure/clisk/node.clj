@@ -32,7 +32,10 @@
 
 (defprotocol PCodeGen
   (gen-code [node syms inner-code]
-            "Returns a map containing :syms and :code"))
+            "Returns a map containing :syms and :code after performing code generation.
+             syms parameter is a symbol or vector of symbols that should be set for inner-code
+             :syms return value is the symbol or vector of symbols that should be passed in to the generated code
+             "))
 
 (defprotocol PNodeShape
   (node-shape [node]
