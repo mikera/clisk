@@ -36,7 +36,7 @@
 
 (defprotocol PNodeShape
   (node-shape [node]
-    "Returns the length of the node outputr vector, or nil if scalar"))
+    "Returns the length of the node output vector, or nil if scalar"))
 
 (defprotocol PValidate
   (validate [node]
