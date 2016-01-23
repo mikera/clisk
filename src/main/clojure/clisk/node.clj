@@ -32,7 +32,13 @@
 
 (defprotocol PCodeGen
   (gen-code [node syms inner-code]
-            "Returns a map containing :syms and :code"))
+            "Returns a map containing :syms and :code
+              
+             argument syms are the symbols required to be bound for inner-code
+             argument inner-code is the code that should be inserted as the core of the generated code             
+
+             returned :code is the generated code representing this node
+             returned :syms syms are the symbols that should be bound as inputs for the generated code"))
 
 (defprotocol PNodeShape
   (node-shape [node]
@@ -44,6 +50,10 @@
 
 ;; =======================================
 ;; Node record type implementing pure code
+;;
+;; Code should use the symbols '[x y z t], which will be bound for the execution of the code
+;;
+;; A scalar node is a node that returns a scalar value. all other nodes return a vector.
 
 (defrecord CodeNode []
   clojure.lang.IFn
@@ -78,22 +88,19 @@
   
   PCodeGen
     (gen-code [node syms inner-code]
-      (let [scalarnode? (scalar-node? node)
-            sym-maps (cond 
-                       (symbol? syms) [['x syms]]
-                       :else (map vector ['x 'y 'z 't] syms))
-            vmap (apply concat (filter (fn [[a b]] (not= a b)) sym-maps) ) ;; remove identity mappings
-            ]
+      (let [scalarnode? (scalar-node? node)]
         (if scalarnode?
-          {:syms 'x
-           :code `(let [~@vmap ~'x ~(:code node)] ~inner-code)}
+          (let [vmap (mapcat vector syms (repeat 'tmp)) ;; all inner symbols are set to scalar value
+                ] 
+            {:syms '[x y z t]   ;; ask to be provided with '[x y z t] as needed by code
+             :code `(let [~'tmp ~(:code node) ~@vmap] ~inner-code)})
           (let [codes (:codes node)
-                ccount (count codes)
-                gsyms (vec (take ccount (map gensym '[x y z t])))
-                gcode (mapcat vector gsyms codes)
-                alias-map (mapcat vector '[x y z t] gsyms)]
-            {:syms gsyms
-             :code `(let [~@vmap ~@gcode ~@alias-map] ~inner-code)})))))
+                gsyms (mapv gensym '[x y z t])      ;; generate temp syms for code return values
+                gcode (mapcat vector gsyms codes)   ;; map result of code to each temp symbol
+                vmap (mapcat vector syms gsyms)     ;; prepare syms as required for inner code
+                ]
+            {:syms '[x y z t]   ;; ask to be provided with '[x y z t] as needed by codes
+             :code `(let [~@gcode ~@vmap] ~inner-code)})))))
 
 ;; =======================================
 ;; Node record type implementing a vector of scalar nodes
@@ -209,8 +216,8 @@
       (sequential? v)
       (CodeNode. nil
            {:type :vector 
-            :nodes (vec (map node v))
-            :codes (vec (map double v))
+            :nodes (mapv node v)
+            :codes (mapv double v)
             :constant true})
 	    (CodeNode. nil
 	           {:type :scalar 
@@ -225,7 +232,6 @@
 		  (if (and (:constant props) (not (number? (:code props))))
         (value-node (evaluate n))
 		    n))))
-
 
 (defn object-node 
   "Creates a node with an embedded Java object"
