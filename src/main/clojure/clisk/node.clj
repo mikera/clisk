@@ -38,7 +38,7 @@
              argument inner-code is the code that should be inserted as the core of the generated code             
 
              returned :code is the generated code representing this node
-             returned :syms syms are the symbols that should be bound as inputs for the generated code"))
+             returned :syms syms are the symbols that should be bound as inputs for the generated code")) 
 
 (defprotocol PNodeShape
   (node-shape [node]
