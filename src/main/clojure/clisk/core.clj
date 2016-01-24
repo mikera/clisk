@@ -57,7 +57,7 @@
     & {:keys [^String title]
        :as options
        :or {title nil}}]
-  (let [^JComponent  com (component com)]
+  (let [^JComponent com com]
     (Frames/display com title))))
 
 (defn vector-function 

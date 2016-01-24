@@ -22,6 +22,7 @@
 (declare vector-node)
 (declare scalar-node?)
 (declare vec-node)
+(declare code-node)
 (declare evaluate)
 (declare warp)
 (declare ZERO-NODE)
@@ -53,6 +54,14 @@
 (defprotocol PNodeComponent
   (component [node i]
     "Gets the i'th component of a node, as a new scalar node"))
+
+;; =======================================
+;; Default protocol implementations
+
+(extend-protocol PNodeComponent
+  Object 
+    (component [this i]
+      (component (node this) i)))
 
 ;; =======================================
 ;; Code generation utility functions
@@ -100,6 +109,12 @@
             (error "AST scalar code node must be of primitive type: " (:code nd) " was: [" (:type (node-info nd)) "]")
           :else 
 	          nd)))
+    
+  PNodeComponent
+    (component [node i]
+      (if (scalar-node? node)
+        node
+        (code-node (nth (:codes node) i 0.0) :objects (:objects node))))
   
   PCodeGen
     ;; note that code is assumed to use '[x y z t]
@@ -191,14 +206,6 @@
   (^long [a]
 	  (let [a (node a)]
 	    (or (node-shape a) 1))))
-
-
-(defn ^:private component [n i]
-  "Returns a scalar node that represents the specified component of an input node. Taking any component of a scalar results in the same scalar."
-  (let [n (node n)]
-	  (if (vector-node? n)
-	    (nth (:nodes n) i ZERO-NODE)
-	    n))) 
 
 (defn ^:private components [index-vector a]
   "Returns a subset of components from a, according to the provided indices"

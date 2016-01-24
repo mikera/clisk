@@ -7,7 +7,8 @@
   (:import [java.awt.image BufferedImage BufferedImageOp] )
   (:require [mikera.image.core :as imagez])
   (:import mikera.util.Maths)
-  (:use [clisk node util])
+  (:use [clisk.node])
+  (:use [clisk util])
   (:use [clojure.tools macro]))
 
 (set! *warn-on-reflection* true)
@@ -35,7 +36,6 @@
 ;; alias key private functions from clisk.node
 (def ^{:rettag long} dimensions #'clisk.node/dimensions)
 (def vectorize #'clisk.node/vectorize)
-(def component #'clisk.node/component)
 (def components #'clisk.node/components)
 (def take-components #'clisk.node/take-components)
 (def texture-map #'clisk.node/texture-map)
