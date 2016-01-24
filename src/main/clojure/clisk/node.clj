@@ -243,30 +243,32 @@
 	           :objects {sym v}
 	           :constant true}))))
 
-(defn generate-scalar-code [n]
-  (when-not (scalar-node? n) (error "Trying to compile non-scalar node"))
-  (let [n (node n)
-        obj-map (:objects n)
-        syms (keys obj-map)
-        code (:code (gen-code n ['x 'y 'z 't] 'x))]
-    `(fn [~@syms]
-	       (let []
-		       (reify clisk.IFunction
-			       (calc 
-			         [~'this ~'x ~'y ~'z ~'t]
-			           (double ~code))
-			       (calc
-			         [~'this ~'x ~'y ~'z]
-			           (.calc ~'this ~'x ~'y ~'z 0.0))
-			       (calc
-			         [~'this ~'x ~'y]
-			           (.calc ~'this ~'x ~'y 0.0))
-			       (calc
-			         [~'this ~'x]
-			           (.calc ~'this ~'x 0.0))
-			       (calc
-			         [~'this]
-			           (.calc ~'this 0.0)))))))
+(defn generate-scalar-code 
+  "Creates code that generates a (fn [objects]) which returns a scalar clisk.IFunction"
+  ([n]
+    (when-not (scalar-node? n) (error "Trying to compile non-scalar node"))
+    (let [n (node n)
+          obj-map (:objects n)
+          obj-syms (keys obj-map)
+          code (:code (gen-code n ['x 'y 'z 't] 'x))]
+      `(fn [~@obj-syms]
+	         (let []
+		         (reify clisk.IFunction
+			         (calc 
+			           [~'this ~'x ~'y ~'z ~'t]
+			             (double ~code))
+			         (calc
+			           [~'this ~'x ~'y ~'z]
+			             (.calc ~'this ~'x ~'y ~'z 0.0))
+			         (calc
+			           [~'this ~'x ~'y]
+			             (.calc ~'this ~'x ~'y 0.0))
+			         (calc
+			           [~'this ~'x]
+			             (.calc ~'this ~'x 0.0))
+			         (calc
+			           [~'this]
+			             (.calc ~'this 0.0))))))))
 
 (defn compile-scalar-node ^clisk.IFunction [n]
   "Compile a scalar node to a clisk.IFunction"
@@ -307,8 +309,10 @@
 	       :objects (apply merge (map :objects nodes))
 	       :constant (every? constant-node? nodes)}))))
 
-(defn vector-node [& xs] 
-  (vec-node xs))
+(defn vector-node 
+  "Creates a vector node from the given scalar nodes"
+  ([& xs] 
+    (vec-node xs)))
 
 
 (defn constant-node 
