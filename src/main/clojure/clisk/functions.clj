@@ -112,7 +112,7 @@
 (defn vconcat 
   "Concatenate a set of vectors into a longer vector. Treats scalars as 1D vectors." 
   [& vectors]
-  (vec-node (mapcat (comp :nodes vectorize) vectors)))
+  (vec-node (mapcat components vectors)))
 
 ;; note that vectorize-op optimises for zero and identity elements
 (defn vectorize-op 

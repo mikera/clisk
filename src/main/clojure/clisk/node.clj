@@ -207,6 +207,15 @@
 	  (let [a (node a)]
 	    (or (node-shape a) 1))))
 
+(defn components 
+    "Gets the components of a node, as a sequence of scalar nodes"
+    ([a]
+      (let [a (node a)]
+        (mapv 
+          (fn [i]
+            (component a i))
+          (range (dimensions a))))))
+
 (defn select-components 
     "Selects a subset of components from a node, returning a new vector node"
     ([a index-vector]
