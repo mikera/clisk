@@ -117,7 +117,7 @@
     
     (gen-component [node input-syms index]
       (let [scalarnode? (scalar-node? node)
-            code (if scalarnode? (:code node) (nth (:codes node)))
+            code (if scalarnode? (:code node) (nth (:codes node) index))
             input-bindings (map-symbols '[x y z t] input-syms)]
         (if (empty? input-bindings)
           code
@@ -186,11 +186,7 @@
   "Returns the number of dimensions in a vector node, or 1 if scalar"
   (^long [a]
 	  (let [a (node a)]
-	    (cond
-	      (scalar-node? a)
-	        1
-	      (vector-node? a)
-	        (count (:nodes a))))))
+	    (or (node-shape a) 1))))
 
 
 (defn ^:private component [i n]
@@ -227,8 +223,8 @@
       (sequential? v)
       (CodeNode. nil
            {:type :vector 
-            :nodes (mapv node v)
             :codes (mapv double v)
+            :nodes (mapv node v)
             :constant true})
 	    (CodeNode. nil
 	           {:type :scalar 
