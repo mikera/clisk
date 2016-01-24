@@ -340,7 +340,7 @@
         (.calc (compile-scalar-node n) (double x) (double y) (double z) (double t))
         (mapv
           #(.calc (compile-scalar-node %) (double x) (double y) (double z) (double t))
-          (:nodes n))))))
+          (components n))))))
 
 
 
