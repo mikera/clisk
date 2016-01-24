@@ -39,7 +39,8 @@
              argument inner-code is the code that should be inserted as the core of the generated code")
   
   (gen-component [node input-syms index]
-            "Generates code to produce one component of the node as specified by index")) 
+            "Generates code to produce one component of the node as specified by index.")
+  ) 
 
 (defprotocol PNodeShape
   (node-shape [node]
@@ -120,12 +121,13 @@
             input-bindings (map-symbols '[x y z t] input-syms)]
         (if (empty? input-bindings)
           code
-          `(let [~@input-bindings] ~code)))))
+          `(let [~@input-bindings] ~code))))
+    )
 
 ;; =======================================
-;; Node record type implementing a vector of scalar nodes
+;; Node implrmrnting a warp : g(f(x))
 
-(defrecord VectorNode [nodes]
+(defrecord WarpNode [f g]
   clojure.lang.IFn
     (invoke [this]
       this) 
@@ -140,18 +142,17 @@
   
   PNodeShape
     (node-shape [node]
-      (count nodes))
+      (node-shape g))
     
   PValidate
     (validate  [nd]
-      (doseq [nn nodes]
-        (validate nn)
-        (when-not (scalar-node? nn) (error "Unexpected non-scalar node within vector-node: " nn))) 
-      nd)
+      (validate f)
+      (validate g))
   
   PCodeGen
     (gen-code [node input-syms output-syms inner-code]
-      :TODO))
+      (gen-code f input-syms '[x y z t]
+                (gen-code g '[x y z t] output-syms inner-code))))
 
 ;; ==============================
 ;; Node predicates
