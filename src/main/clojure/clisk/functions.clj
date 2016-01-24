@@ -34,7 +34,6 @@
   (code-node C-SYMBOLS))
 
 ;; alias key private functions from clisk.node
-(def ^{:rettag long} dimensions #'clisk.node/dimensions)
 (def vectorize #'clisk.node/vectorize)
 (def take-components #'clisk.node/take-components)
 (def texture-map #'clisk.node/texture-map)

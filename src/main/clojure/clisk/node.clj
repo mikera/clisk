@@ -201,7 +201,7 @@
 ;; basic Node functions
 ;; these are private but aliased in clisk.functions
 
-(defn ^:private dimensions 
+(defn dimensions 
   "Returns the number of dimensions in a vector node, or 1 if scalar"
   (^long [a]
 	  (let [a (node a)]
