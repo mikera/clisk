@@ -136,7 +136,7 @@
     
     (gen-component [node input-syms index]
       (let [scalarnode? (scalar-node? node)
-            code (if scalarnode? (:code node) (nth (:codes node) index))
+            code (if scalarnode? (:code node) (nth (:codes node) index 0.0))
             input-bindings (map-symbols '[x y z t] input-syms)]
         (if (empty? input-bindings)
           code
