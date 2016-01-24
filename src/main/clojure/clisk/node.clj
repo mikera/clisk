@@ -72,6 +72,29 @@
     (let [pairs (map vector new-syms old-syms)]
       (mapcat (fn [[a b :as pair]] (if (= a b) nil pair)) pairs))))
 
+(defn get-code 
+  "Gets the generated code for a scalar node, assuming [x y z t] as input symbols"
+  ([node]
+    (when-not (scalar-node? node) (error "get-code requires a scalar node"))
+    (gen-code node '[x y z t] '[x] 'x))) 
+
+(defn get-codes 
+  "Gets the generated codes for a vector node, assuming [x y z t] as input symbols"
+  ([node]
+    (when (scalar-node? node) (error "get-codes requires a vector node"))
+    (let [dims (node-shape node)]
+      (vec (for [i (range dims)]
+            (gen-component node '[x y z t] i)))))) 
+
+(defn gen-let-bindings 
+  "Generates a set of let bindings around the given code, if necessary."
+  ([bindings code]
+    (let [pairs (partition 2 bindings)
+          bindings (apply concat (filter (fn [[a b]] (not= a b)) pairs))]
+      (if (empty? bindings)
+       code
+       `(let [~@bindings] ~code))))) 
+
 ;; =======================================
 ;; Node record type implementing pure code
 ;;
@@ -124,23 +147,22 @@
           (let [tsym (first output-syms)
                 input-bindings (map-symbols '[x y z t] input-syms)
                 output-bindings (map-symbols (next output-syms) (repeat tsym)) ;; all inner symbols are set to scalar value
+                bindings (concat input-bindings [tsym (:code node)] output-bindings)
                 ] 
-            `(let [~@input-bindings ~tsym ~(:code node) ~@output-bindings] ~inner-code))
+            (gen-let-bindings bindings inner-code))
           (let [codes (:codes node)
                 input-bindings (map-symbols '[x y z t] input-syms) ;; bind inputs
                 gsyms (mapv gensym output-syms)     ;; generate temp syms for outputs
                 gcode (mapcat vector gsyms (concat codes (repeat 0.0)))   ;; map result of code to each temp symbol
                 output-bindings (map-symbols output-syms gsyms)
-                ]
-            `(let [~@input-bindings ~@gcode ~@output-bindings] ~inner-code)))))
+                bindings (concat input-bindings gcode output-bindings)]
+            (gen-let-bindings bindings inner-code)))))
     
     (gen-component [node input-syms index]
       (let [scalarnode? (scalar-node? node)
             code (if scalarnode? (:code node) (nth (:codes node) index 0.0))
             input-bindings (map-symbols '[x y z t] input-syms)]
-        (if (empty? input-bindings)
-          code
-          `(let [~@input-bindings] ~code))))
+        (gen-let-bindings input-bindings code)))
     )
 
 ;; =======================================

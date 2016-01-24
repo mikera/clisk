@@ -198,6 +198,9 @@
   (testing "Round trip image"
       (is (= [1.0 0.0 0.0 1.0] (evaluate (texture-map (img red)) )))))
 
+(deftest test-vfor
+  ())
+
 (deftest test-error
   (testing "Clisk Error"
     (is 

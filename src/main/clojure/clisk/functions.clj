@@ -188,7 +188,7 @@
            ;; constant case - use appropriate branch directly
            (if (> (double (evaluate c)) 0.0 ) a b) 
            ;; variable case
-           `(if (> ~(:code c) 0.0 ) ~(:code a) ~(:code b)) ))
+           `(if (> ~(get-code c) 0.0 ) ~(get-code a) ~(get-code b)) ))
        condition
        a
        b)))
@@ -295,8 +295,8 @@
   ([a b]
     (transform-node
 	    (fn [a b]
-	       (let [[x1 y1 z1] (:codes (vectorize a))
-		          [x2 y2 z2] (:codes (vectorize b))]
+	       (let [[x1 y1 z1] (get-codes (vectorize a))
+		           [x2 y2 z2] (get-codes (vectorize b))]
 		        [`(- (* ~y1 ~z2) (* ~z1 ~y2))
 		         `(- (* ~z1 ~x2) (* ~x1 ~z1))
 		         `(- (* ~x1 ~y2) (* ~y1 ~x1))]))
@@ -309,7 +309,7 @@
     (let [v (vectorize v)]
       (transform-node 
         (fn [v]
-          `(max ~@(:codes v)))
+          `(max ~@(get-codes v)))
         v))))
 
 (defn min-component 
@@ -318,7 +318,7 @@
     (let [v (vectorize v)]
       (transform-node 
         (fn [v]
-          `(min ~@(:codes v)))
+          `(min ~@(get-codes v)))
         v))))
 
 (defn length 
@@ -327,7 +327,7 @@
 	  (let [comps (components (vectorize a))]
 	    (apply transform-node
             (fn [& comps]
-              (node `(Math/sqrt (+ ~@(map #(do `(let [v# (double ~%)] (* v# v#))) (map :code comps))))))
+              (node `(Math/sqrt (+ ~@(map #(do `(let [v# (double ~%)] (* v# v#))) (map get-code comps))))))
             comps))))
 
 (defn normalize 
@@ -350,11 +350,11 @@
   ([angle function]
     (transform-components
 	     (fn [s c node]
-	        `(let [xt# (- (* ~(:code c) ~'x) (* ~(:code s) ~'y)) 
-                 yt# (+ (* ~(:code s) ~'x) (* ~(:code c) ~'y)) 
+	        `(let [xt# (- (* ~(get-code c) ~'x) (* ~(get-code s) ~'y)) 
+                 yt# (+ (* ~(get-code s) ~'x) (* ~(get-code c) ~'y)) 
                  ~'x xt#
                  ~'y yt#]
-            ~(:code node)))
+            ~(get-code node)))
        (vsin angle)
        (vcos angle)
 	     function)))
@@ -426,12 +426,12 @@
 	        f (component f 0)]
 	    (transform-components 
         (fn [f pos] 
-          (let [sym (:code pos)]
+          (let []
 	          `(clojure.core// 
 	             (clojure.core/-
-	               (let [~sym (clojure.core/+ ~epsilon ~sym)]
-	                 ~(:code f))
-	               ~(:code f))
+	               (let [~'x (clojure.core/+ ~epsilon ~'x)]
+	                 ~(get-code f))
+	               ~(get-code f))
 	             ~epsilon)))
 	      f
         (node position-symbol-vector)))))
@@ -541,7 +541,7 @@
   ([v]
     (transform-node
       (fn [x y]
-        `(+ Math/PI (Math/atan2 ~(:code y) ~(:code x))))
+        `(+ Math/PI (Math/atan2 ~(get-code y) ~(get-code x))))
       (component v 0)
       (component v 1))) )
 
@@ -551,7 +551,7 @@
   ([v]
     (transform-node
       (fn [x y]
-        `(let [x# ~(:code x) y# ~(:code y)] (Math/sqrt (+ (* x# x#) (* y# y#)) ) ))
+        `(let [x# ~(get-code x) y# ~(get-code y)] (Math/sqrt (+ (* x# x#) (* y# y#)) ) ))
       (component v 0)
       (component v 1))) )
 
@@ -647,8 +647,8 @@
     (apply transform-components
       (fn [rest & inits]
         `(limited-loop ~max-iterations 
-                       [~@(mapcat list (take n POSITION-SYMBOLS) (map :code inits))]
-           ~(:code rest)))
+                       [~@(mapcat list (take n POSITION-SYMBOLS) (map get-code inits))]
+           ~(get-code rest)))
       (cons
         rest
         (components init)))))
@@ -668,7 +668,7 @@
 		      while
 		      (apply transform-components
 	              (fn [bailout-result-comp & comps]
-	                `(limited-recur ~(:code bailout-result-comp) ~@(map :code comps)))
+	                `(limited-recur ~(get-code bailout-result-comp) ~@(map get-code comps)))
 	              bailout-result
 	              (components update))
 		      result)
