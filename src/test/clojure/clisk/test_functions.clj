@@ -16,7 +16,9 @@
     (is (= 1.0 (evaluate 1N)))))
 
 
-
+(deftest test-vector-extension
+  (testing "Extension for scalars"
+           (is (= [111.0 111.0 1.0] (evaluate (v+ [1 1 1] (v+ [10 10] 100)))))))
 
 (deftest test-vectorize
   (testing "Vectorising"
