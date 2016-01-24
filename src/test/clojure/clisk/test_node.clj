@@ -22,6 +22,10 @@
     (is (= 2.0 (:code (constant-node 2.0))))
     (is (= [1.0 2.0] (:codes (constant-node [1 2]))))))
 
+(deftest test-map-symbols
+  (is (empty? (map-symbols ['x] ['x])))
+  (is (= '[x a y b] (map-symbols '[x y] '[a b]))))
+
 ;; testing nodes, should all evaluate to 1.0 when evaluated at [1.0 1.0 1.0 1.0]
 (def scalar-node-types
   [(node 1)

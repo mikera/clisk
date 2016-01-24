@@ -31,14 +31,12 @@
 ;; Node protocols 
 
 (defprotocol PCodeGen
-  (gen-code [node syms inner-code]
-            "Returns a map containing :syms and :code
+  (gen-code [node input-syms output-syms inner-code]
+            "Returns generated code wrapping inner-code
               
-             argument syms are the symbols required to be bound for inner-code, as a vector
-             argument inner-code is the code that should be inserted as the core of the generated code             
-
-             returned :code is the generated code representing this node
-             returned :syms are the symbols that should be bound as inputs for the generated code")) 
+             input-syms are the symbokls provided
+             output-syms are the symbols required to be bound for inner-code, as a vector
+             argument inner-code is the code that should be inserted as the core of the generated code")) 
 
 (defprotocol PNodeShape
   (node-shape [node]
@@ -47,6 +45,15 @@
 (defprotocol PValidate
   (validate [node]
     "Returns truthy if node is valid, throws an exception otherwise"))
+
+;; =======================================
+;; Code generation utility functions
+
+(defn map-symbols
+  "Returns a sequence of bindings maping old symbols to new symbols"
+  ([new-syms old-syms]
+    (let [pairs (map vector new-syms old-syms)]
+      (mapcat (fn [[a b :as pair]] (if (= a b) nil pair)) pairs))))
 
 ;; =======================================
 ;; Node record type implementing pure code
@@ -87,21 +94,22 @@
 	          nd)))
   
   PCodeGen
-    (gen-code [node syms inner-code]
+    ;; note that code is assumed to use '[x y z t]
+    (gen-code [node input-syms output-syms inner-code]
       (let [scalarnode? (scalar-node? node)]
         (if scalarnode?
-          (let [tsym (first syms)
-                vmap (mapcat vector (next syms) (repeat tsym)) ;; all inner symbols are set to scalar value
+          (let [tsym (first output-syms)
+                input-bindings (map-symbols '[x y z t] input-syms)
+                output-bindings (map-symbols (next output-syms) (repeat tsym)) ;; all inner symbols are set to scalar value
                 ] 
-            {:syms '[x y z t]   ;; ask to be provided with '[x y z t] as needed by code
-             :code `(let [~tsym ~(:code node) ~@vmap] ~inner-code)})
+            `(let [~@input-bindings ~tsym ~(:code node) ~@output-bindings] ~inner-code))
           (let [codes (:codes node)
                 gsyms (mapv gensym '[x y z t])      ;; generate temp syms for code return values
+                input-bindings (map-symbols gsyms input-syms)
                 gcode (mapcat vector gsyms codes)   ;; map result of code to each temp symbol
-                vmap (mapcat vector syms gsyms)     ;; prepare syms as required for inner code
+                output-bindings (map-symbols output-syms gsyms)
                 ]
-            {:syms '[x y z t]   ;; ask to be provided with '[x y z t] as needed by codes
-             :code `(let [~@gcode ~@vmap] ~inner-code)})))))
+            `(let [~@input-bindings ~@gcode ~@output-bindings] ~inner-code))))))
 
 ;; =======================================
 ;; Node record type implementing a vector of scalar nodes
@@ -131,19 +139,8 @@
       nd)
   
   PCodeGen
-    (gen-code [node syms inner-code]
-      (let [sym-maps (cond 
-                       (symbol? syms) [['x syms]]
-                       :else (map vector ['x 'y 'z 't] syms))
-            vmap (apply concat (filter (fn [[a b]] (not= a b)) sym-maps) ) ;; remove identity mappings
-            ]
-        (let [codes (mapv (fn [n] (gen-code n syms 'x)) nodes)
-              ccount (count codes)
-              gsyms (vec (take ccount (map gensym '[x y z t])))
-              gcode (mapcat vector gsyms codes)
-              alias-map (mapcat vector '[x y z t] gsyms)]
-            {:syms gsyms
-             :code `(let [~@vmap ~@gcode ~@alias-map] ~inner-code)}))))
+    (gen-code [node input-syms output-syms inner-code]
+      :TODO))
 
 ;; ==============================
 ;; Node predicates
@@ -252,7 +249,7 @@
     (let [n (node n)
           obj-map (:objects n)
           obj-syms (keys obj-map)
-          code (:code (gen-code n ['x 'y 'z 't] 'x))]
+          code (gen-code n '[x y z t] ['x] 'x)]
       `(fn [~@obj-syms]
 	         (let []
 		         (reify clisk.IFunction
@@ -501,7 +498,7 @@
   (let [node (vectorize 4 node) ;; we want 4 channel output
         obj-map (:objects node)
         osyms (keys obj-map)
-        code (:code (gen-code node '[x y z] `(Util/toARGB ~'x ~'y ~'z))) ;; rendering only requires x, y, zeti7
+        code (gen-code node '[x y z t] '[x y z] `(Util/toARGB ~'x ~'y ~'z)) ;; rendering only requires x, y, z
         ]
     (apply (eval
            `(fn [~@osyms]
@@ -535,7 +532,7 @@
                                y (/ (* dy (+ 0.5 iy)) dh)
                                argb (.calc rf x y)]
                            (.setRGB image ix iy argb)))))]
-	    (doall (pmap gen-row!(range h)))
+	    (doall (pmap gen-row! (range h)))
      image)))
 
 
@@ -546,4 +543,4 @@
                ~'y 1.0 
                ~'z 1.0 
                ~'t 1.0 ]
-          ~(:code (gen-code node '[x y z t] 'x))))))
+          ~(gen-code node '[x y z t] '[x] 'x)))))
