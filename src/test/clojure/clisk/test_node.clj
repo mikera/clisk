@@ -77,6 +77,10 @@
     (is (= [0.0 1.0] (evaluate (vec/vec2 [0 1]))))
     (is (= [0.0 1.0 3.0] (evaluate (v+ (vec/vec3 [0 1 2]) [0 0 1]))))))
 
+(deftest test-constant-form
+  (is (constant-form? '(+ 1 2 3)))
+  (is (not (constant-form? '(+ 1 2 (+ x y)))))
+  (is (not (constant-form? 'x))))
 
 (deftest test-image-texture
   (testing "Image textire"

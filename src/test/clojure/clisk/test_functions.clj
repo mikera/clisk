@@ -42,7 +42,10 @@
   (testing "Plus"
     (is (= [1.0 2.0] (evaluate (v+ [1.0 1.0] [0.0 1.0]))))
     (is (= [1.0 2.0] (evaluate (v+ 1.0 [0.0 1.0]))))
-    (is (= 3.0 (evaluate (v+ 1.0 2.0))))))
+    (is (= 3.0 (evaluate (v+ 1.0 2.0)))))
+  (testing "Constant values"
+    (is (constant-node? (v+ 1.0 2.0)))
+    (is (constant-node? (v+ 1.0 [2.0])))))
 
 (deftest test-ops
   (testing "Sigmoid"

@@ -126,7 +126,7 @@
           (and unary-identity (= 1 (count vs)))
             (first vs)
           (some vector-node? vs)
-			      (apply vector-node 
+			      (vec-node 
 		          (for [i (range dims)]
 			          (apply function-node f (map #(component % i) vs))))
           (and zero (some (is-constant zero) vs))

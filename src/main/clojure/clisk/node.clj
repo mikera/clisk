@@ -194,6 +194,16 @@
       (and (constant-node? n)
            (= value (:code n)))))) 
 
+(defn constant-form? 
+  "Returns true if a form is constant, i.e. contains none of the symbols x, y, z or t"
+  ([form] 
+    (cond 
+      (symbol? form) false
+      (vector? form) (every? constant-form? form)
+      (sequential? form) (every? constant-form? (next form)) ;; ignore initial operator
+      (number? form) true
+      :else (error "Unexpected element of form: " form))))
+
 ;; standard position vector
 (def position-symbol-vector ['x 'y 'z 't])
 
@@ -271,7 +281,7 @@
 	           :constant true}))))
 
 (defn vec-node 
-  "Creates a node from a sequence of scalars. The new node returns each scalar value as a separate compoenent."
+  "Creates a node from a sequence of scalars. The new node returns each scalar value as a separate component."
   ([xs]
 	  (let [nodes (map node xs)]
       (when-not (every? scalar-node? nodes)
@@ -283,10 +293,9 @@
 	       :constant (every? constant-node? nodes)}))))
 
 (defn vector-node 
-  "Creates a vector node from the given scalar nodes"
+  "Creates a vector node from the given scalars"
   ([& xs] 
     (vec-node xs)))
-
 
 (defn generate-scalar-code 
   "Creates code that generates a (fn [objects]) which returns a scalar clisk.IFunction"
@@ -393,11 +402,17 @@
        :or {objects nil}}]
   (if (vector? form)
     (vec-node (map #(code-node % :objects objects) form))
-	  (new-node {:type :scalar 
-	             :code form
-	             :constant false
-               :objects objects
-              })))
+	  (if (constant-form? form)
+      (new-node {:type :scalar 
+	               :code (eval form) 
+	               :constant true
+                 :objects objects
+                })
+      (new-node {:type :scalar 
+	               :code form
+	               :constant false
+                 :objects objects
+                }))))
 
 (defmacro texture-bound [v offset width max]
   `(let [tv# (double (+ (* (double ~v) ~(double width)) ~(double offset)) ) 
