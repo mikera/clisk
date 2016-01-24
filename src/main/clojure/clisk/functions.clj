@@ -599,9 +599,9 @@
 (defn height-normal 
   "Calculates a vector normal to the surface defined by the z-value of a source vector or a scalar height value. The result is *not* normalised."
   ([heightmap]
-    (v- [0 0 1] (components [0 1] (gradient (z heightmap)))))
+    (v- [0 0 1] (select-components (gradient (z heightmap)) [0 1] )))
   ([scale heightmap]
-    (v- [0 0 1] (components [0 1] (gradient (v* scale (z heightmap)))))))
+    (v- [0 0 1] (select-components (gradient (v* scale (z heightmap))) [0 1]))))
 
 
 (defn light-value 

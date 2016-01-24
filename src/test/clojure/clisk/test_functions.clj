@@ -62,10 +62,10 @@
 
 (deftest test-components
   (testing "Components"
-    (is (= 10.0 (evaluate (component 2 [0 5 10 15]))))
-    (is (= 1.0 (evaluate (component 0 1))))
-    (is (= 1.0 (evaluate (component 10 1))))
-    (is (= [0.0 3.0 4.0] (evaluate (components [0 1 1] [2 3 4 5]))))))
+    (is (= 10.0 (evaluate (component [0 5 10 15] 2))))
+    (is (= 1.0 (evaluate (component 1 0))))
+    (is (= 1.0 (evaluate (component 1 10))))
+    (is (= [0.0 3.0 4.0] (evaluate (select-components [2 3 4 5] [0 1 1] ))))))
 
 
 (deftest test-vlet
@@ -119,7 +119,7 @@
     (is (= 1.0 (evaluate (component 1 0))))
     (is (= 2.0 (evaluate (component 2 10))))
     (is (= 0.0 (evaluate (component [1] 10))))
-    (is (= [0.0 3.0 4.0] (evaluate (components [5 1 2] [2 3 4 5]))))))
+    (is (= [0.0 3.0 4.0] (evaluate (select-components [2 3 4 5] [5 1 2] ))))))
 
 (deftest test-scalar-warp
   (testing "Scalar warp"
