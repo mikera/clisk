@@ -161,7 +161,7 @@
   (let [[symbol value & more] bindings]
     ;;(print (str (merge {} vector-value))) 
     `(let [vector-value# (vectorize ~value)
-           components# (:nodes vector-value#) 
+           components# (components vector-value#) 
            gensyms# (vec (for [i# (range (count components#))] 
                            (gensym (str "comp" i#))))
            vector-node# (node gensyms#)
@@ -199,7 +199,7 @@
   "Applies a function f to all components of a vector"
   ([f v]
     (let [v (vectorize v)]
-      (apply function-node f (:nodes v)))))
+      (apply function-node f (components v)))))
 
 (defn ^:static frac
   "Retuns the fractional part of a number. Equivalent to Math/floor."
@@ -288,7 +288,7 @@
   ([a b]
 	  (let [a (vectorize a)
 	        b (vectorize b)]
-     (apply v+ (map v* (:nodes a) (:nodes b))))))
+     (apply v+ (map v* (components a) (components b))))))
 
 (defn cross3
   "Returns the cross product of 2 3D vectors"
@@ -324,7 +324,7 @@
 (defn length 
   "Calculates the length of a vector"
   ([a]
-	  (let [comps (:nodes (vectorize a))]
+	  (let [comps (components (vectorize a))]
 	    (apply transform-node
             (fn [& comps]
               (node `(Math/sqrt (+ ~@(map #(do `(let [v# (double ~%)] (* v# v#))) (map :code comps))))))
@@ -651,7 +651,7 @@
            ~(:code rest)))
       (cons
         rest
-        (:nodes init)))))
+        (components init)))))
 
 (defn vfor [init while update & {:keys [max-iterations result bailout-result]
                                  :or {max-iterations 10}}]
@@ -661,7 +661,7 @@
         update (take-components n update)
         result (or result (node result))
         bailout-result (or bailout-result result)]
-	  (#'clisk.node/vlet* (interleave (take n C-SYMBOLS) (:nodes init))
+	  (#'clisk.node/vlet* (interleave (take n C-SYMBOLS) (components init))
       (vloop
 		    (take-components n c)
 		    (vif 
@@ -670,7 +670,7 @@
 	              (fn [bailout-result-comp & comps]
 	                `(limited-recur ~(:code bailout-result-comp) ~@(map :code comps)))
 	              bailout-result
-	              (:nodes update))
+	              (components update))
 		      result)
 		    :max-iterations max-iterations))))
 
