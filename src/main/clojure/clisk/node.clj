@@ -194,7 +194,7 @@
 
 
 (defn ^:private component [i n]
-  "Returns a scalar node that represents the specified component of an input node. Taking any component of a scalr results in the same scalar."
+  "Returns a scalar node that represents the specified component of an input node. Taking any component of a scalar results in the same scalar."
   (let [n (node n)]
 	  (if (vector-node? n)
 	    (nth (:nodes n) i ZERO-NODE)
@@ -254,6 +254,25 @@
 	           :objects {sym v}
 	           :constant true}))))
 
+(defn vec-node 
+  "Creates a node from a sequence of scalars. The new node returns each scalar value as a separate compoenent."
+  ([xs]
+	  (let [nodes (map node xs)]
+      (when-not (every? scalar-node? nodes)
+        (error "vec-node requires scalar values as input"))
+      (new-node 
+	      {:type :vector
+	       :nodes (vec nodes)
+	       :codes (vec (map :code nodes))
+	       :objects (apply merge (map :objects nodes))
+	       :constant (every? constant-node? nodes)}))))
+
+(defn vector-node 
+  "Creates a vector node from the given scalar nodes"
+  ([& xs] 
+    (vec-node xs)))
+
+
 (defn generate-scalar-code 
   "Creates code that generates a (fn [objects]) which returns a scalar clisk.IFunction"
   ([n]
@@ -306,24 +325,6 @@
           #(.calc (compile-scalar-node %) (double x) (double y) (double z) (double t))
           (:nodes n))))))
 
-
-(defn vec-node 
-  "Creates a node from a sequence of scalars. The new node returns each scalar value as a separate compoenent."
-  ([xs]
-	  (let [nodes (map node xs)]
-      (when-not (every? scalar-node? nodes)
-        (error "vec-node requires scalar values as input"))
-      (new-node 
-	      {:type :vector
-	       :nodes (vec nodes)
-	       :codes (vec (map :code nodes))
-	       :objects (apply merge (map :objects nodes))
-	       :constant (every? constant-node? nodes)}))))
-
-(defn vector-node 
-  "Creates a vector node from the given scalar nodes"
-  ([& xs] 
-    (vec-node xs)))
 
 
 (defn constant-node 
