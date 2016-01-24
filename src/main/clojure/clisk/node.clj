@@ -34,7 +34,7 @@
   (gen-code [node syms inner-code]
             "Returns a map containing :syms and :code
               
-             argument syms are the symbols required to be bound for inner-code
+             argument syms are the symbols required to be bound for inner-code, as a vector
              argument inner-code is the code that should be inserted as the core of the generated code             
 
              returned :code is the generated code representing this node
@@ -79,10 +79,10 @@
       (let [nd (node nd)]
         (cond
           (not (xor (:code nd) (:codes nd))) 
-            (error "AST node must have :code or :codes")
+            (error "AST code node must have :code or :codes")
           (and (scalar-node? nd)
                (not (:primitive? (node-info nd))))
-            (error "AST code must be of primitive type: " (:code nd) " was: [" (:type (node-info nd)) "]")
+            (error "AST scalar code node must be of primitive type: " (:code nd) " was: [" (:type (node-info nd)) "]")
           :else 
 	          nd)))
   
@@ -90,10 +90,11 @@
     (gen-code [node syms inner-code]
       (let [scalarnode? (scalar-node? node)]
         (if scalarnode?
-          (let [vmap (mapcat vector syms (repeat 'tmp)) ;; all inner symbols are set to scalar value
+          (let [tsym (first syms)
+                vmap (mapcat vector (next syms) (repeat tsym)) ;; all inner symbols are set to scalar value
                 ] 
             {:syms '[x y z t]   ;; ask to be provided with '[x y z t] as needed by code
-             :code `(let [~'tmp ~(:code node) ~@vmap] ~inner-code)})
+             :code `(let [~tsym ~(:code node) ~@vmap] ~inner-code)})
           (let [codes (:codes node)
                 gsyms (mapv gensym '[x y z t])      ;; generate temp syms for code return values
                 gcode (mapcat vector gsyms codes)   ;; map result of code to each temp symbol
@@ -125,7 +126,8 @@
   PValidate
     (validate  [nd]
       (doseq [nn nodes]
-        (validate nn)) 
+        (validate nn)
+        (when-not (scalar-node? nn) (error "Unexpected non-scalar node within vector-node: " nn))) 
       nd)
   
   PCodeGen
