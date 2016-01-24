@@ -17,14 +17,15 @@
                         :objects {'a (clisk.util/new-image 10 10)})]
       (is (validate bn)))))
 
-(deftest test-node-generation
-  (testing "Constant value"
-    (is (= 2.0 (:code (constant-node 2.0))))
-    (is (= [1.0 2.0] (:codes (constant-node [1 2]))))))
-
 (deftest test-map-symbols
   (is (empty? (map-symbols ['x] ['x])))
   (is (= '[x a y b] (map-symbols '[x y] '[a b]))))
+
+(deftest test-code-generation
+  (testing "Constant scalar extends to all parameters"
+    (is (= 2.0 (eval (gen-code (constant-node 2.0) '[] '[n o p q] 'q)))))
+  (testing "Constant vector parameters"
+    (is (= 5.0 (eval (gen-code (constant-node [1 2 3 4]) '[] '[n o p q] '(+ o p)))))))
 
 ;; testing nodes, should all evaluate to 1.0 when evaluated at [1.0 1.0 1.0 1.0]
 (def scalar-node-types
