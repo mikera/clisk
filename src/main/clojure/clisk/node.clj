@@ -207,14 +207,19 @@
 	  (let [a (node a)]
 	    (or (node-shape a) 1))))
 
-(defn ^:private components [index-vector a]
-  "Returns a subset of components from a, according to the provided indices"
-  (let [a (node a)]
-    (apply vector-node 
-         (vec (map 
-                (fn [i]
-                  (component a i))
-                index-vector)))))
+(defn components 
+    "Returns scalar components from a node
+
+     If index-vector is provided, selectes only the specified components"
+    ([a]
+      (components (dimensions a) a))
+    ([index-vector a]
+      (let [a (node a)]
+        (apply vector-node 
+             (mapv 
+               (fn [i]
+                 (component a i))
+               index-vector)))))
 
 (defn ^:private  take-components [n a]
   "Take the first n components from a vector function"
