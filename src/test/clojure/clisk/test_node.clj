@@ -24,6 +24,8 @@
 (deftest test-code-generation
   (testing "Constant scalar extends to all parameters"
     (is (= 2.0 (eval (gen-code (constant-node 2.0) '[] '[n o p q] 'q)))))
+  (testing "Zero values outside vectorrange"
+    (is (= 0.0 (eval (gen-code (constant-node [1 2]) '[] '[n o p q] 'q)))))
   (testing "Constant vector parameters"
     (is (= 5.0 (eval (gen-code (constant-node [1 2 3 4]) '[] '[n o p q] '(+ o p)))))))
 

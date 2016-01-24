@@ -36,7 +36,10 @@
               
              input-syms are the symbokls provided
              output-syms are the symbols required to be bound for inner-code, as a vector
-             argument inner-code is the code that should be inserted as the core of the generated code")) 
+             argument inner-code is the code that should be inserted as the core of the generated code")
+  
+  (gen-component [node input-syms index]
+            "Generates code to produce one component of the node as specified by index")) 
 
 (defprotocol PNodeShape
   (node-shape [node]
@@ -104,12 +107,20 @@
                 ] 
             `(let [~@input-bindings ~tsym ~(:code node) ~@output-bindings] ~inner-code))
           (let [codes (:codes node)
-                gsyms (mapv gensym '[x y z t])      ;; generate temp syms for code return values
-                input-bindings (map-symbols gsyms input-syms)
-                gcode (mapcat vector gsyms codes)   ;; map result of code to each temp symbol
+                input-bindings (map-symbols '[x y z t] input-syms) ;; bind inputs
+                gsyms (mapv gensym output-syms)     ;; generate temp syms for outputs
+                gcode (mapcat vector gsyms (concat codes (repeat 0.0)))   ;; map result of code to each temp symbol
                 output-bindings (map-symbols output-syms gsyms)
                 ]
-            `(let [~@input-bindings ~@gcode ~@output-bindings] ~inner-code))))))
+            `(let [~@input-bindings ~@gcode ~@output-bindings] ~inner-code)))))
+    
+    (gen-component [node input-syms index]
+      (let [scalarnode? (scalar-node? node)
+            code (if scalarnode? (:code node) (nth (:codes node)))
+            input-bindings (map-symbols '[x y z t] input-syms)]
+        (if (empty? input-bindings)
+          code
+          `(let [~@input-bindings] ~code)))))
 
 ;; =======================================
 ;; Node record type implementing a vector of scalar nodes
