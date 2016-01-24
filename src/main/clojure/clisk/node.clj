@@ -214,7 +214,7 @@
   (fn [n]
     (let [n (node n)]
       (and (constant-node? n)
-           (= value (:code n)))))) 
+           (= value (get-code n)))))) 
 
 (defn constant-form? 
   "Returns true if a form is constant, i.e. contains none of the symbols x, y, z or t"
@@ -414,7 +414,7 @@
       (if-not (symbol? f) (error "Function in function-node must be a symbol, got: " f))
       (apply 
         transform-node
-        (fn [& xs] `(~f ~@(map :code xs)))
+        (fn [& xs] `(~f ~@(map get-code xs)))
         scalars))))
 
 (defn code-node 
@@ -522,9 +522,9 @@
       ;; (if-not (every? scalar-node? binding-nodes) (error "All binding values must be scalar"))
 		  (if (seq bindings)
 		    (apply transform-components
-          (fn [form & binds]
-            `(let [~@(interleave symbols (map :code binds))]
-               ~(:code form)))
+          (fn [nd & binds]
+            `(let [~@(interleave symbols (map get-code binds))]
+               ~(get-code nd)))
           (cons form binding-nodes))
       form))))
 
