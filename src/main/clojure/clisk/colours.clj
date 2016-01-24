@@ -99,21 +99,21 @@
 	        (/ C (- 1.0 (Math/abs (- (* 2.0 L) 1.0)))))))) 
 
 (defn hue-from-rgb [colour-vector]
-  (let [r (component 0 colour-vector)
-        g (component 1 colour-vector)
-        b (component 2 colour-vector)]
+  (let [r (component colour-vector 0)
+        g (component colour-vector 1)
+        b (component colour-vector 2)]
     (function-node `hue-function r g b)))
 
 (defn lightness-from-rgb [colour-vector]
-  (let [r (component 0 colour-vector)
-        g (component 1 colour-vector)
-        b (component 2 colour-vector)]
+  (let [r (component colour-vector 0)
+        g (component colour-vector 1)
+        b (component colour-vector 2)]
     (function-node `lightness-function r g b)))
 
 (defn saturation-from-rgb [colour-vector]
-  (let [r (component 0 colour-vector)
-        g (component 1 colour-vector)
-        b (component 2 colour-vector)]
+  (let [r (component colour-vector 0)
+        g (component colour-vector 1)
+        b (component colour-vector 2)]
     (function-node `saturation-function r g b)))
 
 (defn hsl-from-rgb
@@ -123,21 +123,21 @@
         [(hue-from-rgb rgb) (saturation-from-rgb rgb) (lightness-from-rgb rgb)]))))
 
 (defn red-from-hsl [colour-vector]
-  (let [h (component 0 colour-vector)
-        s (component 1 colour-vector)
-        l (component 2 colour-vector)]
+  (let [h (component colour-vector 0)
+        s (component colour-vector 1)
+        l (component colour-vector 2)]
     (function-node 'clisk.Util/redFromHSL h s l)))
 
 (defn green-from-hsl [colour-vector]
-  (let [h (component 0 colour-vector)
-        s (component 1 colour-vector)
-        l (component 2 colour-vector)]
+  (let [h (component colour-vector 0)
+        s (component colour-vector 1)
+        l (component colour-vector 2)]
     (function-node 'clisk.Util/greenFromHSL h s l)))
 
 (defn blue-from-hsl [colour-vector]
-  (let [h (component 0 colour-vector)
-        s (component 1 colour-vector)
-        l (component 2 colour-vector)]
+  (let [h (component colour-vector 0)
+        s (component colour-vector 1)
+        l (component colour-vector 2)]
     (function-node 'clisk.Util/blueFromHSL h s l)))
 
 (defn rgb-from-hsl
@@ -148,7 +148,7 @@
 
 (defn adjust-hue [shift source]
   (rgb-from-hsl 
-    (v+ [(component 0 shift) 0 0]
+    (v+ [(component shift 0) 0 0]
         (hsl-from-rgb source)))) 
 
 (defn adjust-hsl [shift source]

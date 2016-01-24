@@ -50,6 +50,10 @@
   (validate [node]
     "Returns truthy if node is valid, throws an exception otherwise"))
 
+(defprotocol PNodeComponent
+  (component [node i]
+    "Gets the i'th component of a node, as a new scalar node"))
+
 ;; =======================================
 ;; Code generation utility functions
 
@@ -189,7 +193,7 @@
 	    (or (node-shape a) 1))))
 
 
-(defn ^:private component [i n]
+(defn ^:private component [n i]
   "Returns a scalar node that represents the specified component of an input node. Taking any component of a scalar results in the same scalar."
   (let [n (node n)]
 	  (if (vector-node? n)
@@ -202,7 +206,7 @@
     (apply vector-node 
          (vec (map 
                 (fn [i]
-                  (component i a))
+                  (component a i))
                 index-vector)))))
 
 (defn ^:private  take-components [n a]
@@ -210,7 +214,7 @@
   (let [a (node a)]
     (vec-node
       (for [i (range n)]
-        (component i a)))))
+        (component a i)))))
 
 
 ;; ========================================
@@ -353,7 +357,7 @@
 	      (let [dims (apply max (map dimensions nodes))]
 		      (vec-node 
 		        (for [i (range dims)]
-		          (apply transform-node f (map #(component i %) nodes)))))
+		          (apply transform-node f (map #(component % i) nodes)))))
 	      (apply transform-node f nodes)))))
 
 (defn function-node

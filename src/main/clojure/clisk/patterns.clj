@@ -192,7 +192,7 @@
           f-sym (gensym "func")
           voronoi (or voronoi (clisk.generator.Voronoi2D. (int points)))
           obj-map {v-sym voronoi
-                   f-sym (compile-scalar-node (component 0 function))}] 
+                   f-sym (compile-scalar-node (component function 0))}] 
        (code-node `(.firstSecondFunction (static-cast clisk.generator.Voronoi2D ~v-sym) 
                      ~'x ~'y ~f-sym) 
                      :objects obj-map))))

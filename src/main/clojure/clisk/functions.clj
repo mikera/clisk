@@ -47,7 +47,7 @@
   (let [x (node x)]
 	  (cond 
 	    (vector-node? x)
-	      (component 0 x)
+	      (component x 0)
 	    (scalar-node? x)
 	      x
 	    :else x)))
@@ -55,27 +55,27 @@
 (defn x 
   "Extracts the x component of a position vector"
   ([v]
-	  (component 0 v)))
+	  (component v 0)))
 
 (defn y 
   "Extracts the y component of a position vector"
   ([v]
-	  (component 1 v)))
+	  (component v 1)))
 
 (defn z 
   "Extracts the z component of a position vector"
   ([v]
-    (component 2 v)))
+    (component v 2)))
 
 (defn t 
   "Extracts the t component of a position vector"
   ([v]
-    (component 3 v)))
+    (component v 3)))
 
 (defn alpha 
   "Extracts the alpha component of a colour vector. Assumes 1.0 if not present."
   ([v]
-    (if (> (long (dimensions v)) 3) (component 3 v) 1.0)))
+    (if (> (long (dimensions v)) 3) (component v 3) 1.0)))
 
 (defn rgb
   "Creates an RGB colour vector"
@@ -130,7 +130,7 @@
           (some vector-node? vs)
 			      (apply vector-node 
 		          (for [i (range dims)]
-			          (apply function-node f (map #(component i %) vs))))
+			          (apply function-node f (map #(component % i) vs))))
           (and zero (some (is-constant zero) vs))
             ZERO-NODE
           identity
@@ -180,7 +180,7 @@
   "Conditional vector function. First scalar argument is used as conditional value, > 0.0  is true."
   (let [a (node a)
         b (node b)
-        condition (component 0 condition)
+        condition (component condition 0)
         adims (long (dimensions a))
         bdims (long (dimensions b))
         dims (max adims bdims)]
@@ -424,7 +424,7 @@
   "Computes the gradient of a scalar function f with respect to [x y z t]"
 	([f]
 	  (let [epsilon 0.000001
-	        f (component 0 f)]
+	        f (component f 0)]
 	    (transform-components 
         (fn [f pos] 
           (let [sym (:code pos)]
@@ -460,7 +460,7 @@
     (fn [x]
       (colour-map mapping x)))
   ([mapping x]
-		(vlet [v (component 0 x)] 
+		(vlet [v (component x 0)] 
       (let [vals (vec mapping)
 		        c (count vals)]
 		    (cond 
@@ -543,8 +543,8 @@
     (transform-node
       (fn [x y]
         `(+ Math/PI (Math/atan2 ~(:code y) ~(:code x))))
-      (component 0 v)
-      (component 1 v))) )
+      (component v 0)
+      (component v 1))) )
 
 
 (defn radius 
@@ -553,8 +553,8 @@
     (transform-node
       (fn [x y]
         `(let [x# ~(:code x) y# ~(:code y)] (Math/sqrt (+ (* x# x#) (* y# y#)) ) ))
-      (component 0 v)
-      (component 1 v))) )
+      (component v 0)
+      (component v 1))) )
 
 (defn polar
   "Returns the polar co-ordinates of a vector"
