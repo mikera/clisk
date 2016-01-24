@@ -24,7 +24,7 @@
           pos (vectorize pos)
           vnode (vectorize node)
           scalarnode? (scalar-node? node)
-          fns (vec (map compile-fn (:nodes vnode)))
+          fns (vec (map compile-fn (components vnode)))
           [x y z t] (map #(evaluate (component % pos)) (range 4))
           vals (mapv #(.calc ^clisk.IFunction % (double x) (double y) (double z) (double t)) fns)]
       (if scalarnode? (first vals) vals))))
@@ -35,7 +35,7 @@
     (let [node (clisk.node/node node)
           scalarnode? (scalar-node? node)
           vnode (vectorize node)
-          fns (mapv compile-fn (:nodes vnode))]
+          fns (mapv compile-fn (components vnode))]
       (fn [[x y z t]]
         (let [x (double (or x 0.0))
               y (double (or y 0.0))
@@ -66,7 +66,7 @@
                 & {:keys [input-dimensions]}]
     (let [a (vectorize a)
           input-dimensions (int (or input-dimensions 4))
-          ^java.util.List funcs (mapv compile-fn (:nodes a))]
+          ^java.util.List funcs (mapv compile-fn (components a))]
       (clisk.VectorFunction/create input-dimensions funcs))))
 
 (defn image

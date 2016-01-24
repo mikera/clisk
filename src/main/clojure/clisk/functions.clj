@@ -286,8 +286,9 @@
 (defn dot 
 	"Returns the dot product of two vectors"
   ([a b]
-	  (let [a (vectorize a)
-	        b (vectorize b)]
+	  (let [dims (max (dimensions a) (dimensions b))
+          a (vectorize dims a)
+	        b (vectorize dims b)]
      (apply v+ (map v* (components a) (components b))))))
 
 (defn cross3

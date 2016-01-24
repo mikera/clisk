@@ -163,7 +163,9 @@
 
 (deftest test-lengths
   (testing "dot"
-    (is (== 1.0 (evaluate (dot [1 0] [1 0])))))
+    (is (== 1.0 (evaluate (dot [1 0] [1 0]))))
+    (is (== 9.0 (evaluate (dot [1 2] 3))))
+    (is (== 3.0 (evaluate (dot [1 2] [3])))))
   (testing "length"
     (is (== 1.0 (evaluate (length [1 0 0]))))
     (is (== 2.0 (evaluate (length [1 1 1 1]))))

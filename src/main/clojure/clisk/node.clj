@@ -245,7 +245,6 @@
       (CodeNode. nil
            {:type :vector 
             :codes (mapv double v)
-            :nodes (mapv node v)
             :constant true})
 	    (CodeNode. nil
 	           {:type :scalar 
@@ -279,7 +278,6 @@
         (error "vec-node requires scalar values as input"))
       (new-node 
 	      {:type :vector
-	       :nodes (vec nodes)
 	       :codes (vec (map :code nodes))
 	       :objects (apply merge (map :objects nodes))
 	       :constant (every? constant-node? nodes)}))))
@@ -461,7 +459,9 @@
     :else (error "Unable to build an AST node from: " a)))
 
 (defn ^:private vectorize 
-	"Converts a value into a vector function form. If a is already a vector node, does nothing. If a is a function, apply it to the current position."
+	"Converts a value into a vector function form. If a is already a vector node, does nothing. If a is a function, apply it to the current position.
+
+   If dims are supplied, vectorizes to the given number of dimensions. This duplicates scalars and zero-extends vectors."
   ([a]
 	  (let [a (node a)] 
 	    (cond
@@ -472,14 +472,7 @@
 		    :else
 		      (error "Should not be possible!"))))
   ([dims a]
-    (let [a (node a)
-          va (vectorize a)
-          dims (long dims)
-          adims (dimensions va)]
-      (cond
-        (= adims dims) va
-        (< dims adims) (node (vec (take dims (:nodes va))))
-        :else (node (vec (concat (:nodes va) (repeat (- dims adims) (if (scalar-node? a) a ZERO-NODE)))))))))
+    (select-components a (range dims))))
 
 
 (defn ^:private vlet* 
@@ -511,7 +504,7 @@
           zero-bindings (interleave (drop wdims ['x 'y 'z 't]) (repeat zdims 0.0)) 
 	        bindings 
 	          (vec (concat
-                  (interleave temps (take wdims (:nodes new-position))) ;; needed so that symbols x,y,z,t aren't overwritten too early
+                  (interleave temps (take wdims (components new-position))) ;; needed so that symbols x,y,z,t aren't overwritten too early
                   (interleave vars temps)
                   zero-bindings))]
      (vlet* bindings f))))
