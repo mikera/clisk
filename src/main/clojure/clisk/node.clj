@@ -38,7 +38,7 @@
              argument inner-code is the code that should be inserted as the core of the generated code             
 
              returned :code is the generated code representing this node
-             returned :syms syms are the symbols that should be bound as inputs for the generated code")) 
+             returned :syms are the symbols that should be bound as inputs for the generated code")) 
 
 (defprotocol PNodeShape
   (node-shape [node]
@@ -501,7 +501,8 @@
   (let [node (vectorize 4 node) ;; we want 4 channel output
         obj-map (:objects node)
         osyms (keys obj-map)
-        code (:code (gen-code node '[x y z t] `(Util/toARGB ~'x ~'y ~'z)))]
+        code (:code (gen-code node '[x y z] `(Util/toARGB ~'x ~'y ~'z))) ;; rendering only requires x, y, zeti7
+        ]
     (apply (eval
            `(fn [~@osyms]
               (reify clisk.IRenderFunction
