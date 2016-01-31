@@ -336,10 +336,10 @@
 	  (let-vector [x a]
                (vdivide x (length x)))))
 
-
-
 (defn compose 
   "Composes two or more vector functions"
+  ([f]
+    f)
   ([f g]
     (warp g f))
   ([f g & more]
