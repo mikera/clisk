@@ -32,6 +32,8 @@
     (is (= [2.0 2.0] (evaluate (vectorize 2 2))))
     (is (= [] (evaluate (vectorize 0 2))))))
 
+(deftest test-clamp
+  (is (= [0.0 0.0 0.5 1.0] (evaluate (clamp pos 0 1) -2 -1 0.5 2))))
 
 (deftest test-cross
   (testing "Cross product"

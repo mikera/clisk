@@ -524,10 +524,7 @@
 (defn clamp [v low high]
   "Clamps a vector between a low and high vector. Typically used to limit 
    a vector to a range e.g. (vclamp something [0 0 0] [1 1 1])."
-  (let [v (vectorize v)
-        low (vectorize low)
-        high (vectorize high)]
-    (vmax low (vmin high v))))
+  (vmax low (vmin high v)))
 
 (defn average [& vs]
   "Returns the average of several arguments"
