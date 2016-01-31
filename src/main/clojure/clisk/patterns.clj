@@ -96,7 +96,6 @@
   "4 dimensional vector standardised perlin noise in range [-1..1]^4"
   (vector-offsets snoise))
 
-
 (def plasma 
   "4 dimensional plasma, in range [0..1]"
   (make-multi-fractal noise))

@@ -147,7 +147,9 @@
     (component [node i]
       (if (scalar-node? node)
         node
-        (code-node (nth (:codes node) i 0.0) :objects (:objects node))))
+        (let [my-code (nth (:codes node) i 0.0) ]
+          (when-not my-code (error "No code for: " (pr-str node)))
+          (code-node my-code :objects (:objects node)))))
   
   PCodeGen
     ;; note that code is assumed to use '[x y z t]
@@ -199,6 +201,10 @@
     (validate  [nd]
       (validate f)
       (validate g))
+    
+  PNodeComponent
+    (component [node i]
+      (WarpNode. f (component g i)))
   
   PCodeGen
     (gen-code [node input-syms output-syms inner-code]
@@ -238,7 +244,7 @@
       (vector? form) (every? constant-form? form)
       (sequential? form) (every? constant-form? (next form)) ;; ignore initial operator
       (number? form) true
-      :else (error "Unexpected element of form: " form))))
+      :else (error "Unexpected element of form: " (pr-str form)))))
 
 ;; standard position vector
 (def position-symbol-vector ['x 'y 'z 't])
@@ -324,7 +330,7 @@
         (error "vec-node requires scalar values as input"))
       (new-node 
 	      {:type :vector
-	       :codes (vec (map :code nodes))
+	       :codes (vec (map get-code nodes))
 	       :objects (apply merge (map :objects nodes))
 	       :constant (every? constant-node? nodes)}))))
 
@@ -424,7 +430,7 @@
   "Creates a node which is a scalar function of scalar nodes. Function should be provided as a symbol."
   ([f & scalars]
     (let [scalars (map node scalars)]
-      (if-not (every? scalar-node? scalars) (error "Input nodes to function-node must be scalar"))
+      (if-let [nd (first (filter (complement scalar-node?) scalars))] (error "Input nodes to function-node must be scalar, got: " (pr-str nd)))
       (if-not (symbol? f) (error "Function in function-node must be a symbol, got: " f))
       (apply 
         transform-node
@@ -545,20 +551,7 @@
 (defn ^:private warp 
   "Warps the position vector before calculating a vector function"
   ([new-position f]
-	  (let [new-position (vectorize new-position)
-	        f (node f)
-	        wdims (dimensions new-position)
-          zdims (- 4 wdims) 
-	        fdims (dimensions f)
-	        vars (take wdims ['x 'y 'z 't])
-	        temps (take wdims ['x-temp 'y-temp 'z-temp 't-temp])
-          zero-bindings (interleave (drop wdims ['x 'y 'z 't]) (repeat zdims 0.0)) 
-	        bindings 
-	          (vec (concat
-                  (interleave temps (take wdims (components new-position))) ;; needed so that symbols x,y,z,t aren't overwritten too early
-                  (interleave vars temps)
-                  zero-bindings))]
-     (vlet* bindings f))))
+	  (WarpNode. (node new-position) (node f))))
 
 (def ZERO-NODE (node 0.0))
 

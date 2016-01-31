@@ -127,8 +127,8 @@
             (first vs)
           (some vector-node? vs)
 			      (vec-node 
-		          (for [i (range dims)]
-			          (apply function-node f (map #(component % i) vs))))
+		          (vec (for [i (range dims)]
+			               (apply function-node f (map #(component % i) vs)))))
           (and zero (some (is-constant zero) vs))
             ZERO-NODE
           identity
@@ -414,7 +414,7 @@
   (let [func (node func)] 
     (if-not (scalar-node? func) (error "vector-offsets requires a scalar function"))
     (vec-node 
-	    (map 
+	    (mapv 
 	      (fn [off]
 	        (offset off func))
         offsets-for-vectors))))
@@ -544,7 +544,6 @@
         `(+ Math/PI (Math/atan2 ~(get-code y) ~(get-code x))))
       (component v 0)
       (component v 1))) )
-
 
 (defn radius 
   "Returns the raidus of a vector in polar co-ordinates"
