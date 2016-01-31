@@ -337,7 +337,7 @@
                (vdivide x (length x)))))
 
 (defn compose 
-  "Composes two or more vector functions"
+  "Composes vector functions, similar to clojure.core/comp"
   ([f]
     f)
   ([f g]
