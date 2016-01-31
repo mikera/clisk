@@ -25,5 +25,5 @@
   ;; Finally we create the image by using the height-map to offset the pattern slightly 
   ;; along the x-axis. A higher offset factor results in "steeper" depth perception
   ;; experiments show that a range from 0.01 to 0.10 can be reasonable choices
-  (show (offset (v* [0.03 0.0] height-map) pattern) :size 512)
+  (show (offset (v* [0.03 0.0] height-map) pattern) :size 512 :scale 2)
   )

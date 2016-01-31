@@ -8,10 +8,8 @@
 ;; Usage:
 ;;   Run each of the individual "show" lines in the walkthough
 
-  
 ;; colours in RGB  
 (show [1 0 0])
-
 
 ;; scalars get interpreted as greyscale
 (show 0.5)
@@ -116,5 +114,5 @@
             :update (v+ c [(v- (v* x x) (v* y y))  (v* 2 x y)]) 
             :result (vplasma (v* 0.1 'i))
             :bailout-result black
-            :max-iterations 1000)))
+            :max-iterations 10000)))
 )
