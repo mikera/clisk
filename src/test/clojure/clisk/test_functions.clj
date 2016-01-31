@@ -64,9 +64,16 @@
     (is (= [2.0 6.0] (evaluate (v* [1.0 2.0] [2.0 3.0]))))
     (is (= 10.0 (evaluate (v* 2.0 5.0))))))
 
+(deftest test-min-max
+  (is (= [0.0 1.0] (evaluate (vmin 1 [0 2]))))
+  (is (= [1.0 2.0] (evaluate (vmax 1 [0 2])) ))
+  (is (= 2.0 (evaluate (vmax 1 2)))))
+
+
 (deftest test-height
   (testing "Height comes from z component"
-    (is (= 10.0 (evaluate (height [0 5 10 15]))))))
+    (is (= 10.0 (evaluate (height [0 5 10 15]))))
+    (is (= 10.0 (evaluate (height 10))))))
 
 (deftest test-components
   (testing "Components"
