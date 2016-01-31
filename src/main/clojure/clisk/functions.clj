@@ -291,7 +291,7 @@
      (apply v+ (map v* (components a) (components b))))))
 
 (defn cross3
-  "Returns the cross product of 2 3D vectors"
+  "Returns the cross product of two 3D vectors"
   ([a b]
     (transform-node
 	    (fn [a b]
@@ -418,7 +418,7 @@
 (defn gradient 
   "Computes the gradient of a scalar function f with respect to [x y z t]"
 	([f]
-	  (let [epsilon 0.00001]
+	  (let [epsilon 0.0001]
 	    (vdivide
         (v- (vec-node 
               (mapv (fn [pos] (f pos))
