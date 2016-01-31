@@ -372,7 +372,7 @@
   ([offset f]
     (warp (v+ 
              position-symbol-vector
-             (vectorize offset))
+             offset)
            f)))
 
 (defn matrix 
@@ -422,19 +422,16 @@
 (defn gradient 
   "Computes the gradient of a scalar function f with respect to [x y z t]"
 	([f]
-	  (let [epsilon 0.000001
-	        f (component f 0)]
-	    (transform-components 
-        (fn [f pos] 
-          (let []
-	          `(clojure.core// 
-	             (clojure.core/-
-	               (let [~'x (clojure.core/+ ~epsilon ~'x)]
-	                 ~(get-code f))
-	               ~(get-code f))
-	             ~epsilon)))
-	      f
-        (node position-symbol-vector)))))
+	  (let [epsilon 0.00001]
+	    (vdivide
+        (v- (vec-node 
+              (mapv (fn [pos] (f pos))
+                [[(v+ x epsilon) y z t]
+                 [x (v+ y epsilon) z t]
+                 [x y (v+ z epsilon) t]
+                 [x y z (v+ t epsilon)]]))
+            (f pos))
+        epsilon))))
 
 (defn ^:static scalar-lerp 
   "Performs clamped linear interpolation between two values, according to the proportion given in the 3rd parameter."

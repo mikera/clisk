@@ -42,13 +42,14 @@
                        [(v* 10 (seamless 0.4 noise)) y z t])) :size 256)  
 
   :polished-blue-stone
-  (show (offset (seamless (v* 2 vplasma)) 
-              (compose (v* [0.3 0.6 1.0] vnoise) 
-                       (v* 150 (seamless 0.4 (v* splasma noise))))) :size 256)
+  (show (offset 
+          (seamless (v* 2 vplasma)) 
+          (compose (v* [0.3 0.6 1.0] vnoise) 
+                   (v* 150 (seamless 0.4 (v* splasma noise))))) :size 256)
   
   :landscape-contours
   (show (offset (seamless (v* 2 vplasma)) 
-              (compose (components [0 1] vnoise) 
+              (compose (select-components vnoise [0 1]) 
                        (v* 150 (seamless 0.4 noise)))) :size 256)
   
   :colourful-spots

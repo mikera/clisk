@@ -178,7 +178,7 @@
     )
 
 ;; =======================================
-;; Node implrmrnting a warp : g(f(x))
+;; Node implementing a warp : g(f(x))
 
 (defrecord WarpNode [f g]
   clojure.lang.IFn
@@ -205,7 +205,7 @@
     
   PNodeComponent
     (component [node i]
-      (WarpNode. f (component g i)))
+      (warp f (component g i)))
   
   PCodeGen
     (gen-code [node input-syms output-syms inner-code]
@@ -552,7 +552,9 @@
 (defn ^:private warp 
   "Warps the position vector before calculating a vector function"
   ([new-position f]
-	  (WarpNode. (node new-position) (node f))))
+	  (let [new-position (node new-position)
+         f (node f)]
+     (WarpNode. (node new-position) (node f) nil {:objects (merge (:objects new-position) (:objects f))}))))
 
 (def ZERO-NODE (node 0.0))
 
