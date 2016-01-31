@@ -61,7 +61,13 @@
 (extend-protocol PNodeComponent
   Object 
     (component [this i]
-      (component (node this) i)))
+      (let [nd (node this)]
+        ;; (when (identical? nd this)) (error "Get-component problem with: " this)
+        (component nd i)))
+    
+  clojure.lang.IPersistentVector
+    (component [this i]
+      (node (nth this i 0.0))))
 
 ;; =======================================
 ;; Code generation utility functions
@@ -91,9 +97,13 @@
   ([bindings code]
     (let [pairs (partition 2 bindings)
           bindings (apply concat (filter (fn [[a b]] (not= a b)) pairs))]
-      (if (empty? bindings)
-       code
-       `(let [~@bindings] ~code))))) 
+      (cond 
+        (empty? bindings) 
+          code
+        (and (== 2 (count bindings)) (= code (first bindings)))
+          (second bindings)
+        :else
+          `(let [~@bindings] ~code))))) 
 
 ;; =======================================
 ;; Node record type implementing pure code

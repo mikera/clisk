@@ -655,12 +655,14 @@
 
 (defn vfor [init while update & {:keys [max-iterations result bailout-result]
                                  :or {max-iterations 10}}]
-  "Creates a vector for-loop construct"
+  "Creates a vector for-loop construct. 
+
+   Returns :result computation if provided, otherwise returns the current position"
   (let [init (vectorize init)
         n (dimensions init)
         update (take-components n update)
         result (or result (node result))
-        bailout-result (or bailout-result result)]
+        bailout-result (node (or bailout-result result))]
 	  (#'clisk.node/vlet* (interleave (take n C-SYMBOLS) (components init))
       (vloop
 		    (take-components n c)
