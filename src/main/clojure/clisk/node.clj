@@ -198,9 +198,10 @@
       (node-shape g))
     
   PValidate
-    (validate  [nd]
+    (validate [nd]
       (validate f)
-      (validate g))
+      (validate g)
+      nd)
     
   PNodeComponent
     (component [node i]

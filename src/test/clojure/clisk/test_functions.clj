@@ -35,6 +35,9 @@
 (deftest test-clamp
   (is (= [0.0 0.0 0.5 1.0] (evaluate (clamp pos 0 1) -2 -1 0.5 2))))
 
+(deftest test-scale
+  (is (= [1.0 1.0 2.0 0.0] (evaluate (scale 0.5 pos) 0.5 0.5 1.0))))
+
 (deftest test-cross
   (testing "Cross product"
     (is (= [0.0 0.0 1.0] (evaluate (cross3 [1.0 0.0 0.0] [0.0 1.0 0.0]))))))
