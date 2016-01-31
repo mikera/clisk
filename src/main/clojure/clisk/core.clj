@@ -75,21 +75,29 @@
                    & {:keys [width height size anti-alias] 
        :or {size DEFAULT-IMAGE-SIZE}}]
     (let [cliskfn (validate (node cliskfn))
-          scale (double (or anti-alias *anti-alias*))
+          aa (double (or anti-alias *anti-alias*))
           w (int (or width size))
           h (int (or height size))
-          fw (* w scale)
-          fh (* h scale)
+          fw (* w aa)
+          fh (* h aa)
           img (img cliskfn fw fh)]
       (scale-image img w h))))
+
+;; scale factor 
+(def ^:dynamic DISPLAY-SCALE 3.0)
 
 (defn show 
   "Creates and shows an image from the given image vector function"
   ([image-or-function
-    & {:keys [width height size anti-alias] 
-       :or {size DEFAULT-IMAGE-SIZE}
+    & {:keys [width height size anti-alias scale] 
+       :or {size DEFAULT-IMAGE-SIZE scale DISPLAY-SCALE}
        :as ks}]
     (let [^BufferedImage buf-img (if (instance? BufferedImage image-or-function)
                                    image-or-function
-                                   (apply image image-or-function (mapcat identity ks)))]
+                                   (apply image image-or-function (mapcat identity ks)))
+          ^BufferedImage buf-img (if scale 
+                                   (scale-image buf-img 
+                                          (* (imagez/width buf-img) (double scale))
+                                          (* (imagez/height buf-img) (double scale)))
+                                   buf-img)]
       (Util/show buf-img))))
