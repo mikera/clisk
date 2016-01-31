@@ -235,7 +235,7 @@
   (fn [n]
     (let [n (node n)]
       (and (constant-node? n)
-           (= value (get-code n)))))) 
+           (== (double value) (double (eval (get-code n)))))))) 
 
 (defn constant-form? 
   "Returns true if a form is constant, i.e. contains none of the symbols x, y, z or t"

@@ -348,15 +348,11 @@
 (defn rotate
   "Rotates a function in the (x,y plane)"
   ([angle function]
-    (transform-components
-	     (fn [s c node]
-	        `(let [xt# (- (* ~(get-code c) ~'x) (* ~(get-code s) ~'y)) 
-                 yt# (+ (* ~(get-code s) ~'x) (* ~(get-code c) ~'y)) 
-                 ~'x xt#
-                 ~'y yt#]
-            ~(get-code node)))
-       (vsin angle)
-       (vcos angle)
+    (warp
+	     [(v- (v* x (vcos angle)) (v* y (vsin angle))) 
+        (v+ (v* y (vcos angle)) (v* x (vsin angle))) 
+        z 
+        t]
 	     function)))
 
 (defn scale 

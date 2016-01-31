@@ -82,6 +82,10 @@
   (is (not (constant-form? '(+ 1 2 (+ x y)))))
   (is (not (constant-form? 'x))))
 
+(deftest test-constant
+  (is ((is-constant 1) (node 1)))
+  (is ((is-constant 0) (v* x 0))))
+
 (deftest test-image-texture
   (testing "Image textire"
     (is (= (evaluate (img clojure) 0.3 0.4 0.5)
