@@ -203,7 +203,11 @@
   PCodeGen
     (gen-code [node input-syms output-syms inner-code]
       (gen-code f input-syms '[x y z t]
-                (gen-code g '[x y z t] output-syms inner-code))))
+                (gen-code g '[x y z t] output-syms inner-code)))
+    
+    (gen-component [node input-syms index]
+      (gen-code f input-syms '[x y z t]
+                (gen-component g '[x y z t] index))))
 
 ;; ==============================
 ;; Node predicates
