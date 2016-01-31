@@ -177,7 +177,8 @@
   (testing "length"
     (is (== 1.0 (evaluate (length [1 0 0]))))
     (is (== 2.0 (evaluate (length [1 1 1 1]))))
-    (is (== 1.0 (evaluate (length 1))))))
+    (is (== 2.0 (evaluate (length 1)))) ;; treated as 4-element vector
+    ))
 
 (deftest test-colours
   (testing "rgb"

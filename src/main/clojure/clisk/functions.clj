@@ -108,6 +108,15 @@
         dims
         (error "Unequal vector sizes: " (map count vectors))))))
 
+(defn compose 
+  "Composes vector functions, similar to clojure.core/comp"
+  ([f]
+    f)
+  ([f g]
+    (warp g f))
+  ([f g & more]
+    (compose f (apply compose g more)))) 
+
 (defn vconcat 
   "Concatenate a set of vectors into a longer vector. Treats scalars as 1D vectors." 
   [& vectors]
@@ -324,26 +333,15 @@
 (defn length 
   "Calculates the length of a vector"
   ([a]
-	  (let [comps (components (vectorize a))]
-	    (apply transform-node
-            (fn [& comps]
-              (node `(Math/sqrt (+ ~@(map #(do `(let [v# (double ~%)] (* v# v#))) (map get-code comps))))))
-            comps))))
+	  (compose 
+      (vsqrt (dot pos pos))
+      a)))
 
 (defn normalize 
   "Normalizes a vector"
   ([a]
 	  (let-vector [x a]
                (vdivide x (length x)))))
-
-(defn compose 
-  "Composes vector functions, similar to clojure.core/comp"
-  ([f]
-    f)
-  ([f g]
-    (warp g f))
-  ([f g & more]
-    (compose f (apply compose g more)))) 
 
 (defn rotate
   "Rotates a function in the (x,y plane)"
