@@ -184,7 +184,7 @@
         dims (max adims bdims)]
     (transform-components
        (fn [c a b]
-         (if (:constant c)
+         (if (constant-node? c)
            ;; constant case - use appropriate branch directly
            (if (> (double (evaluate c)) 0.0 ) a b) 
            ;; variable case

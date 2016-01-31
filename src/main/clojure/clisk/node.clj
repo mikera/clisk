@@ -219,23 +219,33 @@
 ;; ==============================
 ;; Node predicates
 
-(defn node? [x] 
-  (instance? clisk.NodeMarker x))
+(defn node? 
+  "Returns true if the argument is a clisk node"
+  ([x] 
+    (instance? clisk.NodeMarker x)))
 
-(defn constant-node? [x] 
-  (and (node? x) (:constant x)))
+(defn constant-node? 
+  "Returns true if x is a constant node"
+  ([x] 
+    (and (node? x) (:constant x))))
 
-(defn vector-node? [x] 
-  (boolean (node-shape x)))
+(defn vector-node? 
+  "Returns true if the argument is a vector node"
+  ([x] 
+    (boolean (node-shape x))))
 
-(defn scalar-node? [x] 
-  (nil? (node-shape x)))
+(defn scalar-node? 
+   "Returns true if the argument is a scalar node"
+   ([x] 
+    (nil? (node-shape x))))
 
-(defn is-constant [value]
-  (fn [n]
-    (let [n (node n)]
-      (and (constant-node? n)
-           (== (double value) (double (eval (get-code n)))))))) 
+(defn is-constant 
+  "Returns a function that tests if a node is equivalent to a specified constant value"
+  ([value]
+    (fn [n]
+      (let [n (node n)]
+        (and (constant-node? n)
+             (== (double value) (double (eval (get-code n))))))))) 
 
 (defn constant-form? 
   "Returns true if a form is constant, i.e. contains none of the symbols x, y, z or t"
