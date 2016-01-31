@@ -178,7 +178,8 @@
     (is (== 1.0 (evaluate (length [1 0 0]))))
     (is (== 2.0 (evaluate (length [1 1 1 1]))))
     (is (== 2.0 (evaluate (length 1)))) ;; treated as 4-element vector
-    ))
+  (testing "normalize"
+    (is (= [0.6 0.8] (evaluate (normalize [3 4])))))))
 
 (deftest test-colours
   (testing "rgb"

@@ -340,8 +340,7 @@
 (defn normalize 
   "Normalizes a vector"
   ([a]
-	  (let-vector [x a]
-               (vdivide x (length x)))))
+	  (vdivide a (length a))))
 
 (defn rotate
   "Rotates a function in the (x,y plane)"
