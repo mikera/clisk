@@ -271,7 +271,7 @@
 	    (or (node-shape a) 1))))
 
 (defn components 
-    "Gets the components of a node, as a sequence of scalar nodes"
+    "Gets the components of a node, as a sequence of scalar nodes. Returns a length 1 vector if the node is scalar."
     ([a]
       (let [a (node a)]
         (mapv 
@@ -282,6 +282,7 @@
 (defn select-components 
     "Selects a subset of components from a node, returning a new vector node"
     ([a index-vector]
+      (when-not (sequential? index-vector) (error "select-components requires a vector of components as second argument"))
       (let [a (node a)]
         (vec-node 
           (mapv 
