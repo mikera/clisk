@@ -280,7 +280,7 @@
           (range (dimensions a))))))
 
 (defn select-components 
-    "Selects a subset of components from a node, returning a new vector node"
+    "Selects a subset of components from a node, returning a new vector node. Duplicates a scalar as necessary to create more components."
     ([a index-vector]
       (when-not (sequential? index-vector) (error "select-components requires a vector of components as second argument"))
       (let [a (node a)]
@@ -291,7 +291,7 @@
             index-vector)))))
 
 (defn ^:private  take-components [n a]
-  "Take the first n components from a vector function"
+  "Take the first n components from a vector function. Duplicates a scalar as necessary to create more components."
   (let [a (node a)]
     (vec-node
       (for [i (range n)]
@@ -326,12 +326,12 @@
 
 (defn object-node 
   "Creates a node with an embedded Java object"
-  ([v]
+  ([obj]
 	  (let [sym (gensym "obj")]
 	    (CodeNode. nil
 	          {:type :scalar
 	           :code sym
-	           :objects {sym v}
+	           :objects {sym obj}
 	           :constant true}))))
 
 (defn vec-node 
