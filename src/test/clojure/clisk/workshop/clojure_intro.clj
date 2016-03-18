@@ -25,7 +25,7 @@
  :bar 20}
 #{2 3 5 7 11 13}
 [1 2 3 :foo]
-(foo a b c)
+'(foo a b c)
 
 ;; Code as Data
 
