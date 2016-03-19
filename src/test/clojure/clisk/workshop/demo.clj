@@ -1,5 +1,6 @@
 (ns clisk.workshop.demo
-  (:use [clisk live]))
+  (:use [clisk live])
+  (:require [telegenic.core :as telegenic]))
 
 
 ;; Image composition example

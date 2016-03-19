@@ -13,6 +13,7 @@
 (n/pull-all clisk.textures)
 (n/pull-all clisk.util)
 (n/pull-all clisk.effects)
+(n/pull-all clisk.animation)
 
 ;; do we really want to override these???
 ;;(def * v*)
