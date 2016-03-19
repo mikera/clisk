@@ -54,4 +54,14 @@
   
   ;; plasma
   (show (scale 0.2 plasma))
+  
+  ;; animations!
+  (show (vnoise vsnoise))
+  
+  (render-animation [i 50]
+    (offset [(* i 0.04) 0]     ;; use an offset in x-axis to scroll the image over time  
+          (vnoise vsnoise))  ;; use any Clisk function to create the image
+    {:filename "out.mp4" ;; filename to output 
+     :width 256          ;; width of generated video
+     :height 256})       ;; height of generated video
   )
