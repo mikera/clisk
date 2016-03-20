@@ -34,7 +34,7 @@
     (v*
       (v* 20.0 (voronoi-blocks :voronoi voronoi1))
       (warp (voronoi-points :voronoi voronoi1) grain)))
-    :size 256)
+    :size 512)
   
   :oily-colours
   (show (offset (seamless (v* 2 vplasma)) 
@@ -59,7 +59,8 @@
   (show (viewport [-2 -1.5] [1 1.5]
           (fractal 
             :while (v- 2 (length [x y])) 
-            :update (v+ c [(v- (v* x x) (v* y y))  (v* 2 x y)]) 
+            :update (v+ c [(v- (v* x x) (v* y y))  
+                           (v* 2 x y)]) 
             :result (vplasma (v* 0.1 'i))
             :bailout-result black
             :max-iterations 1000)) :size 256)
@@ -68,11 +69,12 @@
     (show (let [voronoi1 (voronoi :points 32)] 
 	          (fractal 
 	            :while (v- 0.97 (voronoi-function 
-	                              (v- 1 (v* (vdivide (v- y x) y) (vdivide (v- z x) z)))
+	                              (v- 1 (v* (vdivide (v- y x) y) 
+                                          (vdivide (v- z x) z)))
 	                              :voronoi voronoi1)) 
 	            :update (v+ (v* pos 2) pos) 
 	            :result (vdivide 3 (v+ 3 'i)) 
-	            :max-iterations 4)) :size 256)
+	            :max-iterations 4)) :size 512)
     
 })
 
