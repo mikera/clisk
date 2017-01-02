@@ -1,6 +1,6 @@
 (ns clisk.samples.animations
   "Examples of using Clisk with the Telegenic library to create procedurally generated animations"
-  (:use [clisk live])
+  (:use [clisk live animation])
   (:import [clisk Util])
   (:require [telegenic.core :as telegenic]))
 
