@@ -41,7 +41,7 @@
 (def warp #'clisk.node/warp)
 
 (defn ensure-scalar [x]
-  "Ensure x is a scalar value. If x is a vector, resturns the first component (index 0)."
+  "Ensure x is a scalar value. If x is a vector, returns the first component (index 0)."
   (let [x (node x)]
 	  (cond 
 	    (vector-node? x)
@@ -89,10 +89,10 @@
 (defn rgba
   "Creates an RGBA colour vector"
   ([^java.awt.Color java-colour]
-    (rgba (/(.getRed java-colour) 255.0)
-          (/(.getBlue java-colour) 255.0)
-          (/(.getGreen java-colour) 255.0)
-          (/(.getAlpha java-colour) 255.0)))
+    (rgba (/ (.getRed java-colour) 255.0)
+          (/ (.getBlue java-colour) 255.0)
+          (/ (.getGreen java-colour) 255.0)
+          (/ (.getAlpha java-colour) 255.0)))
   ([r g b]
     (rgba r g b 1.0))
   ([r g b a]

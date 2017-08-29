@@ -35,7 +35,7 @@
   (gen-code [node input-syms output-syms inner-code]
             "Returns generated code wrapping inner-code
               
-             input-syms are the symbokls provided
+             input-syms are the symbols provided
              output-syms are the symbols required to be bound for inner-code, as a vector
              argument inner-code is the code that should be inserted as the core of the generated code")
   
@@ -93,9 +93,12 @@
             (gen-component node '[x y z t] i)))))) 
 
 (defn gen-let-bindings 
-  "Generates a set of let bindings around the given code, if necessary."
+  "Generates a set of let bindings around the given code, if necessary.
+
+   Bindings are a sequence of symbols and bindings for each, as with a regular let vector. Must have an even length."
   ([bindings code]
-    (let [pairs (partition 2 bindings)
+    (let [_ (when (not (even? (count bindings))) (error "bindings must have an even number of elements"))
+          pairs (partition 2 bindings)
           bindings (apply concat (filter (fn [[a b]] (not= a b)) pairs))]
       (cond 
         (empty? bindings) 
