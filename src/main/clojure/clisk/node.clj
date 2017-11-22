@@ -574,15 +574,22 @@
 
  
 (defn ^clisk.IFunction compile-fn [node]
-  "Compiles clisk scalar node into an object that extends clisk.Function and clojure.lang.IFn"
+  "Compiles clisk scalar node into an object that extends clisk.Function and clojure.lang.IFn.
+   For most purposes, compile-render-fn should be used to create an IRenderFunction for efficiency."
   (clisk.node/compile-scalar-node node))
+
+(defn code-gen
+  "Generates code for a given node, using standard x, y, z and t parameters."
+  [node]
+  (gen-code node '[x y z t] '[x y z] `(Util/toARGB ~'x ~'y ~'z)) ;; rendering only requires x, y, z
+  )
 
 (defn ^clisk.IRenderFunction compile-render-fn [node]
   "Compiles clisk node into an object that implements clisk.IRenderFunction"
   (let [node (vectorize 4 node) ;; we want 4 channel output
         obj-map (:objects node)
         osyms (keys obj-map)
-        code (gen-code node '[x y z t] '[x y z] `(Util/toARGB ~'x ~'y ~'z)) ;; rendering only requires x, y, z
+        code (code-gen node) 
         ]
     (apply (eval
            `(fn [~@osyms]
