@@ -110,6 +110,9 @@
 
 ;; =======================================
 ;; Node record type implementing pure code
+
+;; Generally should be a low-level input, not suitable for higher level generation / optimisation
+;; since channels are treated as opaque code blocks 
 ;;
 ;; Code should use the symbols '[x y z t], which will be bound for the execution of the code
 ;;
@@ -581,7 +584,8 @@
 (defn code-gen
   "Generates code for a given node, using standard x, y, z and t parameters."
   [node]
-  (gen-code node '[x y z t] '[x y z] `(Util/toARGB ~'x ~'y ~'z)) ;; rendering only requires x, y, z
+  (let [node (clisk.node/node node)] ;; ensure we have a node
+    (gen-code node '[x y z t] '[x y z] `(Util/toARGB ~'x ~'y ~'z))) ;; rendering only requires x, y, z
   )
 
 (defn ^clisk.IRenderFunction compile-render-fn [node]

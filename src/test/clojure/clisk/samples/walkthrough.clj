@@ -35,11 +35,12 @@
 ;; what's under the hood?
 (node [x y 0])
 
+;; code generation
 (let [a (node [x y 0])]
-  (:codes a))
+  (code-gen a))
 
 (let [a (node (v* [x y 0] 5))]
-  (:codes a ))
+  (code-gen a ))
 
 
 ;; predefined paterns
@@ -76,6 +77,12 @@
 
 ;; hue adjustment
 (show (adjust-hsl [x 0 0] cannon))
+
+;; HOFs
+(defn flip [n]
+     (warp [y x] n))
+
+(show (flip cannon))
 
 ;; now to make some noise
 (show (scale 0.2 noise))
