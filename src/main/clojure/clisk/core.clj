@@ -84,7 +84,7 @@
       (scale-image img w h))))
 
 ;; scale factor 
-(def ^:dynamic DISPLAY-SCALE 2.0)
+(def ^:dynamic DISPLAY-SCALE 4.0)
 
 (defn show 
   "Creates and shows an image from the given image vector function"
